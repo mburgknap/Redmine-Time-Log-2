@@ -117,5 +117,17 @@ namespace RedmineLog.Properties {
                 this["Enumeration"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SaveSettings {
+            get {
+                return ((string)(this["SaveSettings"]));
+            }
+            set {
+                this["SaveSettings"] = value;
+            }
+        }
     }
 }

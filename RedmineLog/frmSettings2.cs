@@ -13,8 +13,6 @@ namespace RedmineLog
 {
     public partial class frmSettings2 : Form
     {
-
-
         private bool _close = false;
 
         public frmSettings2()
@@ -28,8 +26,9 @@ namespace RedmineLog
             txtApiKey.Text = Settings.Default.ApiKey;
         }
 
-        private void btnSave_Click(System.Object sender, System.EventArgs e)
+        private void btnConnect_Click(System.Object sender, System.EventArgs e)
         {
+            Settings.Default.SaveSettings = checkBox1.Checked.ToString();
             Settings.Default.RedmineURL = txtRedmineURL.Text;
             Settings.Default.ApiKey = txtApiKey.Text;
             Settings.Default.Save();

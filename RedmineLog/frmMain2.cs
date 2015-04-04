@@ -104,17 +104,24 @@ namespace RedmineLog
         {
             try
             {
-                frmSettings2 objSettings = new frmSettings2();
-                if (objSettings.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                bool saveSettings = false;
+
+                bool.TryParse(Settings.Default.SaveSettings, out saveSettings);
+
+                if (!saveSettings)
                 {
-                    listActivites();
-                    _idleCheck.Start();
+                    var objSettings = new frmSettings2();
+
+                    if (objSettings.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                    {
+                        Application.Exit();
+                        return;
+                    }
                 }
-                else
-                {
-                    Application.Exit();
-                    //end
-                }
+
+                listActivites();
+                _idleCheck.Start();
+
             }
             catch (Exception ex)
             {

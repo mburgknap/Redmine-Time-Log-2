@@ -35,6 +35,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.Label1 = new System.Windows.Forms.Label();
             this.txtRedmineURL = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Label2
@@ -50,12 +51,12 @@
             // 
             this.txtApiKey.Location = new System.Drawing.Point(16, 70);
             this.txtApiKey.Name = "txtApiKey";
-            this.txtApiKey.Size = new System.Drawing.Size(259, 20);
+            this.txtApiKey.Size = new System.Drawing.Size(324, 20);
             this.txtApiKey.TabIndex = 10;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(200, 96);
+            this.btnClose.Location = new System.Drawing.Point(265, 95);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 9;
@@ -65,13 +66,13 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(119, 96);
+            this.btnSave.Location = new System.Drawing.Point(184, 95);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 8;
-            this.btnSave.Text = "Save";
+            this.btnSave.Text = "Connect";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // Label1
             // 
@@ -86,14 +87,27 @@
             // 
             this.txtRedmineURL.Location = new System.Drawing.Point(15, 34);
             this.txtRedmineURL.Name = "txtRedmineURL";
-            this.txtRedmineURL.Size = new System.Drawing.Size(259, 20);
+            this.txtRedmineURL.Size = new System.Drawing.Size(325, 20);
             this.txtRedmineURL.TabIndex = 6;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(16, 101);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(110, 17);
+            this.checkBox1.TabIndex = 12;
+            this.checkBox1.Text = "Zapisz ustawienia";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // frmSettings2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 126);
+            this.ClientSize = new System.Drawing.Size(352, 137);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.txtApiKey);
             this.Controls.Add(this.btnClose);
@@ -120,5 +134,6 @@
         internal System.Windows.Forms.Button btnSave;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.TextBox txtRedmineURL;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

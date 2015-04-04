@@ -26,5 +26,8 @@
     <Setting Name="Enumeration" Type="System.String" Scope="User">
       <Value Profile="(Default)">enumerations/time_entry_activities.xml</Value>
     </Setting>
+    <Setting Name="SaveSettings" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
