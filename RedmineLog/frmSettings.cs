@@ -11,29 +11,19 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmSettings2 : Form
+    public partial class frmSettings : Form
     {
         private bool _close = false;
 
-        public frmSettings2()
+        public frmSettings()
         {
             FormClosing += frmSettings_FormClosing;
             // This call is required by the Windows Form Designer.
             InitializeComponent();
 
             // Add any initialization after the InitializeComponent() call.
-            txtRedmineURL.Text = Settings.Default.RedmineURL;
-            txtApiKey.Text = Settings.Default.ApiKey;
-        }
-
-        private void btnConnect_Click(System.Object sender, System.EventArgs e)
-        {
-            Settings.Default.SaveSettings = checkBox1.Checked.ToString();
-            Settings.Default.RedmineURL = txtRedmineURL.Text;
-            Settings.Default.ApiKey = txtApiKey.Text;
-            Settings.Default.Save();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
-            _close = true;
+            tbRedmineURL.Text = Settings.Default.RedmineURL;
+            tbApiKey.Text = Settings.Default.ApiKey;
         }
 
         private void btnClose_Click(System.Object sender, System.EventArgs e)
@@ -42,6 +32,17 @@ namespace RedmineLog
             _close = true;
         }
 
+        private void btnConnect_Click(System.Object sender, System.EventArgs e)
+        {
+            Settings.Default.PersistentSettings = cbSaveSettings.Checked.ToString();
+            Settings.Default.RedmineURL = tbRedmineURL.Text;
+            Settings.Default.ApiKey = tbApiKey.Text;
+            Settings.Default.Save();
+
+            AppLogger.Log.Info("Settings saved");
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            _close = true;
+        }
         private void frmSettings_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
             if (_close == false)

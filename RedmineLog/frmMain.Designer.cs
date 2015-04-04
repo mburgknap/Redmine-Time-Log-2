@@ -1,6 +1,6 @@
 ﻿namespace RedmineLog
 {
-    partial class frmMain2
+    partial class frmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.HideTooltipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ntIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.btnExit = new System.Windows.Forms.Label();
+            this.lnkExit = new System.Windows.Forms.Label();
             this.rdIssue = new System.Windows.Forms.RadioButton();
             this.lnkSettings = new System.Windows.Forms.Label();
-            this.Label1 = new System.Windows.Forms.Label();
+            this.lnkIssues = new System.Windows.Forms.Label();
             this.btnSend = new System.Windows.Forms.Button();
             this.txtComment = new System.Windows.Forms.TextBox();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
@@ -46,12 +46,13 @@
             this.btnStop = new System.Windows.Forms.Button();
             this.btnClock = new System.Windows.Forms.Button();
             this.lblClock = new System.Windows.Forms.Label();
-            this.cmbActivity = new System.Windows.Forms.ComboBox();
+            this.cbActivity = new System.Windows.Forms.ComboBox();
             this.lblIssue = new System.Windows.Forms.Label();
             this.lblParentIssue = new System.Windows.Forms.Label();
             this.llIssueUrl = new System.Windows.Forms.LinkLabel();
             this.issueInfoPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtIssueID = new System.Windows.Forms.ComboBox();
+            this.btnRemoveItem = new System.Windows.Forms.Button();
+            this.cbIssues = new System.Windows.Forms.ComboBox();
             this.ContextMenuStrip1.SuspendLayout();
             this.issueInfoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -89,19 +90,20 @@
             this.ntIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("ntIcon.Icon")));
             this.ntIcon.Text = "Time";
             this.ntIcon.Visible = true;
+            this.ntIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnIconClick);
             // 
-            // btnExit
+            // lnkExit
             // 
-            this.btnExit.AutoSize = true;
-            this.btnExit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExit.ForeColor = System.Drawing.Color.Blue;
-            this.btnExit.Location = new System.Drawing.Point(192, 14);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(29, 17);
-            this.btnExit.TabIndex = 31;
-            this.btnExit.Text = "Exit";
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            this.lnkExit.AutoSize = true;
+            this.lnkExit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkExit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkExit.ForeColor = System.Drawing.Color.Blue;
+            this.lnkExit.Location = new System.Drawing.Point(192, 14);
+            this.lnkExit.Name = "lnkExit";
+            this.lnkExit.Size = new System.Drawing.Size(29, 17);
+            this.lnkExit.TabIndex = 31;
+            this.lnkExit.Text = "Exit";
+            this.lnkExit.Click += new System.EventHandler(this.OnExitClick);
             // 
             // rdIssue
             // 
@@ -127,20 +129,20 @@
             this.lnkSettings.Size = new System.Drawing.Size(57, 17);
             this.lnkSettings.TabIndex = 27;
             this.lnkSettings.Text = "Settings";
-            this.lnkSettings.Click += new System.EventHandler(this.Label4_Click);
+            this.lnkSettings.Click += new System.EventHandler(this.OnSettingsClick);
             // 
-            // Label1
+            // lnkIssues
             // 
-            this.Label1.AutoSize = true;
-            this.Label1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Label1.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label1.ForeColor = System.Drawing.Color.Blue;
-            this.Label1.Location = new System.Drawing.Point(124, 261);
-            this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(103, 17);
-            this.Label1.TabIndex = 24;
-            this.Label1.Text = "Redmine Issues";
-            this.Label1.Click += new System.EventHandler(this.Label1_Click);
+            this.lnkIssues.AutoSize = true;
+            this.lnkIssues.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkIssues.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkIssues.ForeColor = System.Drawing.Color.Blue;
+            this.lnkIssues.Location = new System.Drawing.Point(124, 261);
+            this.lnkIssues.Name = "lnkIssues";
+            this.lnkIssues.Size = new System.Drawing.Size(103, 17);
+            this.lnkIssues.TabIndex = 24;
+            this.lnkIssues.Text = "Redmine Issues";
+            this.lnkIssues.Click += new System.EventHandler(this.OnRedmineIssuesClick);
             // 
             // btnSend
             // 
@@ -151,7 +153,7 @@
             this.btnSend.TabIndex = 22;
             this.btnSend.Text = "Submit";
             this.btnSend.UseVisualStyleBackColor = true;
-            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            this.btnSend.Click += new System.EventHandler(this.OnSendClick);
             // 
             // txtComment
             // 
@@ -186,7 +188,7 @@
             this.btnStop.TabIndex = 20;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.btnStop.Click += new System.EventHandler(this.OnStopClick);
             // 
             // btnClock
             // 
@@ -197,27 +199,27 @@
             this.btnClock.TabIndex = 19;
             this.btnClock.Text = "Play";
             this.btnClock.UseVisualStyleBackColor = true;
-            this.btnClock.Click += new System.EventHandler(this.btnClock_Click);
+            this.btnClock.Click += new System.EventHandler(this.OnClockClick);
             // 
             // lblClock
             // 
             this.lblClock.AutoSize = true;
             this.lblClock.Font = new System.Drawing.Font("Century Gothic", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblClock.Location = new System.Drawing.Point(12, 31);
+            this.lblClock.Location = new System.Drawing.Point(20, 31);
             this.lblClock.Name = "lblClock";
             this.lblClock.Size = new System.Drawing.Size(213, 58);
             this.lblClock.TabIndex = 18;
             this.lblClock.Text = "00:00:00";
             // 
-            // cmbActivity
+            // cbActivity
             // 
-            this.cmbActivity.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbActivity.FormattingEnabled = true;
-            this.cmbActivity.Location = new System.Drawing.Point(24, 131);
-            this.cmbActivity.Name = "cmbActivity";
-            this.cmbActivity.Size = new System.Drawing.Size(203, 28);
-            this.cmbActivity.TabIndex = 17;
-            this.cmbActivity.Text = "Select Activity";
+            this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbActivity.FormattingEnabled = true;
+            this.cbActivity.Location = new System.Drawing.Point(24, 131);
+            this.cbActivity.Name = "cbActivity";
+            this.cbActivity.Size = new System.Drawing.Size(203, 28);
+            this.cbActivity.TabIndex = 17;
+            this.cbActivity.Text = "Select Activity";
             // 
             // lblIssue
             // 
@@ -225,7 +227,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblIssue.AutoSize = true;
-            this.lblIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblIssue.Location = new System.Drawing.Point(15, 27);
             this.lblIssue.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.lblIssue.Name = "lblIssue";
@@ -253,58 +255,71 @@
             this.llIssueUrl.Name = "llIssueUrl";
             this.llIssueUrl.Size = new System.Drawing.Size(197, 14);
             this.llIssueUrl.TabIndex = 34;
-            this.llIssueUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.llIssueUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnIssueLinkClick);
             // 
             // issueInfoPanel
             // 
             this.issueInfoPanel.Controls.Add(this.lblParentIssue);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
             this.issueInfoPanel.Controls.Add(this.llIssueUrl);
+            this.issueInfoPanel.Controls.Add(this.btnRemoveItem);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.issueInfoPanel.Location = new System.Drawing.Point(26, 325);
             this.issueInfoPanel.Name = "issueInfoPanel";
             this.issueInfoPanel.Size = new System.Drawing.Size(200, 100);
             this.issueInfoPanel.TabIndex = 35;
             // 
-            // txtIssueID
+            // btnRemoveItem
             // 
-            this.txtIssueID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.txtIssueID.FormattingEnabled = true;
-            this.txtIssueID.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.txtIssueID.ItemHeight = 24;
-            this.txtIssueID.Location = new System.Drawing.Point(26, 285);
-            this.txtIssueID.Name = "txtIssueID";
-            this.txtIssueID.Size = new System.Drawing.Size(121, 32);
-            this.txtIssueID.TabIndex = 36;
-            this.txtIssueID.SelectedValueChanged += new System.EventHandler(this.txtIssueID_SelectedValueChanged);
-            this.txtIssueID.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtIssueID_KeyDown);
+            this.btnRemoveItem.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnRemoveItem.Location = new System.Drawing.Point(112, 69);
+            this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(0, 0, 20, 0);
+            this.btnRemoveItem.Name = "btnRemoveItem";
+            this.btnRemoveItem.Size = new System.Drawing.Size(75, 23);
+            this.btnRemoveItem.TabIndex = 35;
+            this.btnRemoveItem.Text = "Remove";
+            this.btnRemoveItem.UseVisualStyleBackColor = true;
+            this.btnRemoveItem.Click += new System.EventHandler(this.btnRemoveItem_Click);
             // 
-            // frmMain2
+            // cbIssues
+            // 
+            this.cbIssues.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.cbIssues.FormattingEnabled = true;
+            this.cbIssues.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.cbIssues.ItemHeight = 24;
+            this.cbIssues.Location = new System.Drawing.Point(26, 285);
+            this.cbIssues.Name = "cbIssues";
+            this.cbIssues.Size = new System.Drawing.Size(121, 32);
+            this.cbIssues.TabIndex = 36;
+            this.cbIssues.SelectedValueChanged += new System.EventHandler(this.txtIssueID_SelectedValueChanged);
+            this.cbIssues.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnSetIssue);
+            // 
+            // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(247, 460);
-            this.Controls.Add(this.txtIssueID);
+            this.Controls.Add(this.cbIssues);
             this.Controls.Add(this.issueInfoPanel);
-            this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.lnkExit);
             this.Controls.Add(this.rdIssue);
             this.Controls.Add(this.lnkSettings);
-            this.Controls.Add(this.Label1);
+            this.Controls.Add(this.lnkIssues);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtComment);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnClock);
             this.Controls.Add(this.lblClock);
-            this.Controls.Add(this.cmbActivity);
+            this.Controls.Add(this.cbActivity);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "frmMain2";
+            this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RedmineLog";
             this.TopMost = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
+            this.Load += new System.EventHandler(this.OnFormLoad);
             this.ContextMenuStrip1.ResumeLayout(false);
             this.issueInfoPanel.ResumeLayout(false);
             this.issueInfoPanel.PerformLayout();
@@ -320,10 +335,10 @@
         internal System.Windows.Forms.ToolStripMenuItem HideTooltipToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip ContextMenuStrip1;
         internal System.Windows.Forms.NotifyIcon ntIcon;
-        internal System.Windows.Forms.Label btnExit;
+        internal System.Windows.Forms.Label lnkExit;
         internal System.Windows.Forms.RadioButton rdIssue;
         internal System.Windows.Forms.Label lnkSettings;
-        internal System.Windows.Forms.Label Label1;
+        internal System.Windows.Forms.Label lnkIssues;
         internal System.Windows.Forms.Button btnSend;
         internal System.Windows.Forms.TextBox txtComment;
         internal System.Windows.Forms.Timer Timer1;
@@ -331,11 +346,12 @@
         internal System.Windows.Forms.Button btnStop;
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClock;
-        internal System.Windows.Forms.ComboBox cmbActivity;
+        internal System.Windows.Forms.ComboBox cbActivity;
         private System.Windows.Forms.Label lblIssue;
         private System.Windows.Forms.Label lblParentIssue;
         private System.Windows.Forms.LinkLabel llIssueUrl;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
-        private System.Windows.Forms.ComboBox txtIssueID;
+        private System.Windows.Forms.ComboBox cbIssues;
+        private System.Windows.Forms.Button btnRemoveItem;
     }
 }

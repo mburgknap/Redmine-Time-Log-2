@@ -1,6 +1,6 @@
 ﻿namespace RedmineLog
 {
-    partial class frmSettings2
+    partial class frmSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSettings2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSettings));
             this.Label2 = new System.Windows.Forms.Label();
-            this.txtApiKey = new System.Windows.Forms.TextBox();
+            this.tbApiKey = new System.Windows.Forms.TextBox();
             this.btnClose = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             this.Label1 = new System.Windows.Forms.Label();
-            this.txtRedmineURL = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.tbRedmineURL = new System.Windows.Forms.TextBox();
+            this.cbSaveSettings = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Label2
@@ -47,12 +47,12 @@
             this.Label2.TabIndex = 11;
             this.Label2.Text = "Redmine API Key";
             // 
-            // txtApiKey
+            // tbApiKey
             // 
-            this.txtApiKey.Location = new System.Drawing.Point(16, 70);
-            this.txtApiKey.Name = "txtApiKey";
-            this.txtApiKey.Size = new System.Drawing.Size(324, 20);
-            this.txtApiKey.TabIndex = 10;
+            this.tbApiKey.Location = new System.Drawing.Point(16, 70);
+            this.tbApiKey.Name = "tbApiKey";
+            this.tbApiKey.Size = new System.Drawing.Size(324, 20);
+            this.tbApiKey.TabIndex = 10;
             // 
             // btnClose
             // 
@@ -64,15 +64,15 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // btnSave
+            // btnConnect
             // 
-            this.btnSave.Location = new System.Drawing.Point(184, 95);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 8;
-            this.btnSave.Text = "Connect";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnConnect.Location = new System.Drawing.Point(184, 95);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.TabIndex = 8;
+            this.btnConnect.Text = "Connect";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // Label1
             // 
@@ -83,37 +83,37 @@
             this.Label1.TabIndex = 7;
             this.Label1.Text = "Redmine URL";
             // 
-            // txtRedmineURL
+            // tbRedmineURL
             // 
-            this.txtRedmineURL.Location = new System.Drawing.Point(15, 34);
-            this.txtRedmineURL.Name = "txtRedmineURL";
-            this.txtRedmineURL.Size = new System.Drawing.Size(325, 20);
-            this.txtRedmineURL.TabIndex = 6;
+            this.tbRedmineURL.Location = new System.Drawing.Point(15, 34);
+            this.tbRedmineURL.Name = "tbRedmineURL";
+            this.tbRedmineURL.Size = new System.Drawing.Size(325, 20);
+            this.tbRedmineURL.TabIndex = 6;
             // 
-            // checkBox1
+            // cbSaveSettings
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(16, 101);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(110, 17);
-            this.checkBox1.TabIndex = 12;
-            this.checkBox1.Text = "Zapisz ustawienia";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.cbSaveSettings.AutoSize = true;
+            this.cbSaveSettings.Checked = true;
+            this.cbSaveSettings.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSaveSettings.Location = new System.Drawing.Point(16, 101);
+            this.cbSaveSettings.Name = "cbSaveSettings";
+            this.cbSaveSettings.Size = new System.Drawing.Size(110, 17);
+            this.cbSaveSettings.TabIndex = 12;
+            this.cbSaveSettings.Text = "Zapisz ustawienia";
+            this.cbSaveSettings.UseVisualStyleBackColor = true;
             // 
             // frmSettings2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(352, 137);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.cbSaveSettings);
             this.Controls.Add(this.Label2);
-            this.Controls.Add(this.txtApiKey);
+            this.Controls.Add(this.tbApiKey);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.Label1);
-            this.Controls.Add(this.txtRedmineURL);
+            this.Controls.Add(this.tbRedmineURL);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -129,11 +129,11 @@
         #endregion
 
         internal System.Windows.Forms.Label Label2;
-        internal System.Windows.Forms.TextBox txtApiKey;
+        internal System.Windows.Forms.TextBox tbApiKey;
         internal System.Windows.Forms.Button btnClose;
-        internal System.Windows.Forms.Button btnSave;
+        internal System.Windows.Forms.Button btnConnect;
         internal System.Windows.Forms.Label Label1;
-        internal System.Windows.Forms.TextBox txtRedmineURL;
-        private System.Windows.Forms.CheckBox checkBox1;
+        internal System.Windows.Forms.TextBox tbRedmineURL;
+        private System.Windows.Forms.CheckBox cbSaveSettings;
     }
 }

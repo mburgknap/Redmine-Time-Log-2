@@ -5,28 +5,13 @@
     <Setting Name="RedmineURL" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://10.0.0.104/redmine/</Value>
     </Setting>
-    <Setting Name="Issues" Type="System.String" Scope="User">
-      <Value Profile="(Default)">issues.xml</Value>
-    </Setting>
-    <Setting Name="Projects" Type="System.String" Scope="User">
-      <Value Profile="(Default)">projects.xml</Value>
-    </Setting>
-    <Setting Name="Users" Type="System.String" Scope="User">
-      <Value Profile="(Default)">users.xml</Value>
-    </Setting>
     <Setting Name="ApiKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">886ccdc09cb7223a43261d0b5dd9fdf25e2797cc</Value>
     </Setting>
-    <Setting Name="arrUsers" Type="System.Collections.Specialized.StringCollection" Scope="User">
+    <Setting Name="PersistentSettings" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="TimeEntry" Type="System.String" Scope="User">
-      <Value Profile="(Default)">time_entries.xml</Value>
-    </Setting>
-    <Setting Name="Enumeration" Type="System.String" Scope="User">
-      <Value Profile="(Default)">enumerations/time_entry_activities.xml</Value>
-    </Setting>
-    <Setting Name="SaveSettings" Type="System.String" Scope="User">
+    <Setting Name="WorkingIssueList" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

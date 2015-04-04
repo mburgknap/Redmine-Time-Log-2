@@ -37,42 +37,6 @@ namespace RedmineLog.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("issues.xml")]
-        public string Issues {
-            get {
-                return ((string)(this["Issues"]));
-            }
-            set {
-                this["Issues"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("projects.xml")]
-        public string Projects {
-            get {
-                return ((string)(this["Projects"]));
-            }
-            set {
-                this["Projects"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("users.xml")]
-        public string Users {
-            get {
-                return ((string)(this["Users"]));
-            }
-            set {
-                this["Users"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("886ccdc09cb7223a43261d0b5dd9fdf25e2797cc")]
         public string ApiKey {
             get {
@@ -85,48 +49,25 @@ namespace RedmineLog.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection arrUsers {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PersistentSettings {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["arrUsers"]));
+                return ((string)(this["PersistentSettings"]));
             }
             set {
-                this["arrUsers"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("time_entries.xml")]
-        public string TimeEntry {
-            get {
-                return ((string)(this["TimeEntry"]));
-            }
-            set {
-                this["TimeEntry"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("enumerations/time_entry_activities.xml")]
-        public string Enumeration {
-            get {
-                return ((string)(this["Enumeration"]));
-            }
-            set {
-                this["Enumeration"] = value;
+                this["PersistentSettings"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SaveSettings {
+        public string WorkingIssueList {
             get {
-                return ((string)(this["SaveSettings"]));
+                return ((string)(this["WorkingIssueList"]));
             }
             set {
-                this["SaveSettings"] = value;
+                this["WorkingIssueList"] = value;
             }
         }
     }
