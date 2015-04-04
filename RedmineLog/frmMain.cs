@@ -4,6 +4,7 @@ using RedmineLog.Properties;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -30,6 +31,7 @@ namespace RedmineLog
             WorkTimer = new System.Timers.Timer(1000);
             IdleChecker = new System.Timers.Timer(1000);
             InitializeComponent();
+            lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
         }
 
         public enum Mode

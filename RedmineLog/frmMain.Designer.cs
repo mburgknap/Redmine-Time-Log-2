@@ -53,6 +53,7 @@
             this.issueInfoPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.cbIssues = new System.Windows.Forms.ComboBox();
+            this.lblVersion = new System.Windows.Forms.Label();
             this.ContextMenuStrip1.SuspendLayout();
             this.issueInfoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -294,11 +295,21 @@
             this.cbIssues.SelectedValueChanged += new System.EventHandler(this.txtIssueID_SelectedValueChanged);
             this.cbIssues.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnSetIssue);
             // 
+            // lblVersion
+            // 
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblVersion.Location = new System.Drawing.Point(23, 14);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(0, 19);
+            this.lblVersion.TabIndex = 37;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(247, 460);
+            this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.cbIssues);
             this.Controls.Add(this.issueInfoPanel);
             this.Controls.Add(this.lnkExit);
@@ -353,5 +364,6 @@
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
         private System.Windows.Forms.ComboBox cbIssues;
         private System.Windows.Forms.Button btnRemoveItem;
+        private System.Windows.Forms.Label lblVersion;
     }
 }
