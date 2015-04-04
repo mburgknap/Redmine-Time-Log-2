@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using RedmineLog.Properties;
 using Redmine.Enumerations;
+using Redmine.Net.Api;
+using System.Collections.Specialized;
+using Redmine.Net.Api.Types;
 
 namespace RedmineLog
 {
@@ -89,7 +92,6 @@ namespace RedmineLog
         public frmMain2()
         {
             FormClosing += frmMain_FormClosing;
-            Load += frmMain_Load;
             CheckForIllegalCrossThreadCalls = false;
             _tmrActivity = new System.Timers.Timer(1000);
             _idleCheck = new System.Timers.Timer(1000);
@@ -249,7 +251,7 @@ namespace RedmineLog
         {
             try
             {
-                Process.Start(Settings.Default.RedmineURL + Settings.Default.Projects);
+                Process.Start(Settings.Default.RedmineURL + "issues");
 
             }
             catch (Exception ex)
@@ -262,7 +264,7 @@ namespace RedmineLog
         {
 
             int n;
-            bool isNumeric = int.TryParse(txtProjectID.Text, out n);
+            bool isNumeric = int.TryParse(txtIssueID.Text, out n);
 
             if (isNumeric == false)
             {
@@ -278,19 +280,15 @@ namespace RedmineLog
             _mode = Mode.Stop;
             _tmrActivity.Stop();
             bool rslt = false;
-            int entryID = Int32.Parse(txtProjectID.Text);
+            int entryID = Int32.Parse(txtIssueID.Text);
             Redmine.TimeEntry objTimeEntry = new Redmine.TimeEntry(entryID);
             float hours = _currentTime.Hour + (float)_currentTime.Minute / 60f;
             int activityID = 0;
+
             activityID = ((Activity)cmbActivity.SelectedItem).ID;
-            if (rdProject.Checked)
-            {
-                rslt = objTimeEntry.RecordEntry(DateTime.Now, hours, activityID, txtComment.Text, Redmine.TimeEntry.Type.Project);
-            }
-            else
-            {
-                rslt = objTimeEntry.RecordEntry(DateTime.Now, hours, activityID, txtComment.Text, Redmine.TimeEntry.Type.Issue);
-            }
+
+            rslt = objTimeEntry.RecordEntry(DateTime.Now, hours, activityID, txtComment.Text, Redmine.TimeEntry.Type.Issue);
+
 
             if ((rslt == true))
             {
@@ -350,6 +348,92 @@ namespace RedmineLog
         {
 
         }
+
+
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(llIssueUrl.Text);
+        }
+
+        private void txtIssueID_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                LoadIssue();
+            }
+        }
+
+        private void LoadIssue()
+        {
+            int isId = 0;
+
+            if (!int.TryParse(txtIssueID.Text, out isId))
+            {
+                lblIssue.Text = "";
+                return;
+            }
+
+            var manager = new RedmineManager(Settings.Default.RedmineURL, Settings.Default.ApiKey);
+
+            var parameters = new NameValueCollection { };
+
+            var responseList = manager.GetObjectList<Issue>(parameters);
+
+            Issue mainIssue = null;
+
+            foreach (var issue in responseList)
+            {
+
+                if (issue.Id == isId)
+                {
+                    mainIssue = issue;
+                    lblIssue.Text = issue.Subject;
+                    llIssueUrl.Text = Settings.Default.RedmineURL + "issues/" + isId;
+                    lblIssue.Visible = true;
+                    llIssueUrl.Visible = true;
+
+                    if (!txtIssueID.Items.Contains(isId))
+                        txtIssueID.Items.Add(isId);
+                    break;
+                }
+            }
+
+            if (mainIssue == null)
+            {
+                lblIssue.Text = "";
+                lblIssue.Visible = false;
+                llIssueUrl.Text = "";
+                llIssueUrl.Visible = false;
+
+            }
+
+            if (mainIssue != null
+                && mainIssue.ParentIssue != null)
+                foreach (var issue in responseList)
+                {
+
+                    if (issue.Id == mainIssue.ParentIssue.Id)
+                    {
+                        lblParentIssue.Text = issue.Subject;
+                        lblParentIssue.Visible = true;
+                        return;
+                    }
+                }
+            else
+            {
+                lblParentIssue.Text = "";
+                lblParentIssue.Visible = false;
+            }
+        }
+
+        private void txtIssueID_SelectedValueChanged(object sender, EventArgs e)
+        {
+            LoadIssue();
+        }
+
+
+
     }
 
 }
