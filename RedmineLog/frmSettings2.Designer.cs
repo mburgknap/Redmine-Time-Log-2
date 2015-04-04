@@ -104,6 +104,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSettings2";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings";
             this.TopMost = true;
             this.ResumeLayout(false);
