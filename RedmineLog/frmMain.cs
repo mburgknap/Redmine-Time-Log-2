@@ -174,9 +174,8 @@ namespace RedmineLog
                 if (!int.TryParse(cbIssues.Text, out isId))
                 {
                     lblIssue.Text = "";
+                    lblIssue.Tag = null;
                     lblIssue.Visible = false;
-                    llIssueUrl.Text = "";
-                    llIssueUrl.Visible = false;
                     lblParentIssue.Text = "";
                     lblParentIssue.Visible = false;
                     btnRemoveItem.Visible = false;
@@ -187,57 +186,40 @@ namespace RedmineLog
 
                 var parameters = new NameValueCollection { };
 
-                var responseList = manager.GetObjectList<Issue>(parameters);
-
-                mainIssue = null;
+                mainIssue = manager.GetObject<Issue>(isId.ToString(), parameters);
                 parentIssue = null;
 
-                foreach (var issue in responseList)
-                {
-                    if (issue.Id == isId)
-                    {
-                        mainIssue = issue;
-                        lblIssue.Text = mainIssue.Subject;
-                        llIssueUrl.Text = Settings.Default.RedmineURL + "issues/" + isId;
-                        lblIssue.Visible = true;
-                        llIssueUrl.Visible = true;
-                        btnRemoveItem.Visible = true;
+                lblIssue.Text = mainIssue.Subject;
+                lblIssue.Tag = Settings.Default.RedmineURL + "issues/" + isId;
+                lblIssue.Visible = true;
+                btnRemoveItem.Visible = true;
 
-                        if (!ContainIssue(isId))
-                        {
-                            cbIssues.Items.Add(isId);
-                            Settings.Default.WorkingIssueList += isId + ";";
-                            Settings.Default.Save();
-                        }
-                        break;
-                    }
+                if (!ContainIssue(isId))
+                {
+                    cbIssues.Items.Add(isId);
+                    Settings.Default.WorkingIssueList += isId + ";";
+                    Settings.Default.Save();
                 }
+
 
                 if (mainIssue == null)
                 {
                     lblIssue.Text = "";
                     lblIssue.Visible = false;
-                    llIssueUrl.Text = "";
-                    llIssueUrl.Visible = false;
+                    lblIssue.Tag = null;
                     btnRemoveItem.Visible = false;
                 }
 
 
-                if (mainIssue != null
-                    && mainIssue.ParentIssue != null)
+                if (mainIssue != null && mainIssue.ParentIssue != null)
+                {
+                    parentIssue = manager.GetObject<Issue>(mainIssue.ParentIssue.Id.ToString(), parameters);
 
+                    lblParentIssue.Text = parentIssue.Subject;
+                    lblParentIssue.Visible = true;
+                }
 
-                    foreach (var issue in responseList)
-                    {
-                        if (issue.Id == mainIssue.ParentIssue.Id)
-                        {
-                            parentIssue = issue;
-                            lblParentIssue.Text = parentIssue.Subject;
-                            lblParentIssue.Visible = true;
-                            return;
-                        }
-                    }
-                else
+                if (parentIssue == null)
                 {
                     lblParentIssue.Text = "";
                     lblParentIssue.Visible = false;
@@ -310,9 +292,8 @@ namespace RedmineLog
                 }
 
                 lblIssue.Text = "";
+                lblIssue.Tag = null;
                 lblIssue.Visible = false;
-                llIssueUrl.Text = "";
-                llIssueUrl.Visible = false;
                 lblParentIssue.Text = "";
                 lblParentIssue.Visible = false;
                 btnRemoveItem.Visible = false;
@@ -370,7 +351,7 @@ namespace RedmineLog
         {
             try
             {
-                System.Diagnostics.Process.Start(llIssueUrl.Text);
+                System.Diagnostics.Process.Start(lblIssue.Tag.ToString());
             }
             catch (Exception ex)
             {

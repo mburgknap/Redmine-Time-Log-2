@@ -47,9 +47,8 @@
             this.btnClock = new System.Windows.Forms.Button();
             this.lblClock = new System.Windows.Forms.Label();
             this.cbActivity = new System.Windows.Forms.ComboBox();
-            this.lblIssue = new System.Windows.Forms.Label();
             this.lblParentIssue = new System.Windows.Forms.Label();
-            this.llIssueUrl = new System.Windows.Forms.LinkLabel();
+            this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.issueInfoPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.cbIssues = new System.Windows.Forms.ComboBox();
@@ -222,19 +221,6 @@
             this.cbActivity.TabIndex = 17;
             this.cbActivity.Text = "Select Activity";
             // 
-            // lblIssue
-            // 
-            this.lblIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblIssue.AutoSize = true;
-            this.lblIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblIssue.Location = new System.Drawing.Point(15, 27);
-            this.lblIssue.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.lblIssue.Name = "lblIssue";
-            this.lblIssue.Size = new System.Drawing.Size(192, 18);
-            this.lblIssue.TabIndex = 32;
-            // 
             // lblParentIssue
             // 
             this.lblParentIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -245,24 +231,23 @@
             this.lblParentIssue.Location = new System.Drawing.Point(0, 5);
             this.lblParentIssue.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.lblParentIssue.Name = "lblParentIssue";
-            this.lblParentIssue.Size = new System.Drawing.Size(207, 17);
+            this.lblParentIssue.Size = new System.Drawing.Size(199, 17);
             this.lblParentIssue.TabIndex = 33;
             // 
-            // llIssueUrl
+            // lblIssue
             // 
-            this.llIssueUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.llIssueUrl.Location = new System.Drawing.Point(5, 50);
-            this.llIssueUrl.Margin = new System.Windows.Forms.Padding(5);
-            this.llIssueUrl.Name = "llIssueUrl";
-            this.llIssueUrl.Size = new System.Drawing.Size(197, 14);
-            this.llIssueUrl.TabIndex = 34;
-            this.llIssueUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnIssueLinkClick);
+            this.lblIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblIssue.Location = new System.Drawing.Point(15, 27);
+            this.lblIssue.Margin = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.lblIssue.Name = "lblIssue";
+            this.lblIssue.Size = new System.Drawing.Size(184, 23);
+            this.lblIssue.TabIndex = 34;
+            this.lblIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnIssueLinkClick);
             // 
             // issueInfoPanel
             // 
             this.issueInfoPanel.Controls.Add(this.lblParentIssue);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
-            this.issueInfoPanel.Controls.Add(this.llIssueUrl);
             this.issueInfoPanel.Controls.Add(this.btnRemoveItem);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.issueInfoPanel.Location = new System.Drawing.Point(26, 325);
@@ -273,8 +258,8 @@
             // btnRemoveItem
             // 
             this.btnRemoveItem.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnRemoveItem.Location = new System.Drawing.Point(112, 69);
-            this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(0, 0, 20, 0);
+            this.btnRemoveItem.Location = new System.Drawing.Point(124, 50);
+            this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(0);
             this.btnRemoveItem.Name = "btnRemoveItem";
             this.btnRemoveItem.Size = new System.Drawing.Size(75, 23);
             this.btnRemoveItem.TabIndex = 35;
@@ -358,9 +343,8 @@
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClock;
         internal System.Windows.Forms.ComboBox cbActivity;
-        private System.Windows.Forms.Label lblIssue;
         private System.Windows.Forms.Label lblParentIssue;
-        private System.Windows.Forms.LinkLabel llIssueUrl;
+        private System.Windows.Forms.LinkLabel lblIssue;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
         private System.Windows.Forms.ComboBox cbIssues;
         private System.Windows.Forms.Button btnRemoveItem;
