@@ -95,7 +95,7 @@ namespace RedmineLog
             if (!string.IsNullOrWhiteSpace(cbIssues.Text)
                 && ContainIssue(cbIssues.Text))
             {
-                Settings.Default.WorkingIssueList = Settings.Default.WorkingIssueList.Replace(";" + cbIssues.Text + ";", ";");
+                Settings.Default.WorkingIssueList = Settings.Default.WorkingIssueList.Replace(cbIssues.Text + ";", ";");
                 var item = cbIssues.SelectedItem;
                 cbIssues.SelectedItem = cbIssues.Items[0];
                 cbIssues.Items.Remove(item);
@@ -381,8 +381,6 @@ namespace RedmineLog
                     return;
                 }
 
-                clockMode = ClockMode.Stop;
-                WorkTimer.Stop();
 
                 DateTime time = submitMode == SubmitMode.Work ? startTime : idleTime;
 
@@ -403,8 +401,7 @@ namespace RedmineLog
 
                 if (submitMode == SubmitMode.Work)
                 {
-                    startTime = DateTime.MinValue;
-                    lblClockActive.Text = startTime.ToString("HH:mm:ss");
+                    OnStopClick(btnStop, null);
                 }
                 else
                 {
@@ -444,8 +441,11 @@ namespace RedmineLog
 
         private void OnWorkTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            startTime = startTime.AddSeconds(1);
-            lblClockActive.Text = startTime.ToString("HH:mm:ss");
+            if (clockMode == ClockMode.Play)
+            {
+                startTime = startTime.AddSeconds(1);
+                lblClockActive.Text = startTime.ToString("HH:mm:ss");
+            }
         }
 
         private void OnIssueIDChanged(object sender, EventArgs e)
