@@ -4,24 +4,35 @@ using RedmineLog.Properties;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
+
+
+
     public partial class frmMain : Form
     {
-        private Mode clockMode = Mode.Stop;
+        public enum SubmitMode
+        {
+            Work,
+            Idle
+        }
+
+        private SubmitMode submitMode = SubmitMode.Work;
+        private ClockMode clockMode = ClockMode.Stop;
         private bool close = false;
 
-        private Time currentTime;
+        private DateTime startTime;
+        private DateTime idleTime;
 
         private bool hideTooltip = false;
         private System.Timers.Timer idleCheck;
         private Issue mainIssue;
         private Issue parentIssue;
-        private int time;
         private System.Timers.Timer workTimer;
 
         public frmMain()
@@ -32,9 +43,10 @@ namespace RedmineLog
             IdleChecker = new System.Timers.Timer(1000);
             InitializeComponent();
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            OnClockActiveClick(lblClockActive, null);
         }
 
-        public enum Mode
+        public enum ClockMode
         {
             Play,
             Pause,
@@ -78,7 +90,7 @@ namespace RedmineLog
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LastInput rLI);
 
-        private void btnRemoveItem_Click(object sender, EventArgs e)
+        private void OnRemoveItem(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(cbIssues.Text)
                 && ContainIssue(cbIssues.Text))
@@ -92,31 +104,6 @@ namespace RedmineLog
             }
         }
 
-        private void calculateTime()
-        {
-            int h = 0;
-            int m = 0;
-            int s = 0;
-            int remainder = 0;
-            //_time = 5000
-            h = Math.DivRem(time, 3600, out remainder);
-            m = Math.DivRem(remainder, 60, out s);
-            if (s == 0 & m == 0 & h == 0)
-            {
-                s = time;
-            }
-            currentTime.Hour = h;
-            currentTime.Minute = m;
-            currentTime.Second = s;
-
-            lblClock.Text = h.ToString("00") + ":" + m.ToString("00") + ":" + s.ToString("00");
-            ntIcon.Text = lblClock.Text;
-            if (hideTooltip == false)
-            {
-                ntIcon.BalloonTipText = lblClock.Text;
-                ntIcon.ShowBalloonTip(1000);
-            }
-        }
 
         private bool ContainIssue(object isId)
         {
@@ -130,9 +117,6 @@ namespace RedmineLog
             return false;
         }
 
-        private void HideTooltipToolStripMenuItem_Click(System.Object sender, System.EventArgs e)
-        {
-        }
 
         private void ListTimeEntryActivites()
         {
@@ -236,22 +220,23 @@ namespace RedmineLog
         {
             switch (clockMode)
             {
-                case Mode.Pause:
-                    clockMode = Mode.Play;
+                case ClockMode.Pause:
+                    clockMode = ClockMode.Play;
                     WorkTimer.Start();
                     btnClock.Text = "Pause";
                     break;
 
-                case Mode.Play:
-                    clockMode = Mode.Pause;
+                case ClockMode.Play:
+                    clockMode = ClockMode.Pause;
                     WorkTimer.Stop();
+                    startTime = DateTime.MinValue;
                     btnClock.Text = "Play";
                     break;
 
-                case Mode.Stop:
-                    clockMode = Mode.Play;
+                case ClockMode.Stop:
+                    clockMode = ClockMode.Play;
                     WorkTimer.Start();
-                    time = 0;
+                    startTime = DateTime.MinValue;
                     btnClock.Text = "Pause";
                     break;
             }
@@ -331,20 +316,25 @@ namespace RedmineLog
             }
 
             int totalIdleTimeInSeconds = idlTick / 1000;
-            if (totalIdleTimeInSeconds > 30)
+            if (totalIdleTimeInSeconds > 5)
             {
                 if (WorkTimer.Enabled == true)
                 {
                     WorkTimer.Enabled = false;
                 }
+
+                idleTime = idleTime.AddSeconds(1);
             }
             else
             {
-                if (WorkTimer.Enabled == false & clockMode == Mode.Play)
+                if (WorkTimer.Enabled == false & clockMode == ClockMode.Play)
                 {
                     WorkTimer.Enabled = true;
                 }
             }
+
+            if (!WorkTimer.Enabled)
+                lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
         }
 
         private void OnIssueLinkClick(object sender, LinkLabelLinkClickedEventArgs e)
@@ -373,7 +363,7 @@ namespace RedmineLog
             }
         }
 
-        private void OnSendClick(System.Object sender, System.EventArgs e)
+        private void OnSubmitClick(System.Object sender, System.EventArgs e)
         {
             try
             {
@@ -391,10 +381,12 @@ namespace RedmineLog
                     return;
                 }
 
-                clockMode = Mode.Stop;
+                clockMode = ClockMode.Stop;
                 WorkTimer.Stop();
 
-                decimal hours = currentTime.Hour + (decimal)currentTime.Minute / 60m;
+                DateTime time = submitMode == SubmitMode.Work ? startTime : idleTime;
+
+                decimal hours = (decimal)(time.Hour * 60 + time.Minute) / 60m;
 
                 var manager = new RedmineManager(Settings.Default.RedmineURL, Settings.Default.ApiKey);
 
@@ -403,14 +395,22 @@ namespace RedmineLog
                     Issue = new IdentifiableName() { Id = Int32.Parse(cbIssues.Text) },
                     Activity = new IdentifiableName() { Id = ((TimeEntryActivity)cbActivity.SelectedItem).Id },
                     Comments = txtComment.Text,
-                    Hours = hours,
+                    Hours = decimal.Round(hours, 2),
                     SpentOn = DateTime.Now
                 });
 
                 txtComment.Text = "";
-                btnClock.Text = "Play";
-                lblClock.Text = "00:00:00";
-                time = 0;
+
+                if (submitMode == SubmitMode.Work)
+                {
+                    startTime = DateTime.MinValue;
+                    lblClockActive.Text = startTime.ToString("HH:mm:ss");
+                }
+                else
+                {
+                    idleTime = DateTime.MinValue;
+                    lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
+                }
                 MessageBox.Show("Time Tracker Saved Successfully", "Thank you", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -420,7 +420,7 @@ namespace RedmineLog
             }
         }
 
-        private void OnSetIssue(object sender, KeyEventArgs e)
+        private void OnAcceptIssue(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -435,35 +435,56 @@ namespace RedmineLog
 
         private void OnStopClick(System.Object sender, System.EventArgs e)
         {
-            clockMode = Mode.Stop;
+            clockMode = ClockMode.Stop;
             WorkTimer.Stop();
             btnClock.Text = "Play";
-            lblClock.Text = "00:00:00";
-            time = 0;
+            startTime = DateTime.MinValue;
+            lblClockActive.Text = startTime.ToString("HH:mm:ss");
         }
 
         private void OnWorkTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            time += 1;
-            calculateTime();
+            startTime = startTime.AddSeconds(1);
+            lblClockActive.Text = startTime.ToString("HH:mm:ss");
         }
 
-        private void txtIssueID_SelectedValueChanged(object sender, EventArgs e)
+        private void OnIssueIDChanged(object sender, EventArgs e)
         {
             LoadIssue();
         }
 
-        public struct Time
-        {
-            public int Hour;
-            public int Minute;
-            public int Second;
-        }
 
         internal struct LastInput
         {
             public uint cSize;
             public uint dtime;
         }
+
+        private void OnClockActiveClick(object sender, EventArgs e)
+        {
+            btnResetIdle.Visible = false;
+            btnClock.Visible = true;
+            btnStop.Visible = true;
+
+            pManage.BackColor = Color.Wheat;
+            submitMode = SubmitMode.Work;
+        }
+
+        private void OnClockIdleClick(object sender, EventArgs e)
+        {
+            btnResetIdle.Visible = true;
+            btnClock.Visible = false;
+            btnStop.Visible = false;
+
+            pManage.BackColor = Color.Azure;
+            submitMode = SubmitMode.Idle;
+        }
+
+        private void OnResetIdleClick(object sender, EventArgs e)
+        {
+            idleTime = DateTime.MinValue;
+            lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
+        }
+
     }
 }
