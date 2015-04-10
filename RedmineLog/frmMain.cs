@@ -249,7 +249,7 @@ namespace RedmineLog
 
                 case ClockMode.Stop:
                     clockMode = ClockMode.Play;
-                    WorkTimer.Start();
+                    WorkTimer.Stop();
                     startTime = DateTime.MinValue;
                     btnClock.Text = "Pause";
                     break;
@@ -417,11 +417,13 @@ namespace RedmineLog
                     SpentOn = DateTime.Now
                 });
 
-                tbComment.Text = "";
-
                 if (submitMode == SubmitMode.Work)
                 {
                     OnStopClick(btnStop, null);
+
+                    tbComment.Text = "";
+                    tbComment.Tag = null;
+                    tbComment.ReadOnly = true;
                 }
                 else
                 {
@@ -458,6 +460,7 @@ namespace RedmineLog
             WorkTimer.Stop();
             btnClock.Text = "Play";
             startTime = DateTime.MinValue;
+
             lblClockActive.Text = startTime.ToLongTimeString();
         }
 
@@ -471,6 +474,8 @@ namespace RedmineLog
                 if (small != null)
                     small.UpdateWorkTime(startTime);
             }
+            else if (clockMode == ClockMode.Stop)
+            { lblClockActive.Text = DateTime.MinValue.ToLongTimeString(); }
         }
 
         private void OnIssueChanged(object sender, EventArgs e)
@@ -574,6 +579,21 @@ namespace RedmineLog
 
                     if (tmpComment != null)
                     {
+                        if (tmpIssue.Id == -1)
+                            tmpComment.IsGlobal = true;
+                        else
+                        {
+                            if (tmpComment.IsGlobal)
+                            {
+                                tmpComment = new RedmineData.Issue.Comment()
+                                    {
+                                        Id = Guid.NewGuid(),
+                                    };
+
+                                tbComment.Tag = tmpComment;
+                            }
+                        }
+
                         tmpComment.Text = tbComment.Text;
                         tmpIssue.Comments.Add(tmpComment);
                         App.Constants.History.Save();
@@ -653,7 +673,7 @@ namespace RedmineLog
             ShowComments();
         }
 
-        private void frmMain_Resize(object sender, EventArgs e)
+        private void OnFormResize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Normal)
             {

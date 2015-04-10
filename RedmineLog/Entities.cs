@@ -60,6 +60,7 @@ namespace RedmineLog
             {
                 public Comment()
                 {
+                    Text = "";
                 }
 
                 public Guid Id { get; set; }
@@ -82,6 +83,8 @@ namespace RedmineLog
                 {
                     return Id.GetHashCode();
                 }
+
+                public bool IsGlobal { get; set; }
             }
 
             public Issue()

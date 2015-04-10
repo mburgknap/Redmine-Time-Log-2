@@ -191,13 +191,14 @@
             // 
             // cbActivity
             // 
+            this.cbActivity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbActivity.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbActivity.FormattingEnabled = true;
             this.cbActivity.Location = new System.Drawing.Point(28, 121);
             this.cbActivity.Name = "cbActivity";
             this.cbActivity.Size = new System.Drawing.Size(203, 28);
             this.cbActivity.TabIndex = 17;
-            this.cbActivity.Text = "Select Activity";
             // 
             // lblParentIssue
             // 
@@ -251,6 +252,7 @@
             // 
             // cbIssues
             // 
+            this.cbIssues.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbIssues.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.cbIssues.FormattingEnabled = true;
             this.cbIssues.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -401,7 +403,7 @@
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.Load += new System.EventHandler(this.OnFormLoad);
-            this.Resize += new System.EventHandler(this.frmMain_Resize);
+            this.Resize += new System.EventHandler(this.OnFormResize);
             this.issueInfoPanel.ResumeLayout(false);
             this.issueInfoPanel.PerformLayout();
             this.pManage.ResumeLayout(false);
