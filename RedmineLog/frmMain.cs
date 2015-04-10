@@ -229,6 +229,7 @@ namespace RedmineLog
 
         private void OnClockClick(System.Object sender, System.EventArgs e)
         {
+            var tmpTime = startTime;
             switch (clockMode)
             {
                 case ClockMode.Pause:
@@ -240,7 +241,6 @@ namespace RedmineLog
                 case ClockMode.Play:
                     clockMode = ClockMode.Pause;
                     WorkTimer.Stop();
-                    startTime = DateTime.MinValue;
                     btnClock.Text = "Play";
                     break;
 
@@ -251,6 +251,7 @@ namespace RedmineLog
                     btnClock.Text = "Pause";
                     break;
             }
+            AppLogger.Log.Info("Clock: " + clockMode + " Time: " + tmpTime.ToLongTimeString());
         }
 
         private void OnExitClick(System.Object sender, System.EventArgs e)
@@ -342,7 +343,7 @@ namespace RedmineLog
             }
 
             if (!WorkTimer.Enabled)
-                lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
+                lblClockIndle.Text = idleTime.ToLongTimeString();
         }
 
         private void OnIssueLinkClick(object sender, LinkLabelLinkClickedEventArgs e)
@@ -414,7 +415,7 @@ namespace RedmineLog
                 else
                 {
                     idleTime = DateTime.MinValue;
-                    lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
+                    lblClockIndle.Text = idleTime.ToLongTimeString();
                 }
                 MessageBox.Show("Time Tracker Saved Successfully", "Thank you", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -441,10 +442,12 @@ namespace RedmineLog
         private void OnStopClick(System.Object sender, System.EventArgs e)
         {
             clockMode = ClockMode.Stop;
+            AppLogger.Log.Info("Clock: " + clockMode + " Time: " + startTime.ToLongTimeString());
+
             WorkTimer.Stop();
             btnClock.Text = "Play";
             startTime = DateTime.MinValue;
-            lblClockActive.Text = startTime.ToString("HH:mm:ss");
+            lblClockActive.Text = startTime.ToLongTimeString();
         }
 
         private void OnWorkTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -452,7 +455,7 @@ namespace RedmineLog
             if (clockMode == ClockMode.Play)
             {
                 startTime = startTime.AddSeconds(1);
-                lblClockActive.Text = startTime.ToString("HH:mm:ss");
+                lblClockActive.Text = startTime.ToLongTimeString();
             }
         }
 
@@ -490,8 +493,9 @@ namespace RedmineLog
 
         private void OnResetIdleClick(object sender, EventArgs e)
         {
+            AppLogger.Log.Info("Reset Idle Clock: " + clockMode + " Time: " + idleTime.ToLongTimeString());
             idleTime = DateTime.MinValue;
-            lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
+            lblClockIndle.Text = idleTime.ToLongTimeString();
         }
 
         private void OnNewCommentClick(object sender, EventArgs e)
