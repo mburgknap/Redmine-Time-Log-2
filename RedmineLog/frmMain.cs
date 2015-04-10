@@ -8,12 +8,10 @@ using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace RedmineLog
 {
-
-
-
     public partial class frmMain : Form
     {
         public enum SubmitMode
@@ -92,15 +90,17 @@ namespace RedmineLog
 
         private void OnRemoveItem(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(cbIssues.Text)
-                && ContainIssue(cbIssues.Text))
+            var issue = new HistoryData.Issue(cbIssues.Text);
+
+            if (!issue.IsValid
+                && App.Constants.History.Contains(issue))
             {
-                Settings.Default.WorkingIssueList = Settings.Default.WorkingIssueList.Replace(cbIssues.Text + ";", ";");
+                App.Constants.History.Remove(issue);
                 var item = cbIssues.SelectedItem;
                 cbIssues.SelectedItem = cbIssues.Items[0];
                 cbIssues.Items.Remove(item);
 
-                Settings.Default.Save();
+                App.Constants.History.Save();
             }
         }
 
@@ -122,7 +122,7 @@ namespace RedmineLog
         {
             try
             {
-                var manager = new RedmineManager(Settings.Default.RedmineURL, Settings.Default.ApiKey);
+                var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
 
                 var parameters = new NameValueCollection { };
 
@@ -133,12 +133,17 @@ namespace RedmineLog
                 cbActivity.DisplayMember = "Name";
                 cbActivity.ValueMember = "Id";
 
-                cbIssues.Items.Add(string.Empty);
-                foreach (var item in Settings.Default.WorkingIssueList.Split(';'))
+                if (cbActivity.Items.Count > 0)
+                    cbActivity.SelectedItem = cbActivity.Items[0];
+
+                App.Constants.History.Load();
+
+                foreach (var item in App.Constants.History)
                 {
-                    if (!string.IsNullOrWhiteSpace(item))
-                        cbIssues.Items.Add(item);
+                    cbIssues.Items.Add(item);
                 }
+
+                cbIssues.SelectedItem = cbIssues.Items[0];
             }
             catch (Exception ex)
             {
@@ -153,6 +158,10 @@ namespace RedmineLog
         {
             try
             {
+                tbComment.Tag = null;
+                tbComment.Text = "";
+                tbComment.ReadOnly = true;
+
                 int isId = 0;
 
                 if (!int.TryParse(cbIssues.Text, out isId))
@@ -166,7 +175,7 @@ namespace RedmineLog
                     return;
                 }
 
-                var manager = new RedmineManager(Settings.Default.RedmineURL, Settings.Default.ApiKey);
+                var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
 
                 var parameters = new NameValueCollection { };
 
@@ -174,15 +183,17 @@ namespace RedmineLog
                 parentIssue = null;
 
                 lblIssue.Text = mainIssue.Subject;
-                lblIssue.Tag = Settings.Default.RedmineURL + "issues/" + isId;
+                lblIssue.Tag = App.Constants.Config.Url + "issues/" + isId;
                 lblIssue.Visible = true;
                 btnRemoveItem.Visible = true;
 
-                if (!ContainIssue(isId))
+                var tmp = new HistoryData.Issue(isId);
+
+                if (!App.Constants.History.Contains(tmp))
                 {
-                    cbIssues.Items.Add(isId);
-                    Settings.Default.WorkingIssueList += isId + ";";
-                    Settings.Default.Save();
+                    cbIssues.Items.Add(tmp);
+                    App.Constants.History.Add(tmp);
+                    App.Constants.History.Save();
                 }
 
 
@@ -261,11 +272,8 @@ namespace RedmineLog
         {
             try
             {
-                bool saveSettings = false;
 
-                bool.TryParse(Settings.Default.PersistentSettings, out saveSettings);
-
-                if (!saveSettings)
+                if (!App.Constants.Config.Load())
                 {
                     var objSettings = new frmSettings();
 
@@ -316,7 +324,7 @@ namespace RedmineLog
             }
 
             int totalIdleTimeInSeconds = idlTick / 1000;
-            if (totalIdleTimeInSeconds > 5)
+            if (totalIdleTimeInSeconds > 30)
             {
                 if (WorkTimer.Enabled == true)
                 {
@@ -354,7 +362,7 @@ namespace RedmineLog
         {
             try
             {
-                Process.Start(Settings.Default.RedmineURL + "issues");
+                Process.Start(App.Constants.Config.Url + "issues");
             }
             catch (Exception ex)
             {
@@ -375,7 +383,7 @@ namespace RedmineLog
                     MessageBox.Show("Invalid Issue ID", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                if (string.IsNullOrEmpty(txtComment.Text.Trim()))
+                if (string.IsNullOrEmpty(tbComment.Text.Trim()))
                 {
                     MessageBox.Show("No comment entered", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -386,18 +394,18 @@ namespace RedmineLog
 
                 decimal hours = (decimal)(time.Hour * 60 + time.Minute) / 60m;
 
-                var manager = new RedmineManager(Settings.Default.RedmineURL, Settings.Default.ApiKey);
+                var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
 
                 var response = manager.CreateObject<TimeEntry>(new TimeEntry()
                 {
                     Issue = new IdentifiableName() { Id = Int32.Parse(cbIssues.Text) },
                     Activity = new IdentifiableName() { Id = ((TimeEntryActivity)cbActivity.SelectedItem).Id },
-                    Comments = txtComment.Text,
+                    Comments = tbComment.Text,
                     Hours = decimal.Round(hours, 2),
                     SpentOn = DateTime.Now
                 });
 
-                txtComment.Text = "";
+                tbComment.Text = "";
 
                 if (submitMode == SubmitMode.Work)
                 {
@@ -448,7 +456,7 @@ namespace RedmineLog
             }
         }
 
-        private void OnIssueIDChanged(object sender, EventArgs e)
+        private void OnIssueChanged(object sender, EventArgs e)
         {
             LoadIssue();
         }
@@ -484,6 +492,147 @@ namespace RedmineLog
         {
             idleTime = DateTime.MinValue;
             lblClockIndle.Text = idleTime.ToString("HH:mm:ss");
+        }
+
+        private void OnNewCommentClick(object sender, EventArgs e)
+        {
+            tbComment.Tag = new HistoryData.Issue.Comment() { Id = Guid.NewGuid() };
+            tbComment.Text = "";
+            tbComment.ReadOnly = false;
+        }
+
+        private void OnRemoveCommentClick(object sender, EventArgs e)
+        {
+            var comment = tbComment.Tag as HistoryData.Issue.Comment;
+            tbComment.Tag = null;
+            tbComment.Text = "";
+            tbComment.ReadOnly = true;
+
+            var tmpIssue = App.Constants.History.GetIssue(cbIssues.SelectedItem);
+
+            if (tmpIssue != null && comment != null)
+            {
+                tmpIssue.Comments.Remove(comment);
+                App.Constants.History.Save();
+            }
+        }
+
+        private void OnSelectComment(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (e.ClickedItem.Tag != null)
+            {
+                tbComment.Text = e.ClickedItem.Tag.ToString();
+                tbComment.Tag = e.ClickedItem.Tag;
+                tbComment.ReadOnly = false;
+            }
+        }
+
+
+        private void OnCommentKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == (Keys.LButton | Keys.MButton | Keys.Back))
+            {
+                AcceptComment();
+                e.Handled = true;
+            }
+        }
+
+        private void AcceptComment()
+        {
+            var tmpIssue = App.Constants.History.GetIssue(cbIssues.SelectedItem);
+
+            if (tmpIssue != null)
+            {
+                var tmpComment = tmpIssue.Comments.Where(x => x.Equals(tbComment.Tag)).FirstOrDefault();
+
+                if (tmpComment != null)
+                {
+                    tmpComment.Text = tbComment.Text;
+                    App.Constants.History.Save();
+                }
+                else
+                {
+                    tmpComment = tbComment.Tag as HistoryData.Issue.Comment;
+
+                    if (tmpComment != null)
+                    {
+                        tmpComment.Text = tbComment.Text;
+                        tmpIssue.Comments.Add(tmpComment);
+                        App.Constants.History.Save();
+                    }
+                }
+            }
+        }
+
+        private void OnCommentClick(object sender, EventArgs e)
+        {
+            if (tbComment.Tag != null)
+                return;
+
+            ShowComments();
+        }
+
+        private void ShowComments()
+        {
+            var tmp = App.Constants.History.GetIssue(cbIssues.SelectedItem);
+
+            cmComments.Items.Clear();
+
+            if (tmp != null && tmp.Id > 0)
+            {
+                if (tmp.Comments.Count > 0)
+                {
+                    cmComments.Items.Add(new ToolStripSeparator());
+                    var tmpStrip = new ToolStripStatusLabel("Issue comments");
+                    tmpStrip.Font = new Font(tmpStrip.Font, FontStyle.Bold);
+                    cmComments.Items.Add(tmpStrip);
+                    cmComments.Items.Add(new ToolStripSeparator());
+                }
+
+                foreach (var item in tmp.Comments)
+                {
+                    var cmItem = cmComments.Items.Add(item.Text);
+                    cmItem.Overflow = ToolStripItemOverflow.AsNeeded;
+                    cmItem.Tag = item;
+                }
+            }
+
+            tmp = App.Constants.History.GetIssue(-1);
+
+            if (tmp.Comments.Count > 0)
+            {
+                cmComments.Items.Add(new ToolStripSeparator());
+
+                var tmpStrip = new ToolStripStatusLabel("Global comments");
+                tmpStrip.Font = new Font(tmpStrip.Font, FontStyle.Bold);
+                cmComments.Items.Add(tmpStrip);
+                cmComments.Items.Add(new ToolStripSeparator());
+            }
+
+            foreach (var item in tmp.Comments)
+            {
+                var cmItem = cmComments.Items.Add(item.Text);
+                cmItem.Overflow = ToolStripItemOverflow.AsNeeded;
+                cmItem.Tag = item;
+            }
+
+            if (cmComments.Items.Count > 0)
+                cmComments.Show(tbComment, 0, 0);
+        }
+
+        private void OnCommentLostFocus(object sender, EventArgs e)
+        {
+            var comment = tbComment.Tag as HistoryData.Issue.Comment;
+
+            if (comment != null && !comment.Text.Equals(tbComment.Text))
+            {
+                AcceptComment();
+            }
+        }
+
+        private void OnCommentMouseEnter(object sender, EventArgs e)
+        {
+            ShowComments();
         }
 
     }

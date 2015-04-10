@@ -3,8 +3,26 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    internal static class Program
+
+    public class AppConstants
     {
+        public RedmineConfig Config = new RedmineConfig();
+
+        public HistoryData History = new HistoryData();
+
+
+    }
+
+    internal static class App
+    {
+
+        static App()
+        {
+            Constants = new AppConstants();
+        }
+
+        public static AppConstants Constants { get; private set; }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

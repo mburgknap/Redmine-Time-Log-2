@@ -35,7 +35,6 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.Label1 = new System.Windows.Forms.Label();
             this.tbRedmineURL = new System.Windows.Forms.TextBox();
-            this.cbSaveSettings = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Label2
@@ -90,24 +89,11 @@
             this.tbRedmineURL.Size = new System.Drawing.Size(325, 20);
             this.tbRedmineURL.TabIndex = 6;
             // 
-            // cbSaveSettings
-            // 
-            this.cbSaveSettings.AutoSize = true;
-            this.cbSaveSettings.Checked = true;
-            this.cbSaveSettings.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSaveSettings.Location = new System.Drawing.Point(16, 101);
-            this.cbSaveSettings.Name = "cbSaveSettings";
-            this.cbSaveSettings.Size = new System.Drawing.Size(110, 17);
-            this.cbSaveSettings.TabIndex = 12;
-            this.cbSaveSettings.Text = "Zapisz ustawienia";
-            this.cbSaveSettings.UseVisualStyleBackColor = true;
-            // 
-            // frmSettings2
+            // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(352, 137);
-            this.Controls.Add(this.cbSaveSettings);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.tbApiKey);
             this.Controls.Add(this.btnClose);
@@ -117,7 +103,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSettings2";
+            this.Name = "frmSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings";
             this.TopMost = true;
@@ -134,6 +120,5 @@
         internal System.Windows.Forms.Button btnConnect;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.TextBox tbRedmineURL;
-        private System.Windows.Forms.CheckBox cbSaveSettings;
     }
 }

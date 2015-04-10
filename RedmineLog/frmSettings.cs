@@ -1,13 +1,4 @@
-﻿using RedmineLog.Properties;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace RedmineLog
 {
@@ -22,8 +13,8 @@ namespace RedmineLog
             InitializeComponent();
 
             // Add any initialization after the InitializeComponent() call.
-            tbRedmineURL.Text = Settings.Default.RedmineURL;
-            tbApiKey.Text = Settings.Default.ApiKey;
+            tbRedmineURL.Text = App.Constants.Config.Url;
+            tbApiKey.Text = App.Constants.Config.ApiKey;
         }
 
         private void btnClose_Click(System.Object sender, System.EventArgs e)
@@ -34,15 +25,14 @@ namespace RedmineLog
 
         private void btnConnect_Click(System.Object sender, System.EventArgs e)
         {
-            Settings.Default.PersistentSettings = cbSaveSettings.Checked.ToString();
-            Settings.Default.RedmineURL = tbRedmineURL.Text;
-            Settings.Default.ApiKey = tbApiKey.Text;
-            Settings.Default.Save();
+            App.Constants.Config.Url = tbRedmineURL.Text;
+            App.Constants.Config.ApiKey = tbApiKey.Text;
+            App.Constants.Config.Save();
 
-            AppLogger.Log.Info("Settings saved");
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             _close = true;
         }
+
         private void frmSettings_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
             if (_close == false)

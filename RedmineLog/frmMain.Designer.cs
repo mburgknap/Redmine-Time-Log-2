@@ -40,7 +40,7 @@
             this.lnkSettings = new System.Windows.Forms.Label();
             this.lnkIssues = new System.Windows.Forms.Label();
             this.btnSend = new System.Windows.Forms.Button();
-            this.txtComment = new System.Windows.Forms.TextBox();
+            this.tbComment = new System.Windows.Forms.TextBox();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
             this.Label2 = new System.Windows.Forms.Label();
             this.btnStop = new System.Windows.Forms.Button();
@@ -55,10 +55,17 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.pComments = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnRemoveComment = new System.Windows.Forms.Button();
+            this.btnNewComment = new System.Windows.Forms.Button();
             this.btnResetIdle = new System.Windows.Forms.Button();
+            this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ContextMenuStrip1.SuspendLayout();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
+            this.pComments.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ExitToolStripMenuItem
@@ -159,14 +166,18 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.OnSubmitClick);
             // 
-            // txtComment
+            // tbComment
             // 
-            this.txtComment.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtComment.Location = new System.Drawing.Point(28, 172);
-            this.txtComment.Multiline = true;
-            this.txtComment.Name = "txtComment";
-            this.txtComment.Size = new System.Drawing.Size(203, 69);
-            this.txtComment.TabIndex = 21;
+            this.tbComment.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tbComment.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbComment.Location = new System.Drawing.Point(0, 0);
+            this.tbComment.Multiline = true;
+            this.tbComment.Name = "tbComment";
+            this.tbComment.Size = new System.Drawing.Size(177, 76);
+            this.tbComment.TabIndex = 21;
+            this.tbComment.Click += new System.EventHandler(this.OnCommentClick);
+            this.tbComment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnCommentKeyDown);
+            this.tbComment.Leave += new System.EventHandler(this.OnCommentLostFocus);
             // 
             // Timer1
             // 
@@ -182,6 +193,7 @@
             this.Label2.Size = new System.Drawing.Size(75, 17);
             this.Label2.TabIndex = 25;
             this.Label2.Text = "Comment";
+            this.Label2.MouseEnter += new System.EventHandler(this.OnCommentMouseEnter);
             // 
             // btnStop
             // 
@@ -287,7 +299,7 @@
             this.cbIssues.Name = "cbIssues";
             this.cbIssues.Size = new System.Drawing.Size(121, 32);
             this.cbIssues.TabIndex = 36;
-            this.cbIssues.SelectedValueChanged += new System.EventHandler(this.OnIssueIDChanged);
+            this.cbIssues.SelectedValueChanged += new System.EventHandler(this.OnIssueChanged);
             this.cbIssues.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnAcceptIssue);
             // 
             // lblVersion
@@ -314,6 +326,7 @@
             // 
             // pManage
             // 
+            this.pManage.Controls.Add(this.pComments);
             this.pManage.Controls.Add(this.btnResetIdle);
             this.pManage.Controls.Add(this.lblClockIndle);
             this.pManage.Controls.Add(this.btnRemoveItem);
@@ -325,13 +338,59 @@
             this.pManage.Controls.Add(this.btnStop);
             this.pManage.Controls.Add(this.Label2);
             this.pManage.Controls.Add(this.rdIssue);
-            this.pManage.Controls.Add(this.txtComment);
             this.pManage.Controls.Add(this.btnSend);
             this.pManage.Controls.Add(this.lnkIssues);
             this.pManage.Location = new System.Drawing.Point(-5, 36);
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(258, 455);
             this.pManage.TabIndex = 39;
+            // 
+            // pComments
+            // 
+            this.pComments.Controls.Add(this.panel1);
+            this.pComments.Controls.Add(this.tbComment);
+            this.pComments.Location = new System.Drawing.Point(28, 172);
+            this.pComments.Name = "pComments";
+            this.pComments.Size = new System.Drawing.Size(202, 76);
+            this.pComments.TabIndex = 40;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btnRemoveComment);
+            this.panel1.Controls.Add(this.btnNewComment);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(177, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(25, 76);
+            this.panel1.TabIndex = 22;
+            // 
+            // btnRemoveComment
+            // 
+            this.btnRemoveComment.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnRemoveComment.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnRemoveComment.ForeColor = System.Drawing.Color.Red;
+            this.btnRemoveComment.Location = new System.Drawing.Point(0, 41);
+            this.btnRemoveComment.Name = "btnRemoveComment";
+            this.btnRemoveComment.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
+            this.btnRemoveComment.Size = new System.Drawing.Size(25, 35);
+            this.btnRemoveComment.TabIndex = 1;
+            this.btnRemoveComment.Text = "X";
+            this.btnRemoveComment.UseVisualStyleBackColor = true;
+            this.btnRemoveComment.Click += new System.EventHandler(this.OnRemoveCommentClick);
+            // 
+            // btnNewComment
+            // 
+            this.btnNewComment.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnNewComment.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnNewComment.ForeColor = System.Drawing.Color.Green;
+            this.btnNewComment.Location = new System.Drawing.Point(0, 0);
+            this.btnNewComment.Name = "btnNewComment";
+            this.btnNewComment.Padding = new System.Windows.Forms.Padding(2, 3, 0, 0);
+            this.btnNewComment.Size = new System.Drawing.Size(25, 40);
+            this.btnNewComment.TabIndex = 0;
+            this.btnNewComment.Text = "+";
+            this.btnNewComment.UseVisualStyleBackColor = true;
+            this.btnNewComment.Click += new System.EventHandler(this.OnNewCommentClick);
             // 
             // btnResetIdle
             // 
@@ -343,6 +402,12 @@
             this.btnResetIdle.Text = "Reset";
             this.btnResetIdle.UseVisualStyleBackColor = true;
             this.btnResetIdle.Click += new System.EventHandler(this.OnResetIdleClick);
+            // 
+            // cmComments
+            // 
+            this.cmComments.Name = "cmComments";
+            this.cmComments.Size = new System.Drawing.Size(61, 4);
+            this.cmComments.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnSelectComment);
             // 
             // frmMain
             // 
@@ -366,6 +431,9 @@
             this.issueInfoPanel.PerformLayout();
             this.pManage.ResumeLayout(false);
             this.pManage.PerformLayout();
+            this.pComments.ResumeLayout(false);
+            this.pComments.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -383,7 +451,7 @@
         internal System.Windows.Forms.Label lnkSettings;
         internal System.Windows.Forms.Label lnkIssues;
         internal System.Windows.Forms.Button btnSend;
-        internal System.Windows.Forms.TextBox txtComment;
+        internal System.Windows.Forms.TextBox tbComment;
         internal System.Windows.Forms.Timer Timer1;
         internal System.Windows.Forms.Label Label2;
         internal System.Windows.Forms.Button btnStop;
@@ -399,5 +467,10 @@
         private System.Windows.Forms.Label lblClockIndle;
         private System.Windows.Forms.Panel pManage;
         internal System.Windows.Forms.Button btnResetIdle;
+        private System.Windows.Forms.Panel pComments;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnRemoveComment;
+        private System.Windows.Forms.ContextMenuStrip cmComments;
+        private System.Windows.Forms.Button btnNewComment;
     }
 }

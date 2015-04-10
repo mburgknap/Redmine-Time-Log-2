@@ -22,53 +22,5 @@ namespace RedmineLog.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://10.0.0.104/redmine/")]
-        public string RedmineURL {
-            get {
-                return ((string)(this["RedmineURL"]));
-            }
-            set {
-                this["RedmineURL"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("886ccdc09cb7223a43261d0b5dd9fdf25e2797cc")]
-        public string ApiKey {
-            get {
-                return ((string)(this["ApiKey"]));
-            }
-            set {
-                this["ApiKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PersistentSettings {
-            get {
-                return ((string)(this["PersistentSettings"]));
-            }
-            set {
-                this["PersistentSettings"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WorkingIssueList {
-            get {
-                return ((string)(this["WorkingIssueList"]));
-            }
-            set {
-                this["WorkingIssueList"] = value;
-            }
-        }
     }
 }
