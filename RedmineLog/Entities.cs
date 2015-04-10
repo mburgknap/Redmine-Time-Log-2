@@ -38,7 +38,19 @@ namespace RedmineLog
         }
     }
 
-    public class HistoryData : List<HistoryData.Issue>
+
+    public class TimeLogData : List<TimeLogData.TaskTime>
+    {
+        public class TaskTime
+        {
+            public RedmineData.Issue Issue { get; set; }
+            public RedmineData.Issue.Comment Comment { get; set; }
+            public DateTime Time { get; set; }
+        }
+
+    }
+
+    public class RedmineData : List<RedmineData.Issue>
     {
 
 
@@ -121,15 +133,15 @@ namespace RedmineLog
 
         internal void Save()
         {
-            new SharpSerializer().Serialize(this, typeof(HistoryData).Name + ".xml");
+            new SharpSerializer().Serialize(this, typeof(RedmineData).Name + ".xml");
             AppLogger.Log.Info("IssueHistory saved");
         }
 
         internal bool Load()
         {
-            if (File.Exists(new Uri(typeof(HistoryData).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(typeof(RedmineData).Name + ".xml", UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(HistoryData).Name + ".xml") as HistoryData;
+                var obj = new SharpSerializer().Deserialize(typeof(RedmineData).Name + ".xml") as RedmineData;
 
                 if (obj != null)
                 {
@@ -138,14 +150,14 @@ namespace RedmineLog
                 }
             }
 
-            Add(new HistoryData.Issue(-1));
+            Add(new RedmineData.Issue(-1));
 
             return false;
         }
 
-        internal HistoryData.Issue GetIssue(object inObj)
+        internal RedmineData.Issue GetIssue(object inObj)
         {
-            if (inObj is HistoryData.Issue)
+            if (inObj is RedmineData.Issue)
                 return this.Where(x => x.Equals(inObj)).FirstOrDefault();
 
             if (inObj is int)

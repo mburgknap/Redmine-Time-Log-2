@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSettings));
             this.Label2 = new System.Windows.Forms.Label();
             this.tbApiKey = new System.Windows.Forms.TextBox();
-            this.btnClose = new System.Windows.Forms.Button();
             this.btnConnect = new System.Windows.Forms.Button();
             this.Label1 = new System.Windows.Forms.Label();
             this.tbRedmineURL = new System.Windows.Forms.TextBox();
@@ -53,19 +52,9 @@
             this.tbApiKey.Size = new System.Drawing.Size(324, 20);
             this.tbApiKey.TabIndex = 10;
             // 
-            // btnClose
-            // 
-            this.btnClose.Location = new System.Drawing.Point(265, 95);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(75, 23);
-            this.btnClose.TabIndex = 9;
-            this.btnClose.Text = "Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(184, 95);
+            this.btnConnect.Location = new System.Drawing.Point(265, 96);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 8;
@@ -96,10 +85,10 @@
             this.ClientSize = new System.Drawing.Size(352, 137);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.tbApiKey);
-            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.Label1);
             this.Controls.Add(this.tbRedmineURL);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -116,7 +105,6 @@
 
         internal System.Windows.Forms.Label Label2;
         internal System.Windows.Forms.TextBox tbApiKey;
-        internal System.Windows.Forms.Button btnClose;
         internal System.Windows.Forms.Button btnConnect;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.TextBox tbRedmineURL;

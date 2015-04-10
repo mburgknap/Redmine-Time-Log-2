@@ -30,11 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.HideTooltipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ntIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.lnkExit = new System.Windows.Forms.Label();
             this.rdIssue = new System.Windows.Forms.RadioButton();
             this.lnkSettings = new System.Windows.Forms.Label();
@@ -42,7 +37,7 @@
             this.btnSend = new System.Windows.Forms.Button();
             this.tbComment = new System.Windows.Forms.TextBox();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
-            this.Label2 = new System.Windows.Forms.Label();
+            this.lblComment = new System.Windows.Forms.Label();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnClock = new System.Windows.Forms.Button();
             this.lblClockActive = new System.Windows.Forms.Label();
@@ -61,47 +56,12 @@
             this.btnNewComment = new System.Windows.Forms.Button();
             this.btnResetIdle = new System.Windows.Forms.Button();
             this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ContextMenuStrip1.SuspendLayout();
+            this.lHide = new System.Windows.Forms.Label();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // ExitToolStripMenuItem
-            // 
-            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.ExitToolStripMenuItem.Text = "Exit";
-            // 
-            // ToolStripSeparator1
-            // 
-            this.ToolStripSeparator1.Name = "ToolStripSeparator1";
-            this.ToolStripSeparator1.Size = new System.Drawing.Size(137, 6);
-            // 
-            // HideTooltipToolStripMenuItem
-            // 
-            this.HideTooltipToolStripMenuItem.Name = "HideTooltipToolStripMenuItem";
-            this.HideTooltipToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.HideTooltipToolStripMenuItem.Text = "Hide Tooltip";
-            // 
-            // ContextMenuStrip1
-            // 
-            this.ContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.HideTooltipToolStripMenuItem,
-            this.ToolStripSeparator1,
-            this.ExitToolStripMenuItem});
-            this.ContextMenuStrip1.Name = "ContextMenuStrip1";
-            this.ContextMenuStrip1.Size = new System.Drawing.Size(141, 54);
-            // 
-            // ntIcon
-            // 
-            this.ntIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.ntIcon.ContextMenuStrip = this.ContextMenuStrip1;
-            this.ntIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("ntIcon.Icon")));
-            this.ntIcon.Text = "Time";
-            this.ntIcon.Visible = true;
-            this.ntIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnIconClick);
             // 
             // lnkExit
             // 
@@ -109,7 +69,7 @@
             this.lnkExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkExit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkExit.ForeColor = System.Drawing.Color.Blue;
-            this.lnkExit.Location = new System.Drawing.Point(197, 14);
+            this.lnkExit.Location = new System.Drawing.Point(207, 7);
             this.lnkExit.Name = "lnkExit";
             this.lnkExit.Size = new System.Drawing.Size(29, 17);
             this.lnkExit.TabIndex = 31;
@@ -135,7 +95,7 @@
             this.lnkSettings.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkSettings.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkSettings.ForeColor = System.Drawing.Color.Blue;
-            this.lnkSettings.Location = new System.Drawing.Point(124, 14);
+            this.lnkSettings.Location = new System.Drawing.Point(70, 7);
             this.lnkSettings.Name = "lnkSettings";
             this.lnkSettings.Size = new System.Drawing.Size(57, 17);
             this.lnkSettings.TabIndex = 27;
@@ -184,16 +144,16 @@
             this.Timer1.Enabled = true;
             this.Timer1.Interval = 1000;
             // 
-            // Label2
+            // lblComment
             // 
-            this.Label2.AutoSize = true;
-            this.Label2.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label2.Location = new System.Drawing.Point(25, 152);
-            this.Label2.Name = "Label2";
-            this.Label2.Size = new System.Drawing.Size(75, 17);
-            this.Label2.TabIndex = 25;
-            this.Label2.Text = "Comment";
-            this.Label2.MouseEnter += new System.EventHandler(this.OnCommentMouseEnter);
+            this.lblComment.AutoSize = true;
+            this.lblComment.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblComment.Location = new System.Drawing.Point(25, 152);
+            this.lblComment.Name = "lblComment";
+            this.lblComment.Size = new System.Drawing.Size(75, 17);
+            this.lblComment.TabIndex = 25;
+            this.lblComment.Text = "Comment";
+            this.lblComment.MouseEnter += new System.EventHandler(this.OnCommentMouseEnter);
             // 
             // btnStop
             // 
@@ -306,7 +266,7 @@
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVersion.Location = new System.Drawing.Point(23, 14);
+            this.lblVersion.Location = new System.Drawing.Point(7, 7);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(0, 19);
             this.lblVersion.TabIndex = 37;
@@ -336,7 +296,7 @@
             this.pManage.Controls.Add(this.cbActivity);
             this.pManage.Controls.Add(this.issueInfoPanel);
             this.pManage.Controls.Add(this.btnStop);
-            this.pManage.Controls.Add(this.Label2);
+            this.pManage.Controls.Add(this.lblComment);
             this.pManage.Controls.Add(this.rdIssue);
             this.pManage.Controls.Add(this.btnSend);
             this.pManage.Controls.Add(this.lnkIssues);
@@ -409,24 +369,39 @@
             this.cmComments.Size = new System.Drawing.Size(61, 4);
             this.cmComments.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnSelectComment);
             // 
+            // lHide
+            // 
+            this.lHide.AutoSize = true;
+            this.lHide.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lHide.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lHide.ForeColor = System.Drawing.Color.Blue;
+            this.lHide.Location = new System.Drawing.Point(152, 7);
+            this.lHide.Name = "lHide";
+            this.lHide.Size = new System.Drawing.Size(37, 17);
+            this.lHide.TabIndex = 40;
+            this.lHide.Text = "Hide";
+            this.lHide.MouseEnter += new System.EventHandler(this.OnHideMouseEnter);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(248, 469);
+            this.Controls.Add(this.lHide);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.lnkExit);
             this.Controls.Add(this.lnkSettings);
             this.Controls.Add(this.pManage);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "frmMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "RedmineLog";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.Load += new System.EventHandler(this.OnFormLoad);
-            this.ContextMenuStrip1.ResumeLayout(false);
+            this.Resize += new System.EventHandler(this.frmMain_Resize);
             this.issueInfoPanel.ResumeLayout(false);
             this.issueInfoPanel.PerformLayout();
             this.pManage.ResumeLayout(false);
@@ -441,11 +416,6 @@
 
         #endregion
 
-        internal System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripSeparator ToolStripSeparator1;
-        internal System.Windows.Forms.ToolStripMenuItem HideTooltipToolStripMenuItem;
-        internal System.Windows.Forms.ContextMenuStrip ContextMenuStrip1;
-        internal System.Windows.Forms.NotifyIcon ntIcon;
         internal System.Windows.Forms.Label lnkExit;
         internal System.Windows.Forms.RadioButton rdIssue;
         internal System.Windows.Forms.Label lnkSettings;
@@ -453,7 +423,7 @@
         internal System.Windows.Forms.Button btnSend;
         internal System.Windows.Forms.TextBox tbComment;
         internal System.Windows.Forms.Timer Timer1;
-        internal System.Windows.Forms.Label Label2;
+        internal System.Windows.Forms.Label lblComment;
         internal System.Windows.Forms.Button btnStop;
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClockActive;
@@ -472,5 +442,6 @@
         private System.Windows.Forms.Button btnRemoveComment;
         private System.Windows.Forms.ContextMenuStrip cmComments;
         private System.Windows.Forms.Button btnNewComment;
+        internal System.Windows.Forms.Label lHide;
     }
 }

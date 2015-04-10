@@ -20,6 +20,7 @@ namespace RedmineLog
             Idle
         }
 
+        private frmSmall small;
         private SubmitMode submitMode = SubmitMode.Work;
         private ClockMode clockMode = ClockMode.Stop;
         private bool close = false;
@@ -27,7 +28,6 @@ namespace RedmineLog
         private DateTime startTime;
         private DateTime idleTime;
 
-        private bool hideTooltip = false;
         private System.Timers.Timer idleCheck;
         private Issue mainIssue;
         private Issue parentIssue;
@@ -42,6 +42,8 @@ namespace RedmineLog
             InitializeComponent();
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
             OnClockActiveClick(lblClockActive, null);
+
+
         }
 
         public enum ClockMode
@@ -90,7 +92,7 @@ namespace RedmineLog
 
         private void OnRemoveItem(object sender, EventArgs e)
         {
-            var issue = new HistoryData.Issue(cbIssues.Text);
+            var issue = new RedmineData.Issue(cbIssues.Text);
 
             if (!issue.IsValid
                 && App.Constants.History.Contains(issue))
@@ -185,9 +187,10 @@ namespace RedmineLog
                 lblIssue.Text = mainIssue.Subject;
                 lblIssue.Tag = App.Constants.Config.Url + "issues/" + isId;
                 lblIssue.Visible = true;
+
                 btnRemoveItem.Visible = true;
 
-                var tmp = new HistoryData.Issue(isId);
+                var tmp = new RedmineData.Issue(isId);
 
                 if (!App.Constants.History.Contains(tmp))
                 {
@@ -273,6 +276,9 @@ namespace RedmineLog
         {
             try
             {
+                var screen = Screen.FromPoint(this.Location);
+                this.Location = new Point(screen.WorkingArea.Right - this.Width, screen.WorkingArea.Bottom - this.Height);
+
 
                 if (!App.Constants.Config.Load())
                 {
@@ -343,7 +349,12 @@ namespace RedmineLog
             }
 
             if (!WorkTimer.Enabled)
+            {
                 lblClockIndle.Text = idleTime.ToLongTimeString();
+
+                if (small != null)
+                    small.UpdateIdleTime(idleTime);
+            }
         }
 
         private void OnIssueLinkClick(object sender, LinkLabelLinkClickedEventArgs e)
@@ -456,6 +467,9 @@ namespace RedmineLog
             {
                 startTime = startTime.AddSeconds(1);
                 lblClockActive.Text = startTime.ToLongTimeString();
+
+                if (small != null)
+                    small.UpdateWorkTime(startTime);
             }
         }
 
@@ -500,14 +514,14 @@ namespace RedmineLog
 
         private void OnNewCommentClick(object sender, EventArgs e)
         {
-            tbComment.Tag = new HistoryData.Issue.Comment() { Id = Guid.NewGuid() };
+            tbComment.Tag = new RedmineData.Issue.Comment() { Id = Guid.NewGuid() };
             tbComment.Text = "";
             tbComment.ReadOnly = false;
         }
 
         private void OnRemoveCommentClick(object sender, EventArgs e)
         {
-            var comment = tbComment.Tag as HistoryData.Issue.Comment;
+            var comment = tbComment.Tag as RedmineData.Issue.Comment;
             tbComment.Tag = null;
             tbComment.Text = "";
             tbComment.ReadOnly = true;
@@ -556,7 +570,7 @@ namespace RedmineLog
                 }
                 else
                 {
-                    tmpComment = tbComment.Tag as HistoryData.Issue.Comment;
+                    tmpComment = tbComment.Tag as RedmineData.Issue.Comment;
 
                     if (tmpComment != null)
                     {
@@ -626,7 +640,7 @@ namespace RedmineLog
 
         private void OnCommentLostFocus(object sender, EventArgs e)
         {
-            var comment = tbComment.Tag as HistoryData.Issue.Comment;
+            var comment = tbComment.Tag as RedmineData.Issue.Comment;
 
             if (comment != null && !comment.Text.Equals(tbComment.Text))
             {
@@ -637,6 +651,32 @@ namespace RedmineLog
         private void OnCommentMouseEnter(object sender, EventArgs e)
         {
             ShowComments();
+        }
+
+        private void frmMain_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                if (small != null)
+                {
+                    small.Close();
+                    small = null;
+                }
+                System.Diagnostics.Debug.WriteLine(WindowState.ToString());
+            }
+            else if (WindowState == FormWindowState.Minimized)
+            {
+                small = new frmSmall(this);
+                small.SetMainIssue(mainIssue);
+                small.SetParentIssue(parentIssue);
+                small.ShowDialog();
+                System.Diagnostics.Debug.WriteLine(WindowState.ToString());
+            }
+        }
+
+        private void OnHideMouseEnter(object sender, EventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
         }
 
     }

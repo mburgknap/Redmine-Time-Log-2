@@ -6,10 +6,11 @@ namespace RedmineLog
 
     public class AppConstants
     {
-        public RedmineConfig Config = new RedmineConfig();
+        public readonly RedmineConfig Config = new RedmineConfig();
 
-        public HistoryData History = new HistoryData();
+        public readonly RedmineData History = new RedmineData();
 
+        public readonly TimeLogData Work = new TimeLogData();
 
     }
 
