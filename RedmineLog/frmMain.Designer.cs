@@ -31,13 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lnkExit = new System.Windows.Forms.Label();
-            this.rdIssue = new System.Windows.Forms.RadioButton();
             this.lnkSettings = new System.Windows.Forms.Label();
             this.lnkIssues = new System.Windows.Forms.Label();
             this.btnSend = new System.Windows.Forms.Button();
             this.tbComment = new System.Windows.Forms.TextBox();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
-            this.lblComment = new System.Windows.Forms.Label();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnClock = new System.Windows.Forms.Button();
             this.lblClockActive = new System.Windows.Forms.Label();
@@ -46,10 +44,13 @@
             this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.issueInfoPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnRemoveItem = new System.Windows.Forms.Button();
-            this.cbIssues = new System.Windows.Forms.ComboBox();
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
+            this.tbIssue = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.pComments = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnRemoveComment = new System.Windows.Forms.Button();
@@ -76,19 +77,6 @@
             this.lnkExit.Text = "Exit";
             this.lnkExit.Click += new System.EventHandler(this.OnExitClick);
             // 
-            // rdIssue
-            // 
-            this.rdIssue.AutoSize = true;
-            this.rdIssue.Checked = true;
-            this.rdIssue.Enabled = false;
-            this.rdIssue.Location = new System.Drawing.Point(30, 251);
-            this.rdIssue.Name = "rdIssue";
-            this.rdIssue.Size = new System.Drawing.Size(50, 17);
-            this.rdIssue.TabIndex = 30;
-            this.rdIssue.TabStop = true;
-            this.rdIssue.Text = "Issue";
-            this.rdIssue.UseVisualStyleBackColor = true;
-            // 
             // lnkSettings
             // 
             this.lnkSettings.AutoSize = true;
@@ -108,7 +96,7 @@
             this.lnkIssues.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkIssues.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkIssues.ForeColor = System.Drawing.Color.Blue;
-            this.lnkIssues.Location = new System.Drawing.Point(128, 251);
+            this.lnkIssues.Location = new System.Drawing.Point(126, 264);
             this.lnkIssues.Name = "lnkIssues";
             this.lnkIssues.Size = new System.Drawing.Size(103, 17);
             this.lnkIssues.TabIndex = 24;
@@ -118,9 +106,9 @@
             // btnSend
             // 
             this.btnSend.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(160, 274);
+            this.btnSend.Location = new System.Drawing.Point(160, 289);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(71, 35);
+            this.btnSend.Size = new System.Drawing.Size(71, 32);
             this.btnSend.TabIndex = 22;
             this.btnSend.Text = "Submit";
             this.btnSend.UseVisualStyleBackColor = true;
@@ -143,17 +131,6 @@
             // 
             this.Timer1.Enabled = true;
             this.Timer1.Interval = 1000;
-            // 
-            // lblComment
-            // 
-            this.lblComment.AutoSize = true;
-            this.lblComment.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblComment.Location = new System.Drawing.Point(25, 152);
-            this.lblComment.Name = "lblComment";
-            this.lblComment.Size = new System.Drawing.Size(75, 17);
-            this.lblComment.TabIndex = 25;
-            this.lblComment.Text = "Comment";
-            this.lblComment.MouseEnter += new System.EventHandler(this.OnCommentMouseEnter);
             // 
             // btnStop
             // 
@@ -229,7 +206,7 @@
             this.issueInfoPanel.Controls.Add(this.lblParentIssue);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.issueInfoPanel.Location = new System.Drawing.Point(30, 315);
+            this.issueInfoPanel.Location = new System.Drawing.Point(28, 330);
             this.issueInfoPanel.Name = "issueInfoPanel";
             this.issueInfoPanel.Size = new System.Drawing.Size(200, 100);
             this.issueInfoPanel.TabIndex = 35;
@@ -237,32 +214,18 @@
             // btnRemoveItem
             // 
             this.btnRemoveItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRemoveItem.BackColor = System.Drawing.Color.White;
+            this.btnRemoveItem.BackColor = System.Drawing.Color.Transparent;
             this.btnRemoveItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnRemoveItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRemoveItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnRemoveItem.Location = new System.Drawing.Point(114, 275);
+            this.btnRemoveItem.ForeColor = System.Drawing.Color.Red;
+            this.btnRemoveItem.Location = new System.Drawing.Point(105, 289);
             this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(125, 0, 0, 0);
             this.btnRemoveItem.Name = "btnRemoveItem";
-            this.btnRemoveItem.Size = new System.Drawing.Size(18, 32);
+            this.btnRemoveItem.Size = new System.Drawing.Size(20, 32);
             this.btnRemoveItem.TabIndex = 35;
             this.btnRemoveItem.Text = "X";
             this.btnRemoveItem.UseVisualStyleBackColor = false;
             this.btnRemoveItem.Click += new System.EventHandler(this.OnRemoveItem);
-            // 
-            // cbIssues
-            // 
-            this.cbIssues.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cbIssues.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.cbIssues.FormattingEnabled = true;
-            this.cbIssues.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.cbIssues.ItemHeight = 24;
-            this.cbIssues.Location = new System.Drawing.Point(30, 275);
-            this.cbIssues.Name = "cbIssues";
-            this.cbIssues.Size = new System.Drawing.Size(121, 32);
-            this.cbIssues.TabIndex = 36;
-            this.cbIssues.SelectedValueChanged += new System.EventHandler(this.OnIssueChanged);
-            this.cbIssues.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnAcceptIssue);
             // 
             // lblVersion
             // 
@@ -288,18 +251,20 @@
             // 
             // pManage
             // 
+            this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.button3);
+            this.pManage.Controls.Add(this.tbIssue);
+            this.pManage.Controls.Add(this.button2);
+            this.pManage.Controls.Add(this.button1);
             this.pManage.Controls.Add(this.pComments);
             this.pManage.Controls.Add(this.btnResetIdle);
             this.pManage.Controls.Add(this.lblClockIndle);
             this.pManage.Controls.Add(this.btnRemoveItem);
             this.pManage.Controls.Add(this.btnClock);
-            this.pManage.Controls.Add(this.cbIssues);
             this.pManage.Controls.Add(this.lblClockActive);
             this.pManage.Controls.Add(this.cbActivity);
             this.pManage.Controls.Add(this.issueInfoPanel);
             this.pManage.Controls.Add(this.btnStop);
-            this.pManage.Controls.Add(this.lblComment);
-            this.pManage.Controls.Add(this.rdIssue);
             this.pManage.Controls.Add(this.btnSend);
             this.pManage.Controls.Add(this.lnkIssues);
             this.pManage.Location = new System.Drawing.Point(-5, 36);
@@ -307,11 +272,57 @@
             this.pManage.Size = new System.Drawing.Size(258, 455);
             this.pManage.TabIndex = 39;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(28, 153);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 22);
+            this.button3.TabIndex = 44;
+            this.button3.Text = "Comments";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.OnCommentShowClick);
+            // 
+            // tbIssue
+            // 
+            this.tbIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.tbIssue.Location = new System.Drawing.Point(28, 288);
+            this.tbIssue.Name = "tbIssue";
+            this.tbIssue.Size = new System.Drawing.Size(72, 32);
+            this.tbIssue.TabIndex = 43;
+            this.tbIssue.WordWrap = false;
+            this.tbIssue.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnIssueMouseClick);
+            this.tbIssue.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnIssueKeyDown);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(28, 261);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 42;
+            this.button2.Text = "Issues";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.OnSearchIssueClick);
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.BackColor = System.Drawing.Color.Transparent;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button1.ForeColor = System.Drawing.Color.ForestGreen;
+            this.button1.Location = new System.Drawing.Point(126, 289);
+            this.button1.Margin = new System.Windows.Forms.Padding(125, 0, 0, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(32, 32);
+            this.button1.TabIndex = 41;
+            this.button1.Text = "V";
+            this.button1.UseVisualStyleBackColor = false;
+            // 
             // pComments
             // 
             this.pComments.Controls.Add(this.panel1);
             this.pComments.Controls.Add(this.tbComment);
-            this.pComments.Location = new System.Drawing.Point(28, 172);
+            this.pComments.Location = new System.Drawing.Point(28, 179);
             this.pComments.Name = "pComments";
             this.pComments.Size = new System.Drawing.Size(202, 76);
             this.pComments.TabIndex = 40;
@@ -419,13 +430,11 @@
         #endregion
 
         internal System.Windows.Forms.Label lnkExit;
-        internal System.Windows.Forms.RadioButton rdIssue;
         internal System.Windows.Forms.Label lnkSettings;
         internal System.Windows.Forms.Label lnkIssues;
         internal System.Windows.Forms.Button btnSend;
         internal System.Windows.Forms.TextBox tbComment;
         internal System.Windows.Forms.Timer Timer1;
-        internal System.Windows.Forms.Label lblComment;
         internal System.Windows.Forms.Button btnStop;
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClockActive;
@@ -433,7 +442,6 @@
         private System.Windows.Forms.Label lblParentIssue;
         private System.Windows.Forms.LinkLabel lblIssue;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
-        private System.Windows.Forms.ComboBox cbIssues;
         private System.Windows.Forms.Button btnRemoveItem;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label lblClockIndle;
@@ -445,5 +453,9 @@
         private System.Windows.Forms.ContextMenuStrip cmComments;
         private System.Windows.Forms.Button btnNewComment;
         internal System.Windows.Forms.Label lHide;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tbIssue;
+        private System.Windows.Forms.Button button3;
     }
 }

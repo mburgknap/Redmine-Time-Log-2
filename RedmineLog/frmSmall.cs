@@ -64,7 +64,7 @@ namespace RedmineLog
 
 
 
-        internal void SetMainIssue(Issue inIssue)
+        internal void SetMainIssue(RedmineIssues.Item inIssue)
         {
             if (inIssue != null)
             {
@@ -78,7 +78,7 @@ namespace RedmineLog
             }
         }
 
-        internal void SetParentIssue(Issue inIssue)
+        internal void SetParentIssue(RedmineIssues.Item inIssue)
         {
             if (inIssue != null)
                 lbParentIssue.Text = inIssue.Subject;

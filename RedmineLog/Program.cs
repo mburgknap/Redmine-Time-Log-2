@@ -12,6 +12,8 @@ namespace RedmineLog
 
         public readonly TimeLogData Work = new TimeLogData();
 
+        public readonly RedmineIssues IssuesCache = new RedmineIssues();
+
     }
 
     internal static class App

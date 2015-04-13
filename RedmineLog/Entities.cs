@@ -1,4 +1,5 @@
 ﻿using Polenter.Serialization;
+using Redmine.Net.Api.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,9 +51,66 @@ namespace RedmineLog
 
     }
 
-    public class RedmineData : List<RedmineData.Issue>
+    public class RedmineIssues : List<RedmineIssues.Item>
     {
 
+        public class Item
+        {
+            public Item()
+            {
+            }
+
+            public Item(Issue issue)
+            {
+                Id = issue.Id;
+                if (issue.ParentIssue != null)
+                    IdParent = issue.ParentIssue.Id;
+                else
+                    IdParent = null;
+
+                Subject = issue.Subject;
+            }
+            public int Id { get; set; }
+
+            public int? IdParent { get; set; }
+
+            public string Subject { get; set; }
+
+        }
+
+        internal void Save()
+        {
+            new SharpSerializer().Serialize(this, typeof(RedmineIssues).Name + ".xml");
+            AppLogger.Log.Info("RedmineIssuesCache saved");
+        }
+
+        internal bool Load()
+        {
+            if (File.Exists(new Uri(typeof(RedmineIssues).Name + ".xml", UriKind.Relative).ToString()))
+            {
+                var obj = new SharpSerializer().Deserialize(typeof(RedmineIssues).Name + ".xml") as RedmineIssues;
+
+                if (obj != null)
+                {
+                    AddRange(obj);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal RedmineIssues.Item GetIssue(int id)
+        {
+            return this.Where(x => x.Id == id).FirstOrDefault();
+        }
+    }
+
+    public class RedmineData : List<RedmineData.Issue>
+    {
+        public new bool Contains(RedmineData.Issue item)
+        {
+            return this.Where(x => x.Equals(item)).FirstOrDefault() != null;
+        }
 
         public class Issue
         {

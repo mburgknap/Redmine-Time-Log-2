@@ -29,8 +29,8 @@ namespace RedmineLog
         private DateTime idleTime;
 
         private System.Timers.Timer idleCheck;
-        private Issue mainIssue;
-        private Issue parentIssue;
+        private RedmineIssues.Item mainIssue;
+        private RedmineIssues.Item parentIssue;
         private System.Timers.Timer workTimer;
 
         public frmMain()
@@ -92,35 +92,25 @@ namespace RedmineLog
 
         private void OnRemoveItem(object sender, EventArgs e)
         {
-            var issue = new RedmineData.Issue(cbIssues.Text);
+            var issue = new RedmineData.Issue(tbIssue.Text);
 
-            if (!issue.IsValid
+            if (issue.IsValid
                 && App.Constants.History.Contains(issue))
             {
                 App.Constants.History.Remove(issue);
-                var item = cbIssues.SelectedItem;
-                cbIssues.SelectedItem = cbIssues.Items[0];
-                cbIssues.Items.Remove(item);
-
                 App.Constants.History.Save();
+
+                tbComment.Text = "";
+                tbComment.Tag = null;
+                tbComment.ReadOnly = true;
+
+                tbIssue.Text = "";
+                tbIssue.Tag = App.Constants.History.GetIssue(-1);
+                LoadIssue();
             }
         }
 
-
-        private bool ContainIssue(object isId)
-        {
-            foreach (var obj in cbIssues.Items)
-            {
-                if (String.Equals(obj.ToString(), isId.ToString()))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-
-        private void ListTimeEntryActivites()
+        private void LoadAppData()
         {
             try
             {
@@ -139,17 +129,15 @@ namespace RedmineLog
                     cbActivity.SelectedItem = cbActivity.Items[0];
 
                 App.Constants.History.Load();
+                App.Constants.IssuesCache.Load();
 
-                foreach (var item in App.Constants.History)
-                {
-                    cbIssues.Items.Add(item);
-                }
-
-                cbIssues.SelectedItem = cbIssues.Items[0];
+                tbIssue.Text = "";
+                tbIssue.Tag = App.Constants.History.GetIssue(-1);
+                LoadIssue();
             }
             catch (Exception ex)
             {
-                AppLogger.Log.Error("ListActivites", ex);
+                AppLogger.Log.Error("LoadAppData", ex);
                 MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
                 close = true;
                 Application.Exit();
@@ -160,44 +148,44 @@ namespace RedmineLog
         {
             try
             {
+                bool cacheChanged = false;
+
                 tbComment.Tag = null;
                 tbComment.Text = "";
                 tbComment.ReadOnly = true;
 
                 int isId = 0;
 
-                if (!int.TryParse(cbIssues.Text, out isId))
+                if (!int.TryParse(tbIssue.Text, out isId))
                 {
+
                     lblIssue.Text = "";
                     lblIssue.Tag = null;
                     lblIssue.Visible = false;
                     lblParentIssue.Text = "";
                     lblParentIssue.Visible = false;
                     btnRemoveItem.Visible = false;
+                    tbIssue.Tag = null;
                     return;
                 }
 
-                var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                mainIssue = App.Constants.IssuesCache.GetIssue(isId);
 
-                var parameters = new NameValueCollection { };
-
-                mainIssue = manager.GetObject<Issue>(isId.ToString(), parameters);
-                parentIssue = null;
-
-                lblIssue.Text = mainIssue.Subject;
-                lblIssue.Tag = App.Constants.Config.Url + "issues/" + isId;
-                lblIssue.Visible = true;
-
-                btnRemoveItem.Visible = true;
-
-                var tmp = new RedmineData.Issue(isId);
-
-                if (!App.Constants.History.Contains(tmp))
+                if (mainIssue == null)
                 {
-                    cbIssues.Items.Add(tmp);
-                    App.Constants.History.Add(tmp);
-                    App.Constants.History.Save();
+                    var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                    var parameters = new NameValueCollection { };
+                    mainIssue = new RedmineIssues.Item(manager.GetObject<Issue>(isId.ToString(), parameters));
+
+                    if (mainIssue != null)
+                    {
+                        App.Constants.IssuesCache.Add(mainIssue);
+                        cacheChanged = true;
+                    }
+
+
                 }
+                parentIssue = null;
 
 
                 if (mainIssue == null)
@@ -207,11 +195,46 @@ namespace RedmineLog
                     lblIssue.Tag = null;
                     btnRemoveItem.Visible = false;
                 }
-
-
-                if (mainIssue != null && mainIssue.ParentIssue != null)
+                else
                 {
-                    parentIssue = manager.GetObject<Issue>(mainIssue.ParentIssue.Id.ToString(), parameters);
+                    lblIssue.Text = mainIssue.Subject;
+                    lblIssue.Tag = App.Constants.Config.Url + "issues/" + isId;
+                    lblIssue.Visible = true;
+
+                    btnRemoveItem.Visible = true;
+
+                    var tmp = App.Constants.History.GetIssue(isId);
+
+                    if (tmp == null)
+                    {
+                        tmp = new RedmineData.Issue(isId);
+                        App.Constants.History.Add(tmp);
+                        App.Constants.History.Save();
+                    }
+
+                    tbIssue.Tag = tmp;
+
+                }
+
+
+                if (mainIssue != null
+                    && mainIssue.IdParent.HasValue)
+                {
+
+                    parentIssue = App.Constants.IssuesCache.GetIssue(mainIssue.IdParent.Value);
+
+                    if (parentIssue == null)
+                    {
+                        var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                        var parameters = new NameValueCollection { };
+                        parentIssue = new RedmineIssues.Item(manager.GetObject<Issue>(mainIssue.IdParent.Value.ToString(), parameters));
+
+                        if (parentIssue != null)
+                        {
+                            App.Constants.IssuesCache.Add(parentIssue);
+                            cacheChanged = true;
+                        }
+                    }
 
                     lblParentIssue.Text = parentIssue.Subject;
                     lblParentIssue.Visible = true;
@@ -222,6 +245,10 @@ namespace RedmineLog
                     lblParentIssue.Text = "";
                     lblParentIssue.Visible = false;
                 }
+
+
+                if (cacheChanged)
+                    App.Constants.IssuesCache.Save();
             }
             catch (Exception ex)
             {
@@ -298,7 +325,7 @@ namespace RedmineLog
                 lblParentIssue.Visible = false;
                 btnRemoveItem.Visible = false;
 
-                ListTimeEntryActivites();
+                LoadAppData();
                 IdleChecker.Start();
             }
             catch (Exception ex)
@@ -388,7 +415,7 @@ namespace RedmineLog
             try
             {
                 int n;
-                bool isNumeric = int.TryParse(cbIssues.Text, out n);
+                bool isNumeric = int.TryParse(tbIssue.Text, out n);
 
                 if (isNumeric == false)
                 {
@@ -410,7 +437,7 @@ namespace RedmineLog
 
                 var response = manager.CreateObject<TimeEntry>(new TimeEntry()
                 {
-                    Issue = new IdentifiableName() { Id = Int32.Parse(cbIssues.Text) },
+                    Issue = new IdentifiableName() { Id = Int32.Parse(tbIssue.Text) },
                     Activity = new IdentifiableName() { Id = ((TimeEntryActivity)cbActivity.SelectedItem).Id },
                     Comments = tbComment.Text,
                     Hours = decimal.Round(hours, 2),
@@ -478,11 +505,6 @@ namespace RedmineLog
             { lblClockActive.Text = DateTime.MinValue.ToLongTimeString(); }
         }
 
-        private void OnIssueChanged(object sender, EventArgs e)
-        {
-            LoadIssue();
-        }
-
 
         internal struct LastInput
         {
@@ -531,7 +553,7 @@ namespace RedmineLog
             tbComment.Text = "";
             tbComment.ReadOnly = true;
 
-            var tmpIssue = App.Constants.History.GetIssue(cbIssues.SelectedItem);
+            var tmpIssue = App.Constants.History.GetIssue(tbIssue.Tag);
 
             if (tmpIssue != null && comment != null)
             {
@@ -562,7 +584,7 @@ namespace RedmineLog
 
         private void AcceptComment()
         {
-            var tmpIssue = App.Constants.History.GetIssue(cbIssues.SelectedItem);
+            var tmpIssue = App.Constants.History.GetIssue(tbIssue.Tag);
 
             if (tmpIssue != null)
             {
@@ -612,7 +634,7 @@ namespace RedmineLog
 
         private void ShowComments()
         {
-            var tmp = App.Constants.History.GetIssue(cbIssues.SelectedItem);
+            var tmp = App.Constants.History.GetIssue(tbIssue.Tag);
 
             cmComments.Items.Clear();
 
@@ -668,10 +690,6 @@ namespace RedmineLog
             }
         }
 
-        private void OnCommentMouseEnter(object sender, EventArgs e)
-        {
-            ShowComments();
-        }
 
         private void OnFormResize(object sender, EventArgs e)
         {
@@ -696,8 +714,49 @@ namespace RedmineLog
 
         private void OnHideMouseEnter(object sender, EventArgs e)
         {
-            WindowState = FormWindowState.Minimized;
+            if (clockMode == ClockMode.Play)
+                WindowState = FormWindowState.Minimized;
         }
+
+        frmSearch search;
+
+        private void OnSearchIssueClick(object sender, EventArgs e)
+        {
+            search = new frmSearch();
+            search.OnSelect = (int id) =>
+            {
+                if (id < 0)
+                    tbIssue.Text = "";
+                else
+                    tbIssue.Text = id.ToString();
+
+                tbIssue.Tag = App.Constants.History.GetIssue(-1);
+                LoadIssue();
+
+            };
+            search.Show();
+
+        }
+
+        private void OnIssueKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == (Keys.LButton | Keys.MButton | Keys.Back))
+                LoadIssue();
+        }
+
+        private void OnCommentShowClick(object sender, EventArgs e)
+        {
+            ShowComments();
+        }
+
+        private void OnIssueMouseClick(object sender, MouseEventArgs e)
+        {
+            tbIssue.SelectAll();
+            tbIssue.Focus();
+        }
+
+
+
 
     }
 }
