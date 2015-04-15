@@ -25,24 +25,25 @@ namespace RedmineLog
         private ClockMode clockMode = ClockMode.Stop;
         private bool close = false;
 
-        private DateTime startTime;
+        private DateTime workTime;
         private DateTime idleTime;
 
-        private System.Timers.Timer idleCheck;
+        private System.Timers.Timer idleTimer;
         private RedmineIssues.Item mainIssue;
         private RedmineIssues.Item parentIssue;
         private System.Timers.Timer workTimer;
+        private frmSearch search;
 
         public frmMain()
         {
+            InitializeComponent();
             FormClosing += OnFormClosing;
             CheckForIllegalCrossThreadCalls = false;
             WorkTimer = new System.Timers.Timer(1000);
-            IdleChecker = new System.Timers.Timer(1000);
-            InitializeComponent();
+            IdleTimer = new System.Timers.Timer(1000);
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
             OnClockActiveClick(lblClockActive, null);
-
+            ManageHide();
 
         }
 
@@ -53,19 +54,19 @@ namespace RedmineLog
             Stop
         }
 
-        private System.Timers.Timer IdleChecker
+        private System.Timers.Timer IdleTimer
         {
-            get { return idleCheck; }
+            get { return idleTimer; }
             set
             {
-                if (idleCheck != null)
+                if (idleTimer != null)
                 {
-                    idleCheck.Elapsed -= OnIdleCheckElapsed;
+                    idleTimer.Elapsed -= OnIdleCheckElapsed;
                 }
-                idleCheck = value;
-                if (idleCheck != null)
+                idleTimer = value;
+                if (idleTimer != null)
                 {
-                    idleCheck.Elapsed += OnIdleCheckElapsed;
+                    idleTimer.Elapsed += OnIdleCheckElapsed;
                 }
             }
         }
@@ -130,6 +131,7 @@ namespace RedmineLog
 
                 App.Constants.History.Load();
                 App.Constants.IssuesCache.Load();
+                App.Constants.Work.Load();
 
                 tbIssue.Text = "";
                 tbIssue.Tag = App.Constants.History.GetIssue(-1);
@@ -159,6 +161,8 @@ namespace RedmineLog
                 if (!int.TryParse(tbIssue.Text, out isId))
                 {
 
+                    mainIssue = null;
+                    parentIssue = null;
                     lblIssue.Text = "";
                     lblIssue.Tag = null;
                     lblIssue.Visible = false;
@@ -166,6 +170,7 @@ namespace RedmineLog
                     lblParentIssue.Visible = false;
                     btnRemoveItem.Visible = false;
                     tbIssue.Tag = null;
+                    ManageHide();
                     return;
                 }
 
@@ -249,6 +254,9 @@ namespace RedmineLog
 
                 if (cacheChanged)
                     App.Constants.IssuesCache.Save();
+
+
+                ManageHide();
             }
             catch (Exception ex)
             {
@@ -259,13 +267,14 @@ namespace RedmineLog
 
         private void OnClockClick(System.Object sender, System.EventArgs e)
         {
-            var tmpTime = startTime;
+            var tmpTime = workTime;
             switch (clockMode)
             {
                 case ClockMode.Pause:
                     clockMode = ClockMode.Play;
                     WorkTimer.Start();
                     btnClock.Text = "Pause";
+                    ManageHide();
                     break;
 
                 case ClockMode.Play:
@@ -276,9 +285,10 @@ namespace RedmineLog
 
                 case ClockMode.Stop:
                     clockMode = ClockMode.Play;
-                    WorkTimer.Stop();
-                    startTime = DateTime.MinValue;
+                    WorkTimer.Start();
+                    workTime = DateTime.MinValue;
                     btnClock.Text = "Pause";
+                    ManageHide();
                     break;
             }
             AppLogger.Log.Info("Clock: " + clockMode + " Time: " + tmpTime.ToLongTimeString());
@@ -326,7 +336,7 @@ namespace RedmineLog
                 btnRemoveItem.Visible = false;
 
                 LoadAppData();
-                IdleChecker.Start();
+                IdleTimer.Start();
             }
             catch (Exception ex)
             {
@@ -358,7 +368,7 @@ namespace RedmineLog
             }
 
             int totalIdleTimeInSeconds = idlTick / 1000;
-            if (totalIdleTimeInSeconds > 30)
+            if (totalIdleTimeInSeconds > App.Constants.Work.IdleSeconds)
             {
                 if (WorkTimer.Enabled == true)
                 {
@@ -429,7 +439,7 @@ namespace RedmineLog
                 }
 
 
-                DateTime time = submitMode == SubmitMode.Work ? startTime : idleTime;
+                DateTime time = submitMode == SubmitMode.Work ? workTime : idleTime;
 
                 decimal hours = (decimal)(time.Hour * 60 + time.Minute) / 60m;
 
@@ -444,6 +454,7 @@ namespace RedmineLog
                     SpentOn = DateTime.Now
                 });
 
+
                 if (submitMode == SubmitMode.Work)
                 {
                     OnStopClick(btnStop, null);
@@ -457,7 +468,6 @@ namespace RedmineLog
                     idleTime = DateTime.MinValue;
                     lblClockIndle.Text = idleTime.ToLongTimeString();
                 }
-                MessageBox.Show("Time Tracker Saved Successfully", "Thank you", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -474,6 +484,14 @@ namespace RedmineLog
             }
         }
 
+        private void ManageHide()
+        {
+            if (clockMode == ClockMode.Play && mainIssue != null && mainIssue.Id > 0)
+                lHide.Visible = true;
+            else
+                lHide.Visible = false;
+        }
+
         private void OnSettingsClick(System.Object sender, System.EventArgs e)
         {
             new frmSettings().ShowDialog();
@@ -481,25 +499,27 @@ namespace RedmineLog
 
         private void OnStopClick(System.Object sender, System.EventArgs e)
         {
+
             clockMode = ClockMode.Stop;
-            AppLogger.Log.Info("Clock: " + clockMode + " Time: " + startTime.ToLongTimeString());
+            AppLogger.Log.Info("Clock: " + clockMode + " Time: " + workTime.ToLongTimeString());
 
             WorkTimer.Stop();
             btnClock.Text = "Play";
-            startTime = DateTime.MinValue;
+            workTime = DateTime.MinValue;
 
-            lblClockActive.Text = startTime.ToLongTimeString();
+            lblClockActive.Text = workTime.ToLongTimeString();
+            ManageHide();
         }
 
         private void OnWorkTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (clockMode == ClockMode.Play)
             {
-                startTime = startTime.AddSeconds(1);
-                lblClockActive.Text = startTime.ToLongTimeString();
+                workTime = workTime.AddSeconds(1);
+                lblClockActive.Text = workTime.ToLongTimeString();
 
                 if (small != null)
-                    small.UpdateWorkTime(startTime);
+                    small.UpdateWorkTime(workTime);
             }
             else if (clockMode == ClockMode.Stop)
             { lblClockActive.Text = DateTime.MinValue.ToLongTimeString(); }
@@ -707,6 +727,8 @@ namespace RedmineLog
                 small = new frmSmall(this);
                 small.SetMainIssue(mainIssue);
                 small.SetParentIssue(parentIssue);
+                small.UpdateWorkTime(workTime);
+                small.UpdateIdleTime(idleTime);
                 small.ShowDialog();
                 System.Diagnostics.Debug.WriteLine(WindowState.ToString());
             }
@@ -718,7 +740,6 @@ namespace RedmineLog
                 WindowState = FormWindowState.Minimized;
         }
 
-        frmSearch search;
 
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
@@ -754,9 +775,5 @@ namespace RedmineLog
             tbIssue.SelectAll();
             tbIssue.Focus();
         }
-
-
-
-
     }
 }

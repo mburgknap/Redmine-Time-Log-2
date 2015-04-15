@@ -42,11 +42,39 @@ namespace RedmineLog
 
     public class TimeLogData : List<TimeLogData.TaskTime>
     {
+
+        public int IdleSeconds { get; set; }
         public class TaskTime
         {
             public RedmineData.Issue Issue { get; set; }
             public RedmineData.Issue.Comment Comment { get; set; }
             public DateTime Time { get; set; }
+        }
+
+
+        internal void Save()
+        {
+            new SharpSerializer().Serialize(this, typeof(TimeLogData).Name + ".xml");
+            AppLogger.Log.Info("TimeLogData saved");
+        }
+
+        internal bool Load()
+        {
+            if (File.Exists(new Uri(typeof(TimeLogData).Name + ".xml", UriKind.Relative).ToString()))
+            {
+                var obj = new SharpSerializer().Deserialize(typeof(TimeLogData).Name + ".xml") as TimeLogData;
+
+                if (obj != null)
+                {
+                    AddRange(obj);
+                    IdleSeconds = obj.IdleSeconds;
+                    return true;
+                }
+            }
+
+            IdleSeconds = 60;
+
+            return false;
         }
 
     }
