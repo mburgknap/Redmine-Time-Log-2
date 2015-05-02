@@ -38,12 +38,16 @@ namespace RedmineLog
 
             int row;
 
-            foreach (var item in App.Constants.History.OrderByDescending(x => x.UsedCount))
+            foreach (var item in App.Context.History.OrderByDescending(x =>
             {
-                main = App.Constants.IssuesCache.GetIssue(item.Id);
+                if (x.Id == -1) return int.MaxValue;
+                return x.UsedCount;
+            }))
+            {
+                main = App.Context.IssuesCache.GetIssue(item.Id);
 
                 if (main != null && main.IdParent.HasValue)
-                    parent = App.Constants.IssuesCache.GetIssue(main.IdParent.Value);
+                    parent = App.Context.IssuesCache.GetIssue(main.IdParent.Value);
                 else
                     parent = null;
 
@@ -73,13 +77,13 @@ namespace RedmineLog
 
         private void OnGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            var item = dataGridView1.Rows[e.RowIndex].Tag as RedmineData.Issue;
+            var item = dataGridView1.Rows[e.RowIndex].Tag as LogData.Issue;
 
             if (item != null && OnSelect != null)
             {
-                var data = App.Constants.History.Where(x => x.Id == item.Id).First();
+                var data = App.Context.History.Where(x => x.Id == item.Id).First();
                 data.UsedCount += 1;
-                App.Constants.History.Save();
+                App.Context.History.Save();
                 OnSelect(item.Id);
             }
             this.Close();

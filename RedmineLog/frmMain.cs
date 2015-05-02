@@ -29,6 +29,8 @@ namespace RedmineLog
         private DateTime idleTime;
 
         private System.Timers.Timer idleTimer;
+        private LogData.Issue.Comment issueComment;
+        private LogData.Issue issueData;
         private RedmineIssues.Item mainIssue;
         private RedmineIssues.Item parentIssue;
         private System.Timers.Timer workTimer;
@@ -93,20 +95,20 @@ namespace RedmineLog
 
         private void OnRemoveItem(object sender, EventArgs e)
         {
-            var issue = new RedmineData.Issue(tbIssue.Text);
+            var issue = new LogData.Issue(tbIssue.Text);
 
             if (issue.IsValid
-                && App.Constants.History.Contains(issue))
+                && App.Context.History.Contains(issue))
             {
-                App.Constants.History.Remove(issue);
-                App.Constants.History.Save();
+                App.Context.History.Remove(issue);
+                App.Context.History.Save();
 
                 tbComment.Text = "";
-                tbComment.Tag = null;
+                issueComment = null;
                 tbComment.ReadOnly = true;
 
                 tbIssue.Text = "";
-                tbIssue.Tag = App.Constants.History.GetIssue(-1);
+                issueData = App.Context.History.GetIssue(-1);
                 LoadIssue();
             }
         }
@@ -115,7 +117,7 @@ namespace RedmineLog
         {
             try
             {
-                var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
 
                 var parameters = new NameValueCollection { };
 
@@ -129,12 +131,12 @@ namespace RedmineLog
                 if (cbActivity.Items.Count > 0)
                     cbActivity.SelectedItem = cbActivity.Items[0];
 
-                App.Constants.History.Load();
-                App.Constants.IssuesCache.Load();
-                App.Constants.Work.Load();
+                App.Context.History.Load();
+                App.Context.IssuesCache.Load();
+                App.Context.Work.Load();
 
                 tbIssue.Text = "";
-                tbIssue.Tag = App.Constants.History.GetIssue(-1);
+                issueData = App.Context.History.GetIssue(-1);
                 LoadIssue();
             }
             catch (Exception ex)
@@ -152,15 +154,13 @@ namespace RedmineLog
             {
                 bool cacheChanged = false;
 
-                tbComment.Tag = null;
                 tbComment.Text = "";
                 tbComment.ReadOnly = true;
 
-                int isId = 0;
+                int newIssueId = 0;
 
-                if (!int.TryParse(tbIssue.Text, out isId))
+                if (!int.TryParse(tbIssue.Text, out newIssueId))
                 {
-
                     mainIssue = null;
                     parentIssue = null;
                     lblIssue.Text = "";
@@ -169,22 +169,34 @@ namespace RedmineLog
                     lblParentIssue.Text = "";
                     lblParentIssue.Visible = false;
                     btnRemoveItem.Visible = false;
-                    tbIssue.Tag = null;
+                    issueData = null;
+                    issueComment = null;
+                    tbComment.Text = "";
+                    tbComment.ReadOnly = true;
                     ManageHide();
                     return;
                 }
 
-                mainIssue = App.Constants.IssuesCache.GetIssue(isId);
+                if (mainIssue != null && mainIssue.Id != newIssueId && clockMode == ClockMode.Play)
+                {
+                    SaveIssueWorkTime(mainIssue);
+                }
+
+                issueComment = null;
+                tbComment.Text = "";
+                tbComment.ReadOnly = true;
+
+                mainIssue = App.Context.IssuesCache.GetIssue(newIssueId);
 
                 if (mainIssue == null)
                 {
-                    var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                    var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
                     var parameters = new NameValueCollection { };
-                    mainIssue = new RedmineIssues.Item(manager.GetObject<Issue>(isId.ToString(), parameters));
+                    mainIssue = new RedmineIssues.Item(manager.GetObject<Issue>(newIssueId.ToString(), parameters));
 
                     if (mainIssue != null)
                     {
-                        App.Constants.IssuesCache.Add(mainIssue);
+                        App.Context.IssuesCache.Add(mainIssue);
                         cacheChanged = true;
                     }
 
@@ -197,27 +209,26 @@ namespace RedmineLog
                 {
                     lblIssue.Text = "";
                     lblIssue.Visible = false;
-                    lblIssue.Tag = null;
                     btnRemoveItem.Visible = false;
                 }
                 else
                 {
                     lblIssue.Text = mainIssue.Subject;
-                    lblIssue.Tag = App.Constants.Config.Url + "issues/" + isId;
+                    lblIssue.Tag = App.Context.Config.Url + "issues/" + newIssueId;
                     lblIssue.Visible = true;
 
                     btnRemoveItem.Visible = true;
 
-                    var tmp = App.Constants.History.GetIssue(isId);
+                    var tmp = App.Context.History.GetIssue(newIssueId);
 
                     if (tmp == null)
                     {
-                        tmp = new RedmineData.Issue(isId);
-                        App.Constants.History.Add(tmp);
-                        App.Constants.History.Save();
+                        tmp = new LogData.Issue(newIssueId);
+                        App.Context.History.Add(tmp);
+                        App.Context.History.Save();
                     }
 
-                    tbIssue.Tag = tmp;
+                    issueData = tmp;
 
                 }
 
@@ -226,17 +237,17 @@ namespace RedmineLog
                     && mainIssue.IdParent.HasValue)
                 {
 
-                    parentIssue = App.Constants.IssuesCache.GetIssue(mainIssue.IdParent.Value);
+                    parentIssue = App.Context.IssuesCache.GetIssue(mainIssue.IdParent.Value);
 
                     if (parentIssue == null)
                     {
-                        var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                        var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
                         var parameters = new NameValueCollection { };
                         parentIssue = new RedmineIssues.Item(manager.GetObject<Issue>(mainIssue.IdParent.Value.ToString(), parameters));
 
                         if (parentIssue != null)
                         {
-                            App.Constants.IssuesCache.Add(parentIssue);
+                            App.Context.IssuesCache.Add(parentIssue);
                             cacheChanged = true;
                         }
                     }
@@ -253,7 +264,9 @@ namespace RedmineLog
 
 
                 if (cacheChanged)
-                    App.Constants.IssuesCache.Save();
+                    App.Context.IssuesCache.Save();
+
+                SetupIssueWorkTime(mainIssue);
 
 
                 ManageHide();
@@ -265,37 +278,97 @@ namespace RedmineLog
             }
         }
 
-        private void OnClockClick(System.Object sender, System.EventArgs e)
+        private void SetupIssueWorkTime(RedmineIssues.Item mainIssue)
+        {
+            var tmpWork = App.Context.Work.Get(mainIssue.Id);
+
+            if (tmpWork != null)
+            {
+                workTime = tmpWork.WorkTime;
+                LoadComment(tmpWork.IdComment);
+            }
+            else
+            {
+                App.Context.Work.Add(new TimeLogData.TaskTime(mainIssue.Id,
+                    issueComment != null ? issueComment.Id : (Guid?)null,
+                    workTime));
+                App.Context.Work.Save();
+            }
+
+            if (clockMode == ClockMode.Stop)
+                SetClockMode(ClockMode.Play);
+        }
+
+        private void LoadComment(Guid? inIdComment)
+        {
+            if (issueData != null && inIdComment.HasValue)
+            {
+                issueComment = issueData.Comments.Where(x => x.Id == inIdComment.Value).FirstOrDefault();
+            }
+
+            if (issueComment != null)
+            {
+                tbComment.Text = issueComment.Text;
+                tbComment.ReadOnly = false;
+            }
+            else
+            {
+                tbComment.Text = "";
+                tbComment.ReadOnly = true;
+            }
+        }
+
+
+        private void SaveIssueWorkTime(RedmineIssues.Item mainIssue)
+        {
+            var tmp = App.Context.Work.Get(mainIssue.Id);
+
+            if (tmp == null)
+                App.Context.Work.Add(new TimeLogData.TaskTime(mainIssue.Id,
+                   issueComment != null ? issueComment.Id : (Guid?)null,
+                   workTime));
+            else
+            {
+                tmp.WorkTime = workTime;
+                tmp.IdComment = issueComment != null ? issueComment.Id : (Guid?)null;
+            }
+
+            SetClockMode(ClockMode.Stop);
+
+            App.Context.Work.Save();
+        }
+
+        private void SetClockMode(ClockMode inClockMode)
         {
             var tmpTime = workTime;
-            switch (clockMode)
+            switch (inClockMode)
             {
                 case ClockMode.Pause:
+                    clockMode = ClockMode.Pause;
+                    WorkTimer.Stop();
+                    btnClock.Text = "Play";
+                    break;
+                case ClockMode.Play:
                     clockMode = ClockMode.Play;
                     WorkTimer.Start();
                     btnClock.Text = "Pause";
                     ManageHide();
                     break;
-
-                case ClockMode.Play:
-                    clockMode = ClockMode.Pause;
-                    WorkTimer.Stop();
-                    btnClock.Text = "Play";
-                    break;
-
                 case ClockMode.Stop:
-                    clockMode = ClockMode.Play;
-                    WorkTimer.Start();
+                    clockMode = ClockMode.Stop;
+                    WorkTimer.Stop();
                     workTime = DateTime.MinValue;
-                    btnClock.Text = "Pause";
+                    btnClock.Text = "Play";
                     ManageHide();
                     break;
             }
             AppLogger.Log.Info("Clock: " + clockMode + " Time: " + tmpTime.ToLongTimeString());
         }
 
+
         private void OnExitClick(System.Object sender, System.EventArgs e)
         {
+            SaveIssueWorkTime(mainIssue);
             close = true;
             Application.Exit();
         }
@@ -317,7 +390,7 @@ namespace RedmineLog
                 this.Location = new Point(screen.WorkingArea.Right - this.Width, screen.WorkingArea.Bottom - this.Height);
 
 
-                if (!App.Constants.Config.Load())
+                if (!App.Context.Config.Load())
                 {
                     var objSettings = new frmSettings();
 
@@ -368,7 +441,7 @@ namespace RedmineLog
             }
 
             int totalIdleTimeInSeconds = idlTick / 1000;
-            if (totalIdleTimeInSeconds > App.Constants.Work.IdleSeconds)
+            if (totalIdleTimeInSeconds > App.Context.Work.IdleSeconds)
             {
                 if (WorkTimer.Enabled == true)
                 {
@@ -387,7 +460,7 @@ namespace RedmineLog
 
             if (!WorkTimer.Enabled)
             {
-                lblClockIndle.Text = idleTime.ToLongTimeString();
+                SetText(lblClockIndle, idleTime.ToLongTimeString());
 
                 if (small != null)
                     small.UpdateIdleTime(idleTime);
@@ -411,7 +484,7 @@ namespace RedmineLog
         {
             try
             {
-                Process.Start(App.Constants.Config.Url + "issues");
+                Process.Start(App.Context.Config.Url + "issues");
             }
             catch (Exception ex)
             {
@@ -443,11 +516,11 @@ namespace RedmineLog
 
                 decimal hours = (decimal)(time.Hour * 60 + time.Minute) / 60m;
 
-                var manager = new RedmineManager(App.Constants.Config.Url, App.Constants.Config.ApiKey);
+                var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
 
                 var response = manager.CreateObject<TimeEntry>(new TimeEntry()
                 {
-                    Issue = new IdentifiableName() { Id = Int32.Parse(tbIssue.Text) },
+                    Issue = new IdentifiableName() { Id = mainIssue.Id },
                     Activity = new IdentifiableName() { Id = ((TimeEntryActivity)cbActivity.SelectedItem).Id },
                     Comments = tbComment.Text,
                     Hours = decimal.Round(hours, 2),
@@ -457,16 +530,15 @@ namespace RedmineLog
 
                 if (submitMode == SubmitMode.Work)
                 {
-                    OnStopClick(btnStop, null);
+                    SetClockMode(ClockMode.Stop);
+                    SetText(lblClockActive, workTime.ToLongTimeString());
 
-                    tbComment.Text = "";
-                    tbComment.Tag = null;
-                    tbComment.ReadOnly = true;
+                    App.Context.Work.RemoveId(mainIssue.Id);
                 }
                 else
                 {
                     idleTime = DateTime.MinValue;
-                    lblClockIndle.Text = idleTime.ToLongTimeString();
+                    SetText(lblClockIndle, idleTime.ToLongTimeString());
                 }
             }
             catch (Exception ex)
@@ -499,16 +571,7 @@ namespace RedmineLog
 
         private void OnStopClick(System.Object sender, System.EventArgs e)
         {
-
-            clockMode = ClockMode.Stop;
-            AppLogger.Log.Info("Clock: " + clockMode + " Time: " + workTime.ToLongTimeString());
-
-            WorkTimer.Stop();
-            btnClock.Text = "Play";
-            workTime = DateTime.MinValue;
-
-            lblClockActive.Text = workTime.ToLongTimeString();
-            ManageHide();
+            SetClockMode(ClockMode.Stop);
         }
 
         private void OnWorkTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -516,13 +579,25 @@ namespace RedmineLog
             if (clockMode == ClockMode.Play)
             {
                 workTime = workTime.AddSeconds(1);
-                lblClockActive.Text = workTime.ToLongTimeString();
+                SetText(lblClockActive, workTime.ToLongTimeString());
 
                 if (small != null)
                     small.UpdateWorkTime(workTime);
             }
             else if (clockMode == ClockMode.Stop)
-            { lblClockActive.Text = DateTime.MinValue.ToLongTimeString(); }
+            {
+                SetText(lblClockActive, DateTime.MinValue.ToLongTimeString());
+            }
+        }
+
+        public void SetText(Label inLabel, string inText)
+        {
+            if (inLabel.InvokeRequired)
+            {
+                inLabel.Invoke(new MethodInvoker(() => SetText(inLabel, inText)));
+                return;
+            }
+            inLabel.Text = inText;
         }
 
 
@@ -556,39 +631,46 @@ namespace RedmineLog
         {
             AppLogger.Log.Info("Reset Idle Clock: " + clockMode + " Time: " + idleTime.ToLongTimeString());
             idleTime = DateTime.MinValue;
-            lblClockIndle.Text = idleTime.ToLongTimeString();
+            SetText(lblClockIndle, idleTime.ToLongTimeString());
         }
 
         private void OnNewCommentClick(object sender, EventArgs e)
         {
-            tbComment.Tag = new RedmineData.Issue.Comment() { Id = Guid.NewGuid() };
+            issueComment = new LogData.Issue.Comment() { Id = Guid.NewGuid() };
             tbComment.Text = "";
             tbComment.ReadOnly = false;
         }
 
         private void OnRemoveCommentClick(object sender, EventArgs e)
         {
-            var comment = tbComment.Tag as RedmineData.Issue.Comment;
-            tbComment.Tag = null;
+            var tmpIssue = App.Context.History.GetIssue(issueData);
+
+            if (tmpIssue != null && issueComment != null)
+            {
+                tmpIssue.Comments.Remove(issueComment);
+                App.Context.History.Save();
+            }
+
+            issueComment = null;
             tbComment.Text = "";
             tbComment.ReadOnly = true;
-
-            var tmpIssue = App.Constants.History.GetIssue(tbIssue.Tag);
-
-            if (tmpIssue != null && comment != null)
-            {
-                tmpIssue.Comments.Remove(comment);
-                App.Constants.History.Save();
-            }
         }
 
         private void OnSelectComment(object sender, ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem.Tag != null)
             {
-                tbComment.Text = e.ClickedItem.Tag.ToString();
-                tbComment.Tag = e.ClickedItem.Tag;
-                tbComment.ReadOnly = false;
+                issueComment = e.ClickedItem.Tag as LogData.Issue.Comment;
+                LoadComment(issueComment != null ? issueComment.Id : (Guid?)null);
+
+                var tmp = App.Context.Work.Get(issueData.Id);
+
+                if (tmp != null)
+                {
+                    tmp.IdComment = issueComment.Id;
+                    App.Context.Work.Save();
+                }
+
             }
         }
 
@@ -604,20 +686,20 @@ namespace RedmineLog
 
         private void AcceptComment()
         {
-            var tmpIssue = App.Constants.History.GetIssue(tbIssue.Tag);
+            var tmpIssue = App.Context.History.GetIssue(issueData);
 
             if (tmpIssue != null)
             {
-                var tmpComment = tmpIssue.Comments.Where(x => x.Equals(tbComment.Tag)).FirstOrDefault();
+                var tmpComment = tmpIssue.Comments.Where(x => x.Equals(issueComment)).FirstOrDefault();
 
                 if (tmpComment != null)
                 {
                     tmpComment.Text = tbComment.Text;
-                    App.Constants.History.Save();
+                    App.Context.History.Save();
                 }
                 else
                 {
-                    tmpComment = tbComment.Tag as RedmineData.Issue.Comment;
+                    tmpComment = issueComment;
 
                     if (tmpComment != null)
                     {
@@ -627,18 +709,18 @@ namespace RedmineLog
                         {
                             if (tmpComment.IsGlobal)
                             {
-                                tmpComment = new RedmineData.Issue.Comment()
+                                tmpComment = new LogData.Issue.Comment()
                                     {
                                         Id = Guid.NewGuid(),
                                     };
 
-                                tbComment.Tag = tmpComment;
+                                issueComment = tmpComment;
                             }
                         }
 
                         tmpComment.Text = tbComment.Text;
                         tmpIssue.Comments.Add(tmpComment);
-                        App.Constants.History.Save();
+                        App.Context.History.Save();
                     }
                 }
             }
@@ -646,7 +728,7 @@ namespace RedmineLog
 
         private void OnCommentClick(object sender, EventArgs e)
         {
-            if (tbComment.Tag != null)
+            if (issueComment != null)
                 return;
 
             ShowComments();
@@ -654,7 +736,7 @@ namespace RedmineLog
 
         private void ShowComments()
         {
-            var tmp = App.Constants.History.GetIssue(tbIssue.Tag);
+            var tmp = App.Context.History.GetIssue(issueData);
 
             cmComments.Items.Clear();
 
@@ -677,7 +759,7 @@ namespace RedmineLog
                 }
             }
 
-            tmp = App.Constants.History.GetIssue(-1);
+            tmp = App.Context.History.GetIssue(-1);
 
             if (tmp.Comments.Count > 0)
             {
@@ -702,9 +784,8 @@ namespace RedmineLog
 
         private void OnCommentLostFocus(object sender, EventArgs e)
         {
-            var comment = tbComment.Tag as RedmineData.Issue.Comment;
 
-            if (comment != null && !comment.Text.Equals(tbComment.Text))
+            if (issueComment != null && !issueComment.Text.Equals(tbComment.Text))
             {
                 AcceptComment();
             }
@@ -751,7 +832,7 @@ namespace RedmineLog
                 else
                     tbIssue.Text = id.ToString();
 
-                tbIssue.Tag = App.Constants.History.GetIssue(-1);
+
                 LoadIssue();
 
             };
@@ -774,6 +855,16 @@ namespace RedmineLog
         {
             tbIssue.SelectAll();
             tbIssue.Focus();
+        }
+
+        private void OnClockClick(object sender, EventArgs e)
+        {
+            if (clockMode == ClockMode.Play)
+            { SetClockMode(ClockMode.Pause); }
+
+            if (clockMode == ClockMode.Pause
+                || clockMode == ClockMode.Stop)
+            { SetClockMode(ClockMode.Play); }
         }
     }
 }

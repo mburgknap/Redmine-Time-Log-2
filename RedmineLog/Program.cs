@@ -4,11 +4,11 @@ using System.Windows.Forms;
 namespace RedmineLog
 {
 
-    public class AppConstants
+    public class AppContext
     {
         public readonly RedmineConfig Config = new RedmineConfig();
 
-        public readonly RedmineData History = new RedmineData();
+        public readonly LogData History = new LogData();
 
         public readonly TimeLogData Work = new TimeLogData();
 
@@ -21,10 +21,10 @@ namespace RedmineLog
 
         static App()
         {
-            Constants = new AppConstants();
+            Context = new AppContext();
         }
 
-        public static AppConstants Constants { get; private set; }
+        public static AppContext Context { get; private set; }
 
         /// <summary>
         /// The main entry point for the application.

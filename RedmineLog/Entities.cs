@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RedmineLog
@@ -17,8 +18,11 @@ namespace RedmineLog
 
         internal void Save()
         {
-            new SharpSerializer().Serialize(this, typeof(RedmineConfig).Name + ".xml");
-            AppLogger.Log.Info("RedmineConfig saved");
+            ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+            {
+                new SharpSerializer().Serialize(this, typeof(RedmineConfig).Name + ".xml");
+                AppLogger.Log.Info("RedmineConfig saved");
+            }));
         }
 
         internal bool Load()
@@ -42,20 +46,33 @@ namespace RedmineLog
 
     public class TimeLogData : List<TimeLogData.TaskTime>
     {
-
         public int IdleSeconds { get; set; }
+
         public class TaskTime
         {
-            public RedmineData.Issue Issue { get; set; }
-            public RedmineData.Issue.Comment Comment { get; set; }
-            public DateTime Time { get; set; }
+            public TaskTime()
+            {
+            }
+
+            public TaskTime(int idIssue, Guid? inIdComment, DateTime inWorkTime)
+            {
+                IdIssue = idIssue;
+                WorkTime = inWorkTime;
+                IdComment = inIdComment;
+            }
+            public int IdIssue { get; set; }
+            public Guid? IdComment { get; set; }
+            public DateTime WorkTime { get; set; }
         }
 
 
         internal void Save()
         {
-            new SharpSerializer().Serialize(this, typeof(TimeLogData).Name + ".xml");
-            AppLogger.Log.Info("TimeLogData saved");
+            ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+            {
+                new SharpSerializer().Serialize(this, typeof(TimeLogData).Name + ".xml");
+                AppLogger.Log.Info("TimeLogData saved");
+            }));
         }
 
         internal bool Load()
@@ -77,6 +94,16 @@ namespace RedmineLog
             return false;
         }
 
+
+        internal TimeLogData.TaskTime Get(int inIdIssue)
+        {
+            return this.Where(x => x.IdIssue == inIdIssue).FirstOrDefault();
+        }
+
+        internal void RemoveId(int inIdIssue)
+        {
+            Remove(Get(inIdIssue));
+        }
     }
 
     public class RedmineIssues : List<RedmineIssues.Item>
@@ -108,8 +135,11 @@ namespace RedmineLog
 
         internal void Save()
         {
-            new SharpSerializer().Serialize(this, typeof(RedmineIssues).Name + ".xml");
-            AppLogger.Log.Info("RedmineIssuesCache saved");
+            ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+            {
+                new SharpSerializer().Serialize(this, typeof(RedmineIssues).Name + ".xml");
+                AppLogger.Log.Info("RedmineIssuesCache saved");
+            }));
         }
 
         internal bool Load()
@@ -133,9 +163,9 @@ namespace RedmineLog
         }
     }
 
-    public class RedmineData : List<RedmineData.Issue>
+    public class LogData : List<LogData.Issue>
     {
-        public new bool Contains(RedmineData.Issue item)
+        public new bool Contains(LogData.Issue item)
         {
             return this.Where(x => x.Equals(item)).FirstOrDefault() != null;
         }
@@ -224,15 +254,18 @@ namespace RedmineLog
 
         internal void Save()
         {
-            new SharpSerializer().Serialize(this, typeof(RedmineData).Name + ".xml");
-            AppLogger.Log.Info("IssueHistory saved");
+            ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+            {
+                new SharpSerializer().Serialize(this, typeof(LogData).Name + ".xml");
+                AppLogger.Log.Info("IssueHistory saved");
+            }));
         }
 
         internal bool Load()
         {
-            if (File.Exists(new Uri(typeof(RedmineData).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(typeof(LogData).Name + ".xml", UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(RedmineData).Name + ".xml") as RedmineData;
+                var obj = new SharpSerializer().Deserialize(typeof(LogData).Name + ".xml") as LogData;
 
                 if (obj != null)
                 {
@@ -241,14 +274,14 @@ namespace RedmineLog
                 }
             }
 
-            Add(new RedmineData.Issue(-1));
+            Add(new LogData.Issue(-1));
 
             return false;
         }
 
-        internal RedmineData.Issue GetIssue(object inObj)
+        internal LogData.Issue GetIssue(object inObj)
         {
-            if (inObj is RedmineData.Issue)
+            if (inObj is LogData.Issue)
                 return this.Where(x => x.Equals(inObj)).FirstOrDefault();
 
             if (inObj is int)

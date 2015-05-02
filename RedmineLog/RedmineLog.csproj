@@ -62,6 +62,12 @@
   <ItemGroup>
     <Compile Include="AppLogger.cs" />
     <Compile Include="Entities.cs" />
+    <Compile Include="frmIdleInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIdleInfo.Designer.cs">
+      <DependentUpon>frmIdleInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +94,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmIdleInfo.resx">
+      <DependentUpon>frmIdleInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

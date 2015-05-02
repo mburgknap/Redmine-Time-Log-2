@@ -40,12 +40,12 @@ namespace RedmineLog
 
         internal void UpdateWorkTime(DateTime inTime)
         {
-            lbWorkTime.Text = inTime.ToLongTimeString();
+            SetText(lbWorkTime, inTime.ToLongTimeString());
         }
 
         internal void UpdateIdleTime(DateTime inTime)
         {
-            lbIdleTime.Text = inTime.ToLongTimeString();
+            SetText(lbIdleTime, inTime.ToLongTimeString());
         }
 
         private void OnlIssueLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -68,12 +68,12 @@ namespace RedmineLog
         {
             if (inIssue != null)
             {
-                lMainIssue.Text = inIssue.Subject;
-                lMainIssue.Tag = App.Constants.Config.Url + "issues/" + inIssue.Id;
+                SetText(lMainIssue, inIssue.Subject);
+                lMainIssue.Tag = App.Context.Config.Url + "issues/" + inIssue.Id;
             }
             else
             {
-                lMainIssue.Text = "";
+                SetText(lMainIssue, "");
                 lMainIssue.Tag = null;
             }
         }
@@ -81,10 +81,20 @@ namespace RedmineLog
         internal void SetParentIssue(RedmineIssues.Item inIssue)
         {
             if (inIssue != null)
-                lbParentIssue.Text = inIssue.Subject;
+                SetText(lbParentIssue, inIssue.Subject);
             else
-                lbParentIssue.Text = "";
+                SetText(lbParentIssue, "");
         }
 
+
+        public void SetText(Label inLabel, string inText)
+        {
+            if (inLabel.InvokeRequired)
+            {
+                inLabel.Invoke(new MethodInvoker(() => SetText(inLabel, inText)));
+                return;
+            }
+            inLabel.Text = inText;
+        }
     }
 }

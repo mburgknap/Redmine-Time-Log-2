@@ -10,15 +10,15 @@ namespace RedmineLog
             InitializeComponent();
 
             // Add any initialization after the InitializeComponent() call.
-            tbRedmineURL.Text = App.Constants.Config.Url;
-            tbApiKey.Text = App.Constants.Config.ApiKey;
+            tbRedmineURL.Text = App.Context.Config.Url;
+            tbApiKey.Text = App.Context.Config.ApiKey;
         }
 
         private void btnConnect_Click(System.Object sender, System.EventArgs e)
         {
-            App.Constants.Config.Url = tbRedmineURL.Text;
-            App.Constants.Config.ApiKey = tbApiKey.Text;
-            App.Constants.Config.Save();
+            App.Context.Config.Url = tbRedmineURL.Text;
+            App.Context.Config.ApiKey = tbApiKey.Text;
+            App.Context.Config.Save();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
