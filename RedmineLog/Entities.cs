@@ -218,6 +218,8 @@ namespace RedmineLog
             }
 
             public bool IsValid { get { return Id > 0; } }
+
+            public int UsedCount { get; set; }
         }
 
         internal void Save()

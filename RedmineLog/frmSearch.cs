@@ -38,7 +38,7 @@ namespace RedmineLog
 
             int row;
 
-            foreach (var item in App.Constants.History)
+            foreach (var item in App.Constants.History.OrderByDescending(x => x.UsedCount))
             {
                 main = App.Constants.IssuesCache.GetIssue(item.Id);
 
@@ -71,13 +71,17 @@ namespace RedmineLog
             this.Close();
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void OnGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             var item = dataGridView1.Rows[e.RowIndex].Tag as RedmineData.Issue;
 
             if (item != null && OnSelect != null)
+            {
+                var data = App.Constants.History.Where(x => x.Id == item.Id).First();
+                data.UsedCount += 1;
+                App.Constants.History.Save();
                 OnSelect(item.Id);
-
+            }
             this.Close();
         }
     }
