@@ -10,43 +10,60 @@ using System.Threading.Tasks;
 
 namespace RedmineLog
 {
-    public class RedmineConfig
+    public class AppSettings
     {
         public string Url { get; set; }
 
         public string ApiKey { get; set; }
 
+        public int IdleStateWaitTime { get; set; }
+
+        public int SaveIdleTimeInfo { get; set; }
+
+        public int SnoozeTime { get; set; }
+        public int ServiceSleepTime { get; set; }
+
         internal void Save()
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
             {
-                new SharpSerializer().Serialize(this, typeof(RedmineConfig).Name + ".xml");
+                new SharpSerializer().Serialize(this, typeof(AppSettings).Name + ".xml");
                 AppLogger.Log.Info("RedmineConfig saved");
             }));
         }
 
         internal bool Load()
         {
-            if (File.Exists(new Uri(typeof(RedmineConfig).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(typeof(AppSettings).Name + ".xml", UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(RedmineConfig).Name + ".xml") as RedmineConfig;
+                var obj = new SharpSerializer().Deserialize(typeof(AppSettings).Name + ".xml") as AppSettings;
 
                 if (obj != null)
                 {
                     Url = obj.Url;
                     ApiKey = obj.ApiKey;
+                    IdleStateWaitTime = obj.IdleStateWaitTime;
+                    SnoozeTime = obj.SnoozeTime;
+                    ServiceSleepTime = obj.ServiceSleepTime;
                     return true;
                 }
             }
 
+            ServiceSleepTime = 60;
+            SnoozeTime = 10;
+            IdleStateWaitTime = 60;
+            SaveIdleTimeInfo = 30;
+
             return false;
         }
+
+
+
     }
 
 
     public class TimeLogData : List<TimeLogData.TaskTime>
     {
-        public int IdleSeconds { get; set; }
 
         public class TaskTime
         {
@@ -84,12 +101,9 @@ namespace RedmineLog
                 if (obj != null)
                 {
                     AddRange(obj);
-                    IdleSeconds = obj.IdleSeconds;
                     return true;
                 }
             }
-
-            IdleSeconds = 60;
 
             return false;
         }

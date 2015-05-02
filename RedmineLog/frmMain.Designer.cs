@@ -376,7 +376,7 @@
             this.lHide.Size = new System.Drawing.Size(37, 17);
             this.lHide.TabIndex = 40;
             this.lHide.Text = "Hide";
-            this.lHide.MouseEnter += new System.EventHandler(this.OnHideMouseEnter);
+            this.lHide.Click += new System.EventHandler(this.OnHideClick);
             // 
             // frmMain
             // 
@@ -396,6 +396,7 @@
             this.Text = "RedmineLog";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
             this.Load += new System.EventHandler(this.OnFormLoad);
             this.Resize += new System.EventHandler(this.OnFormResize);
             this.issueInfoPanel.ResumeLayout(false);

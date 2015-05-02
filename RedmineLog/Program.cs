@@ -6,7 +6,7 @@ namespace RedmineLog
 
     public class AppContext
     {
-        public readonly RedmineConfig Config = new RedmineConfig();
+        public readonly AppSettings Config = new AppSettings();
 
         public readonly LogData History = new LogData();
 

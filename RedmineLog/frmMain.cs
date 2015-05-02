@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Linq;
+using System.Threading;
 
 namespace RedmineLog
 {
@@ -35,6 +36,10 @@ namespace RedmineLog
         private RedmineIssues.Item parentIssue;
         private System.Timers.Timer workTimer;
         private frmSearch search;
+        private bool saveIdleTimePopup = false;
+        private int saveIdleTimePopupTime;
+
+        private Thread backgroundThread;
 
         public frmMain()
         {
@@ -402,13 +407,11 @@ namespace RedmineLog
                 }
 
                 lblIssue.Text = "";
-                lblIssue.Tag = null;
-                lblIssue.Visible = false;
-                lblParentIssue.Text = "";
-                lblParentIssue.Visible = false;
-                btnRemoveItem.Visible = false;
 
                 LoadAppData();
+
+                backgroundThread = new Thread(new ThreadStart(this.BackgroundService));
+                backgroundThread.Start();
                 IdleTimer.Start();
             }
             catch (Exception ex)
@@ -419,10 +422,32 @@ namespace RedmineLog
             }
         }
 
-        private void OnIconClick(System.Object sender, System.Windows.Forms.MouseEventArgs e)
+
+        private void BackgroundService()
         {
-            this.Show();
+            while (!close)
+            {
+                if (!saveIdleTimePopup && new TimeSpan(idleTime.Ticks).TotalMinutes > saveIdleTimePopupTime)
+                {
+                    saveIdleTimePopup = true;
+
+                    ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
+                    {
+
+                        this.Invoke(new Action(() =>
+                        {
+                            MessageBox.Show("Zapisz czas nieaktywności", "Przypomienie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            OnClockIdleClick(lblClockIndle, null);
+                            saveIdleTimePopupTime += App.Context.Config.SnoozeTime;
+                            saveIdleTimePopup = false;
+                        }));
+                    }));
+                }
+
+                Thread.Sleep(1000 * App.Context.Config.ServiceSleepTime);
+            }
         }
+
 
         private void OnIdleCheckElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -441,7 +466,7 @@ namespace RedmineLog
             }
 
             int totalIdleTimeInSeconds = idlTick / 1000;
-            if (totalIdleTimeInSeconds > App.Context.Work.IdleSeconds)
+            if (totalIdleTimeInSeconds > App.Context.Config.IdleStateWaitTime)
             {
                 if (WorkTimer.Enabled == true)
                 {
@@ -815,11 +840,6 @@ namespace RedmineLog
             }
         }
 
-        private void OnHideMouseEnter(object sender, EventArgs e)
-        {
-            if (clockMode == ClockMode.Play)
-                WindowState = FormWindowState.Minimized;
-        }
 
 
         private void OnSearchIssueClick(object sender, EventArgs e)
@@ -865,6 +885,17 @@ namespace RedmineLog
             if (clockMode == ClockMode.Pause
                 || clockMode == ClockMode.Stop)
             { SetClockMode(ClockMode.Play); }
+        }
+
+        private void OnFormClosed(object sender, FormClosedEventArgs e)
+        {
+            close = true;
+        }
+
+        private void OnHideClick(object sender, EventArgs e)
+        {
+            if (clockMode == ClockMode.Play)
+                WindowState = FormWindowState.Minimized;
         }
     }
 }
