@@ -15,8 +15,9 @@ namespace RedmineLog
 {
     public partial class frmSearch : Form
     {
-
         public Action<int> OnSelect;
+        private Point appLocation;
+
         public frmSearch()
         {
             InitializeComponent();
@@ -29,9 +30,7 @@ namespace RedmineLog
 
         private void OnSearchLoad(object sender, EventArgs e)
         {
-
-            var screen = Screen.FromPoint(this.Location);
-            this.Location = new Point(screen.WorkingArea.Right - this.Width, screen.WorkingArea.Bottom - this.Height);
+            this.Location = appLocation;
 
             RedmineIssues.Item main = null;
             RedmineIssues.Item parent = null;
@@ -77,8 +76,11 @@ namespace RedmineLog
 
         private void OnGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            var item = dataGridView1.Rows[e.RowIndex].Tag as LogData.Issue;
+            SelectIssue(dataGridView1.Rows[e.RowIndex].Tag as LogData.Issue);
+        }
 
+        private void SelectIssue(LogData.Issue item)
+        {
             if (item != null && OnSelect != null)
             {
                 var data = App.Context.History.Where(x => x.Id == item.Id).First();
@@ -87,6 +89,20 @@ namespace RedmineLog
                 OnSelect(item.Id);
             }
             this.Close();
+        }
+
+        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+                return;
+
+            if (e.KeyCode == Keys.Enter)
+                SelectIssue(dataGridView1.SelectedRows[0].Tag as LogData.Issue);
+        }
+
+        internal void Init(Point point)
+        {
+            appLocation = point;
         }
     }
 }

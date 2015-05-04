@@ -59,6 +59,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(240, 414);
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnGrid_CellClick);
+            this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
             // IssueId
             // 

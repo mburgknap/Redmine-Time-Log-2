@@ -373,7 +373,8 @@ namespace RedmineLog
 
         private void OnExitClick(System.Object sender, System.EventArgs e)
         {
-            SaveIssueWorkTime(mainIssue);
+            if (mainIssue != null)
+                SaveIssueWorkTime(mainIssue);
             close = true;
             Application.Exit();
         }
@@ -845,6 +846,7 @@ namespace RedmineLog
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
             search = new frmSearch();
+            search.Init(this.Location);
             search.OnSelect = (int id) =>
             {
                 if (id < 0)
