@@ -33,7 +33,7 @@
             this.lnkExit = new System.Windows.Forms.Label();
             this.lnkSettings = new System.Windows.Forms.Label();
             this.lnkIssues = new System.Windows.Forms.Label();
-            this.btnSend = new System.Windows.Forms.Button();
+            this.btnSubmit = new System.Windows.Forms.Button();
             this.tbComment = new System.Windows.Forms.TextBox();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnStop = new System.Windows.Forms.Button();
@@ -57,6 +57,7 @@
             this.btnResetIdle = new System.Windows.Forms.Button();
             this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lHide = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -102,16 +103,16 @@
             this.lnkIssues.Text = "Redmine Issues";
             this.lnkIssues.Click += new System.EventHandler(this.OnRedmineIssuesClick);
             // 
-            // btnSend
+            // btnSubmit
             // 
-            this.btnSend.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(135, 289);
-            this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(96, 32);
-            this.btnSend.TabIndex = 22;
-            this.btnSend.Text = "Submit";
-            this.btnSend.UseVisualStyleBackColor = true;
-            this.btnSend.Click += new System.EventHandler(this.OnSubmitClick);
+            this.btnSubmit.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSubmit.Location = new System.Drawing.Point(133, 288);
+            this.btnSubmit.Name = "btnSubmit";
+            this.btnSubmit.Size = new System.Drawing.Size(61, 32);
+            this.btnSubmit.TabIndex = 22;
+            this.btnSubmit.Text = "Submit";
+            this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.OnSubmitClick);
             // 
             // tbComment
             // 
@@ -217,7 +218,7 @@
             this.btnRemoveItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnRemoveItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveItem.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveItem.Location = new System.Drawing.Point(105, 289);
+            this.btnRemoveItem.Location = new System.Drawing.Point(103, 288);
             this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(125, 0, 0, 0);
             this.btnRemoveItem.Name = "btnRemoveItem";
             this.btnRemoveItem.Size = new System.Drawing.Size(27, 32);
@@ -251,6 +252,7 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.button1);
             this.pManage.Controls.Add(this.button3);
             this.pManage.Controls.Add(this.tbIssue);
             this.pManage.Controls.Add(this.button2);
@@ -263,7 +265,7 @@
             this.pManage.Controls.Add(this.cbActivity);
             this.pManage.Controls.Add(this.issueInfoPanel);
             this.pManage.Controls.Add(this.btnStop);
-            this.pManage.Controls.Add(this.btnSend);
+            this.pManage.Controls.Add(this.btnSubmit);
             this.pManage.Controls.Add(this.lnkIssues);
             this.pManage.Location = new System.Drawing.Point(-5, 36);
             this.pManage.Name = "pManage";
@@ -378,6 +380,17 @@
             this.lHide.Text = "Hide";
             this.lHide.Click += new System.EventHandler(this.OnHideClick);
             // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(196, 288);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(32, 32);
+            this.button1.TabIndex = 45;
+            this.button1.Text = "All";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.OnSubmitAllClick);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -416,7 +429,7 @@
         internal System.Windows.Forms.Label lnkExit;
         internal System.Windows.Forms.Label lnkSettings;
         internal System.Windows.Forms.Label lnkIssues;
-        internal System.Windows.Forms.Button btnSend;
+        internal System.Windows.Forms.Button btnSubmit;
         internal System.Windows.Forms.TextBox tbComment;
         internal System.Windows.Forms.Timer Timer1;
         internal System.Windows.Forms.Button btnStop;
@@ -440,5 +453,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox tbIssue;
         private System.Windows.Forms.Button button3;
+        internal System.Windows.Forms.Button button1;
     }
 }

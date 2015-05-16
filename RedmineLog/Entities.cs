@@ -175,6 +175,11 @@ namespace RedmineLog
         {
             return this.Where(x => x.Id == id).FirstOrDefault();
         }
+
+        internal void RemoveIssue(int id)
+        {
+            Remove(GetIssue(id));
+        }
     }
 
     public class LogData : List<LogData.Issue>
