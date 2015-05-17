@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Ninject;
+using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -24,6 +26,8 @@ namespace RedmineLog
             Context = new AppContext();
         }
 
+        public static IKernel Kernel { get; private set; }
+
         public static AppContext Context { get; private set; }
 
         /// <summary>
@@ -32,6 +36,11 @@ namespace RedmineLog
         [STAThread]
         private static void Main()
         {
+            (Kernel = new StandardKernel())
+                    .Load(new Bindings(),
+                          new UI.Bindings(),
+                          new Model.Bindings(),
+                          new Logic.Bindings());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmMain());

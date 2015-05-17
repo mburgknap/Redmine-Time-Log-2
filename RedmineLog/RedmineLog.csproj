@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,6 +40,9 @@
     <ApplicationIcon>RedmineTimeLog.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject">
+      <HintPath>..\Lib\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\Lib\NLog.dll</HintPath>
     </Reference>
@@ -60,53 +64,63 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppLogger.cs" />
-    <Compile Include="Entities.cs" />
-    <Compile Include="frmIdleInfo.cs">
+    <Compile Include="Model\Bindings.cs" />
+    <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="Util\AppLogger.cs" />
+    <Compile Include="Bindings.cs" />
+    <Compile Include="Logic\Bindings.cs" />
+    <Compile Include="Logic\Common\ILogic.cs" />
+    <Compile Include="Logic\Data\Entities.cs" />
+    <Compile Include="Logic\SettingsLogic.cs" />
+    <Compile Include="UI\Common\IView.cs" />
+    <Compile Include="UI\Bindings.cs" />
+    <Compile Include="UI\frmIdleInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmIdleInfo.Designer.cs">
+    <Compile Include="UI\frmIdleInfo.Designer.cs">
       <DependentUpon>frmIdleInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="UI\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
+    <Compile Include="UI\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSearch.cs">
+    <Compile Include="UI\frmSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSearch.Designer.cs">
+    <Compile Include="UI\frmSearch.Designer.cs">
       <DependentUpon>frmSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSettings.cs">
+    <Compile Include="UI\frmSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSettings.Designer.cs">
+    <Compile Include="UI\frmSettings.Designer.cs">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSmall.cs">
+    <Compile Include="UI\frmSmall.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSmall.Designer.cs">
+    <Compile Include="UI\frmSmall.Designer.cs">
       <DependentUpon>frmSmall.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmIdleInfo.resx">
+    <Compile Include="UI\Views\IMainView.cs" />
+    <Compile Include="UI\Views\ISettingsView.cs" />
+    <EmbeddedResource Include="UI\frmIdleInfo.resx">
       <DependentUpon>frmIdleInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
+    <EmbeddedResource Include="UI\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSearch.resx">
+    <EmbeddedResource Include="UI\frmSearch.resx">
       <DependentUpon>frmSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSettings.resx">
+    <EmbeddedResource Include="UI\frmSettings.resx">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSmall.resx">
+    <EmbeddedResource Include="UI\frmSmall.resx">
       <DependentUpon>frmSmall.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -137,6 +151,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RedmineTimeLog.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Util\Common\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

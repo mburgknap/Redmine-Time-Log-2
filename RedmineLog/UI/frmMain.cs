@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Linq;
 using System.Threading;
+using Ninject;
 
 namespace RedmineLog
 {
@@ -40,6 +41,7 @@ namespace RedmineLog
 
         private Thread backgroundThread;
 
+
         public frmMain()
         {
             InitializeComponent();
@@ -50,7 +52,6 @@ namespace RedmineLog
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
             OnClockActiveClick(lblClockActive, null);
             ManageHide();
-
         }
 
         public enum ClockMode
