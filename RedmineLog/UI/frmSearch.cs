@@ -56,6 +56,11 @@ namespace RedmineLog
                 else
                     row = dataGridView1.Rows.Add(new Object[] { "", "", "" });
 
+                if (App.Context.Work.IsStarted(item.Id))
+                    dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.Red;
+                else
+                    dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.White;
+
                 dataGridView1.Rows[row].Tag = item;
 
             }

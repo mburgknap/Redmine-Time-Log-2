@@ -661,7 +661,6 @@ namespace RedmineLog
             inLabel.Text = inText;
         }
 
-
         internal struct LastInput
         {
             public uint cSize;
@@ -700,6 +699,7 @@ namespace RedmineLog
             issueComment = new LogData.Issue.Comment() { Id = Guid.NewGuid() };
             tbComment.Text = "";
             tbComment.ReadOnly = false;
+            tbComment.Focus();
         }
 
         private void OnRemoveCommentClick(object sender, EventArgs e)

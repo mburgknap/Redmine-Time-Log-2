@@ -118,6 +118,16 @@ namespace RedmineLog
         {
             Remove(Get(inIdIssue));
         }
+
+        internal bool IsStarted(int inIdIssue)
+        {
+            var work = Get(inIdIssue);
+
+            if (work != null)
+                return new TimeSpan(work.WorkTime.Ticks).TotalMinutes > 1;
+
+            return false;
+        }
     }
 
     public class RedmineIssues : List<RedmineIssues.Item>
