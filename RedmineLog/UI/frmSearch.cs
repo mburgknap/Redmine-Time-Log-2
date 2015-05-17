@@ -51,8 +51,7 @@ namespace RedmineLog
                     parent = null;
 
                 if (item.Id > 0)
-                    row = dataGridView1.Rows.Add(new Object[] { item.Id, main.Project, String.Format("{0}{1}{2}", GetSubject(parent), Environment.NewLine
-                                                                                                  , "   " + GetSubject(main)) });
+                    row = dataGridView1.Rows.Add(new Object[] { item.Id, main.Project, String.Format("{0}{1}", GetSubject(parent), GetSubject(main)) });
                 else
                     row = dataGridView1.Rows.Add(new Object[] { "", "", "" });
 
@@ -67,10 +66,10 @@ namespace RedmineLog
 
         }
 
-        private string GetSubject(RedmineIssues.Item main)
+        private string GetSubject(RedmineIssues.Item parent)
         {
-            if (main != null)
-                return main.Subject;
+            if (parent != null)
+                return parent.Subject + Environment.NewLine + "   ";
             return "";
         }
 
