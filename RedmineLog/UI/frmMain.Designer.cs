@@ -43,6 +43,7 @@
             this.lblParentIssue = new System.Windows.Forms.Label();
             this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.issueInfoPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblProject = new System.Windows.Forms.Label();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
@@ -58,7 +59,6 @@
             this.btnResetIdle = new System.Windows.Forms.Button();
             this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lHide = new System.Windows.Forms.Label();
-            this.lblProject = new System.Windows.Forms.Label();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -184,21 +184,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblParentIssue.AutoSize = true;
-            this.lblParentIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblParentIssue.Location = new System.Drawing.Point(0, 34);
-            this.lblParentIssue.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.lblParentIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblParentIssue.Location = new System.Drawing.Point(5, 19);
+            this.lblParentIssue.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.lblParentIssue.Name = "lblParentIssue";
-            this.lblParentIssue.Size = new System.Drawing.Size(0, 15);
+            this.lblParentIssue.Size = new System.Drawing.Size(5, 19);
             this.lblParentIssue.TabIndex = 33;
             // 
             // lblIssue
             // 
             this.lblIssue.AutoSize = true;
-            this.lblIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblIssue.Location = new System.Drawing.Point(0, 54);
-            this.lblIssue.Margin = new System.Windows.Forms.Padding(0);
+            this.lblIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblIssue.Location = new System.Drawing.Point(10, 38);
+            this.lblIssue.Margin = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.lblIssue.Name = "lblIssue";
-            this.lblIssue.Size = new System.Drawing.Size(0, 18);
+            this.lblIssue.Size = new System.Drawing.Size(0, 19);
             this.lblIssue.TabIndex = 34;
             this.lblIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnIssueLinkClick);
             // 
@@ -212,6 +212,19 @@
             this.issueInfoPanel.Name = "issueInfoPanel";
             this.issueInfoPanel.Size = new System.Drawing.Size(200, 131);
             this.issueInfoPanel.TabIndex = 35;
+            // 
+            // lblProject
+            // 
+            this.lblProject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblProject.AutoSize = true;
+            this.lblProject.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblProject.Location = new System.Drawing.Point(0, 0);
+            this.lblProject.Margin = new System.Windows.Forms.Padding(0);
+            this.lblProject.Name = "lblProject";
+            this.lblProject.Size = new System.Drawing.Size(10, 19);
+            this.lblProject.TabIndex = 35;
             // 
             // btnRemoveItem
             // 
@@ -392,19 +405,6 @@
             this.lHide.TabIndex = 40;
             this.lHide.Text = "Hide";
             this.lHide.Click += new System.EventHandler(this.OnHideClick);
-            // 
-            // lblProject
-            // 
-            this.lblProject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblProject.AutoSize = true;
-            this.lblProject.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblProject.Location = new System.Drawing.Point(0, 5);
-            this.lblProject.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.lblProject.Name = "lblProject";
-            this.lblProject.Size = new System.Drawing.Size(0, 19);
-            this.lblProject.TabIndex = 35;
             // 
             // frmMain
             // 

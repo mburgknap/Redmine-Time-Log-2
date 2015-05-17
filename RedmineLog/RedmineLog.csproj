@@ -81,12 +81,6 @@
     <Compile Include="Logic\SettingsLogic.cs" />
     <Compile Include="UI\Common\IView.cs" />
     <Compile Include="UI\Bindings.cs" />
-    <Compile Include="UI\frmIdleInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmIdleInfo.Designer.cs">
-      <DependentUpon>frmIdleInfo.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,9 +110,6 @@
     <Compile Include="UI\Views\IMainView.cs" />
     <Compile Include="UI\Views\ISettingsView.cs" />
     <Compile Include="Util\Common\EventExtension.cs" />
-    <EmbeddedResource Include="UI\frmIdleInfo.resx">
-      <DependentUpon>frmIdleInfo.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
