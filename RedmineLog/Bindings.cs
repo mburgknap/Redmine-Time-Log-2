@@ -1,4 +1,5 @@
-﻿using Ninject.Modules;
+﻿using Appccelerate.EventBroker;
+using Ninject.Modules;
 using NLog;
 using RedmineLog.Logic;
 using RedmineLog.UI.Views;
@@ -14,6 +15,7 @@ namespace RedmineLog
     {
         public override void Load()
         {
+            Bind<IEventBroker>().To<EventBroker>().InSingletonScope();
             Bind<Logger>().ToConstant(AppLogger.Log).InSingletonScope();
         }
     }

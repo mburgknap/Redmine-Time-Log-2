@@ -1,9 +1,11 @@
-﻿using Ninject;
+﻿using Appccelerate.EventBroker;
+using Ninject;
 using Ninject.Modules;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Common;
 using RedmineLog.UI.Common;
 using RedmineLog.UI.Views;
+using RedmineLog.Util.Common;
 using System;
 using System.Windows.Forms;
 
@@ -15,7 +17,7 @@ namespace RedmineLog
         {
             // This call is required by the Windows Form Designer.
             InitializeComponent();
-            ((SettingsView)App.Kernel.Get<ISettingsView>()).Init(this);
+            this.Initialize<ISettingsView, frmSettings>();
         }
     }
 
@@ -27,10 +29,17 @@ namespace RedmineLog
         frmSettings Form;
 
         [Inject]
-        public SettingsView(ISettingsModel inModel)
+        public SettingsView(ISettingsModel inModel, IEventBroker inEvent)
         {
             Model = inModel;
+            inEvent.Register(this);
         }
+
+        [EventPublication("topic://RedmineLog/Settings/Connect")]
+        public event EventHandler ConnectEvent;
+
+        [EventPublication("topic://RedmineLog/Settings/Init")]
+        public event EventHandler InitEvent;
 
         public void Init(frmSettings frmSettings)
         {
@@ -41,7 +50,7 @@ namespace RedmineLog
 
             Form.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
 
-            App.Kernel.Get<ILogic<ISettingsView>>().Init();
+            InitEvent.Fire(this);
         }
 
 
@@ -49,7 +58,8 @@ namespace RedmineLog
         {
             Model.Url = Form.tbRedmineURL.Text;
             Model.ApiKey = Form.tbApiKey.Text;
-            Model.Connect();
+
+            ConnectEvent.Fire(this);
 
             Form.DialogResult = System.Windows.Forms.DialogResult.OK;
         }

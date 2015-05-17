@@ -8,8 +8,6 @@ namespace RedmineLog.Logic.Common
 {
     interface ILogic<TView>
     {
-        void Init();
-
         void Apply(string inCmd);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Ninject;
+﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
+using Ninject;
 using Ninject.Modules;
 using RedmineLog.Logic.Common;
 using RedmineLog.UI.Views;
@@ -20,29 +22,33 @@ namespace RedmineLog.Logic
     internal class SettingsLogic : ILogic<ISettingsView>
     {
         [Inject]
-        public SettingsLogic(ISettingsView inView, ISettingsModel inModel)
+        public SettingsLogic(ISettingsView inView, ISettingsModel inModel, IEventBroker inEvent)
         {
             View = inView;
             Model = inModel;
-            Model.Connect = () =>
-            {
-                App.Context.Config.Save();
-            };
+            inEvent.Register(this);
         }
 
         private ISettingsView View;
 
         private ISettingsModel Model;
 
-        public void Init()
+        public void Apply(string inCmd)
+        {
+
+        }
+
+        [EventSubscription("topic://RedmineLog/Settings/Init", typeof(OnPublisher))]
+        public void OnInitEvent(object sender, EventArgs arg)
         {
             System.Diagnostics.Debug.WriteLine("View " + View.GetType().Name);
             System.Diagnostics.Debug.WriteLine("Model " + Model.GetType().Name);
         }
 
-        public void Apply(string inCmd)
+        [EventSubscription("topic://RedmineLog/Settings/Connect", typeof(OnPublisher))]
+        public void OnConnectEvent(object sender, EventArgs arg)
         {
-
+            App.Context.Config.Save();
         }
     }
 }
