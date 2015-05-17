@@ -73,6 +73,12 @@
     <Compile Include="Model\Bindings.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="UI\Common\FormExtensions.cs" />
+    <Compile Include="UI\frmWorkLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmWorkLog.Designer.cs">
+      <DependentUpon>frmWorkLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Util\AppLogger.cs" />
     <Compile Include="Bindings.cs" />
     <Compile Include="Logic\Bindings.cs" />
@@ -112,6 +118,9 @@
     <Compile Include="Util\Common\EventExtension.cs" />
     <EmbeddedResource Include="UI\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmWorkLog.resx">
+      <DependentUpon>frmWorkLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSearch.resx">
       <DependentUpon>frmSearch.cs</DependentUpon>

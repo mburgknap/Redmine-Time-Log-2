@@ -35,7 +35,6 @@ namespace RedmineLog
         private LogData.Issue.Comment issueComment;
         private LogData.Issue issueData;
         private System.Timers.Timer workTimer;
-        private frmSearch search;
         private bool saveIdleTimePopup = false;
         private int saveIdleTimePopupTime;
 
@@ -892,7 +891,7 @@ namespace RedmineLog
         {
             AcceptComment();
 
-            search = new frmSearch();
+            var search = new frmSearch();
             search.Init(this.Location);
             search.OnSelect = (int id) =>
             {
@@ -906,7 +905,6 @@ namespace RedmineLog
 
             };
             search.Show();
-
         }
 
         private void OnIssueKeyDown(object sender, KeyEventArgs e)
@@ -950,6 +948,20 @@ namespace RedmineLog
         private void OnSubmitAllClick(object sender, EventArgs e)
         {
             SubmitWorkTime(SubmitMode.All);
+        }
+
+        private void btnWorkTime_Click(object sender, EventArgs e)
+        {
+            AcceptComment();
+
+            var worklog = new frmWorkLog();
+            worklog.Init(this.Location);
+            worklog.OnSelect = (int id) =>
+            {
+                tbIssue.Text = id.ToString();
+                LoadIssue();
+            };
+            worklog.Show();
         }
     }
 }

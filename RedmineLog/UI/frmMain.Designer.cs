@@ -48,6 +48,7 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.btnWorkTime = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.tbIssue = new System.Windows.Forms.TextBox();
@@ -97,7 +98,7 @@
             this.lnkIssues.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkIssues.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkIssues.ForeColor = System.Drawing.Color.Blue;
-            this.lnkIssues.Location = new System.Drawing.Point(126, 264);
+            this.lnkIssues.Location = new System.Drawing.Point(130, 156);
             this.lnkIssues.Name = "lnkIssues";
             this.lnkIssues.Size = new System.Drawing.Size(103, 17);
             this.lnkIssues.TabIndex = 24;
@@ -267,6 +268,7 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.btnWorkTime);
             this.pManage.Controls.Add(this.button1);
             this.pManage.Controls.Add(this.button3);
             this.pManage.Controls.Add(this.tbIssue);
@@ -286,6 +288,16 @@
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
+            // 
+            // btnWorkTime
+            // 
+            this.btnWorkTime.Location = new System.Drawing.Point(104, 261);
+            this.btnWorkTime.Name = "btnWorkTime";
+            this.btnWorkTime.Size = new System.Drawing.Size(125, 23);
+            this.btnWorkTime.TabIndex = 46;
+            this.btnWorkTime.Text = "Working";
+            this.btnWorkTime.UseVisualStyleBackColor = true;
+            this.btnWorkTime.Click += new System.EventHandler(this.btnWorkTime_Click);
             // 
             // button1
             // 
@@ -323,7 +335,7 @@
             // 
             this.button2.Location = new System.Drawing.Point(28, 261);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(72, 23);
             this.button2.TabIndex = 42;
             this.button2.Text = "Issues";
             this.button2.UseVisualStyleBackColor = true;
@@ -470,5 +482,6 @@
         private System.Windows.Forms.Button button3;
         internal System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblProject;
+        private System.Windows.Forms.Button btnWorkTime;
     }
 }
