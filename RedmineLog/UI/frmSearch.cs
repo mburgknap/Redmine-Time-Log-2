@@ -51,10 +51,10 @@ namespace RedmineLog
                     parent = null;
 
                 if (item.Id > 0)
-                    row = dataGridView1.Rows.Add(new Object[] { item.Id, String.Format("{0}{1}{2}", GetSubject(parent), Environment.NewLine
+                    row = dataGridView1.Rows.Add(new Object[] { item.Id, main.Project, String.Format("{0}{1}{2}", GetSubject(parent), Environment.NewLine
                                                                                                   , "   " + GetSubject(main)) });
                 else
-                    row = dataGridView1.Rows.Add(new Object[] { "", "" });
+                    row = dataGridView1.Rows.Add(new Object[] { "", "", "" });
 
                 dataGridView1.Rows[row].Tag = item;
 
@@ -76,7 +76,8 @@ namespace RedmineLog
 
         private void OnGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            SelectIssue(dataGridView1.Rows[e.RowIndex].Tag as LogData.Issue);
+            if (e.RowIndex > 0)
+                SelectIssue(dataGridView1.Rows[e.RowIndex].Tag as LogData.Issue);
         }
 
         private void SelectIssue(LogData.Issue item)

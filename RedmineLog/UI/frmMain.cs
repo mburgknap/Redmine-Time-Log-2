@@ -166,6 +166,8 @@ namespace RedmineLog
 
                 if (!int.TryParse(tbIssue.Text, out newIssueId))
                 {
+                    lblProject.Text = "";
+                    lblProject.Visible = false;
                     lblIssue.Text = "";
                     lblIssue.Tag = null;
                     lblIssue.Visible = false;
@@ -206,7 +208,11 @@ namespace RedmineLog
                 {
                     var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
                     var parameters = new NameValueCollection { };
-                    tmpIssue = new RedmineIssues.Item(manager.GetObject<Issue>(newIssueId.ToString(), parameters));
+
+                    var issue = manager.GetObject<Issue>(newIssueId.ToString(), parameters);
+                    var project = manager.GetObject<Project>(issue.Project.Id.ToString(), parameters);
+
+                    tmpIssue = new RedmineIssues.Item(issue, project);
 
                     App.Context.IssuesCache.Add(tmpIssue);
                     issueData = new LogData.Issue(tmpIssue.Id);
@@ -216,13 +222,17 @@ namespace RedmineLog
 
                 if (tmpIssue == null)
                 {
+                    lblProject.Text = "";
+                    lblProject.Visible = false;
                     lblIssue.Text = "";
                     lblIssue.Visible = false;
                     btnRemoveItem.Visible = false;
                 }
                 else
                 {
-                    lblIssue.Text = tmpIssue.Subject;
+                    lblProject.Text = "Project : " + tmpIssue.Project;
+                    lblProject.Visible = true;
+                    lblIssue.Text = "Task : " + tmpIssue.Subject;
                     lblIssue.Tag = App.Context.Config.Url + "issues/" + newIssueId;
                     lblIssue.Visible = true;
 
@@ -246,20 +256,20 @@ namespace RedmineLog
                     && tmpIssue.IdParent.HasValue)
                 {
 
-                   var tmpParentIssue = App.Context.IssuesCache.GetIssue(tmpIssue.IdParent.Value);
+                    var tmpParentIssue = App.Context.IssuesCache.GetIssue(tmpIssue.IdParent.Value);
 
-                   if (tmpParentIssue == null)
+                    if (tmpParentIssue == null)
                     {
                         var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
                         var parameters = new NameValueCollection { };
-                        tmpIssue = new RedmineIssues.Item(manager.GetObject<Issue>(tmpIssue.IdParent.Value.ToString(), parameters));
 
-                        App.Context.IssuesCache.Add(tmpIssue);
+                        tmpParentIssue = new RedmineIssues.Item(manager.GetObject<Issue>(tmpIssue.IdParent.Value.ToString(), parameters), null);
+
+                        App.Context.IssuesCache.Add(tmpParentIssue);
                         cacheChanged = true;
-
                     }
 
-                    lblParentIssue.Text = tmpIssue.Subject;
+                    lblParentIssue.Text = "Issue : " + tmpParentIssue.Subject;
                     lblParentIssue.Visible = true;
                 }
 
@@ -856,20 +866,23 @@ namespace RedmineLog
             }
             else if (WindowState == FormWindowState.Minimized)
             {
+                var issue = App.Context.IssuesCache.GetIssue(issueData.Id);
+
                 small = new frmSmall(this);
 
-                var issue = App.Context.IssuesCache.GetIssue(issueData.Id);
                 small.SetMainIssue(issue);
-                issue = null;
 
                 if (issue.IdParent.HasValue)
                     issue = App.Context.IssuesCache.GetIssue(issue.IdParent.Value);
+                else
+                    issue = null;
 
                 small.SetParentIssue(issue);
                 small.UpdateWorkTime(workTime);
                 small.UpdateIdleTime(idleTime);
                 small.ShowDialog();
                 System.Diagnostics.Debug.WriteLine(WindowState.ToString());
+
             }
         }
 

@@ -48,13 +48,13 @@ namespace RedmineLog
             Form.tbRedmineURL.Text = Model.Url;
             Form.tbApiKey.Text = Model.ApiKey;
 
-            Form.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            Form.btnConnect.Click += this.OnConnectClick;
 
             InitEvent.Fire(this);
         }
 
 
-        private void btnConnect_Click(System.Object sender, System.EventArgs e)
+        private void OnConnectClick(System.Object sender, System.EventArgs e)
         {
             Model.Url = Form.tbRedmineURL.Text;
             Model.ApiKey = Form.tbApiKey.Text;

@@ -34,6 +34,7 @@
             this.lbParentIssue = new System.Windows.Forms.Label();
             this.lMainIssue = new System.Windows.Forms.LinkLabel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lProject = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -42,7 +43,7 @@
             this.lbWorkTime.AutoSize = true;
             this.lbWorkTime.Font = new System.Drawing.Font("Segoe UI", 11.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbWorkTime.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbWorkTime.Location = new System.Drawing.Point(5, 48);
+            this.lbWorkTime.Location = new System.Drawing.Point(4, 81);
             this.lbWorkTime.Name = "lbWorkTime";
             this.lbWorkTime.Size = new System.Drawing.Size(72, 21);
             this.lbWorkTime.TabIndex = 0;
@@ -54,7 +55,7 @@
             this.lbIdleTime.AutoSize = true;
             this.lbIdleTime.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbIdleTime.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lbIdleTime.Location = new System.Drawing.Point(79, 62);
+            this.lbIdleTime.Location = new System.Drawing.Point(78, 90);
             this.lbIdleTime.Name = "lbIdleTime";
             this.lbIdleTime.Size = new System.Drawing.Size(55, 15);
             this.lbIdleTime.TabIndex = 1;
@@ -64,18 +65,19 @@
             // lbParentIssue
             // 
             this.lbParentIssue.AutoSize = true;
-            this.lbParentIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbParentIssue.Location = new System.Drawing.Point(3, 3);
+            this.lbParentIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbParentIssue.Location = new System.Drawing.Point(3, 19);
             this.lbParentIssue.Margin = new System.Windows.Forms.Padding(0);
             this.lbParentIssue.Name = "lbParentIssue";
             this.lbParentIssue.Size = new System.Drawing.Size(0, 13);
             this.lbParentIssue.TabIndex = 2;
+            this.lbParentIssue.Click += new System.EventHandler(this.OnFormClick);
             // 
             // lMainIssue
             // 
             this.lMainIssue.AutoSize = true;
             this.lMainIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lMainIssue.Location = new System.Drawing.Point(18, 18);
+            this.lMainIssue.Location = new System.Drawing.Point(18, 34);
             this.lMainIssue.Margin = new System.Windows.Forms.Padding(15, 2, 0, 0);
             this.lMainIssue.Name = "lMainIssue";
             this.lMainIssue.Size = new System.Drawing.Size(0, 13);
@@ -84,6 +86,7 @@
             // 
             // flowLayoutPanel1
             // 
+            this.flowLayoutPanel1.Controls.Add(this.lProject);
             this.flowLayoutPanel1.Controls.Add(this.lbParentIssue);
             this.flowLayoutPanel1.Controls.Add(this.lMainIssue);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -91,15 +94,26 @@
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3, 3, 0, 0);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(130, 46);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(130, 80);
             this.flowLayoutPanel1.TabIndex = 4;
             this.flowLayoutPanel1.Click += new System.EventHandler(this.OnFormClick);
+            // 
+            // lProject
+            // 
+            this.lProject.AutoSize = true;
+            this.lProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lProject.Location = new System.Drawing.Point(3, 3);
+            this.lProject.Margin = new System.Windows.Forms.Padding(0);
+            this.lProject.Name = "lProject";
+            this.lProject.Size = new System.Drawing.Size(0, 16);
+            this.lProject.TabIndex = 4;
+            this.lProject.Click += new System.EventHandler(this.OnFormClick);
             // 
             // frmSmall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(136, 78);
+            this.ClientSize = new System.Drawing.Size(136, 107);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.lbIdleTime);
             this.Controls.Add(this.lbWorkTime);
@@ -127,5 +141,6 @@
         private System.Windows.Forms.Label lbParentIssue;
         private System.Windows.Forms.LinkLabel lMainIssue;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label lProject;
     }
 }

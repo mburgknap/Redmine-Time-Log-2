@@ -129,7 +129,7 @@ namespace RedmineLog
             {
             }
 
-            public Item(Issue issue)
+            public Item(Issue issue, Project project)
             {
                 Id = issue.Id;
                 if (issue.ParentIssue != null)
@@ -138,12 +138,18 @@ namespace RedmineLog
                     IdParent = null;
 
                 Subject = issue.Subject;
+
+                if (project != null)
+                    Project = project.Name;
+
             }
             public int Id { get; set; }
 
             public int? IdParent { get; set; }
 
             public string Subject { get; set; }
+
+            public string Project { get; set; }
 
         }
 

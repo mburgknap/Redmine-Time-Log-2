@@ -69,11 +69,13 @@ namespace RedmineLog
             if (inIssue != null)
             {
                 SetText(lMainIssue, inIssue.Subject);
+                SetText(lProject, inIssue.Project);
                 lMainIssue.Tag = App.Context.Config.Url + "issues/" + inIssue.Id;
             }
             else
             {
                 SetText(lMainIssue, "");
+                SetText(lProject, "");
                 lMainIssue.Tag = null;
             }
         }
