@@ -21,7 +21,10 @@ namespace RedmineLog
         public int SaveIdleTimeInfo { get; set; }
 
         public int SnoozeTime { get; set; }
+
         public int ServiceSleepTime { get; set; }
+
+        public int IdUser { get; set; }
 
         internal void Save()
         {
@@ -45,6 +48,7 @@ namespace RedmineLog
                     IdleStateWaitTime = obj.IdleStateWaitTime;
                     SnoozeTime = obj.SnoozeTime;
                     ServiceSleepTime = obj.ServiceSleepTime;
+                    IdUser = obj.IdUser;
                     return true;
                 }
             }
@@ -53,11 +57,10 @@ namespace RedmineLog
             SnoozeTime = 10;
             IdleStateWaitTime = 60;
             SaveIdleTimeInfo = 30;
+            IdUser = 0;
 
             return false;
         }
-
-
 
     }
 

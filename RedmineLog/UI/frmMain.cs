@@ -271,8 +271,7 @@ namespace RedmineLog
                     lblParentIssue.Text = "Issue : " + tmpParentIssue.Subject;
                     lblParentIssue.Visible = true;
                 }
-
-                if (tmpIssue == null)
+                else
                 {
                     lblParentIssue.Text = "";
                     lblParentIssue.Visible = false;
@@ -956,10 +955,35 @@ namespace RedmineLog
 
             var worklog = new frmWorkLog();
             worklog.Init(this.Location);
-            worklog.OnSelect = (int id) =>
+            worklog.OnSelect = (id, comment) =>
             {
                 tbIssue.Text = id.ToString();
                 LoadIssue();
+
+                if (issueData != null)
+                {
+
+                    var tmpIssue = App.Context.History.GetIssue(issueData.Id);
+
+                    foreach (var item in tmpIssue.Comments)
+                    {
+                        if (!item.IsGlobal && String.Equals(item.Text, comment))
+                        {
+                            issueComment = item;
+                            tbComment.ReadOnly = false;
+                            tbComment.Text = comment;
+                            break;
+                        }
+                    }
+
+                    if (issueComment == null)
+                    {
+                        OnNewCommentClick(null, EventArgs.Empty);
+                        tbComment.Text = comment;
+                        AcceptComment();
+                    }
+
+                }
             };
             worklog.Show();
         }

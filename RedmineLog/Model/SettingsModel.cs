@@ -13,6 +13,7 @@ namespace RedmineLog.Model
 
         public string ApiKey { get { return App.Context.Config.ApiKey; } set { App.Context.Config.ApiKey = value; } }
 
-        public Action Connect { get; set; }
+        public int IdUser { get { return App.Context.Config.IdUser; } set { App.Context.Config.IdUser = value; } }
+
     }
 }

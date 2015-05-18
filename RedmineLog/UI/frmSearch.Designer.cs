@@ -58,7 +58,7 @@
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(244, 464);
+            this.dataGridView1.Size = new System.Drawing.Size(244, 505);
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnGrid_CellClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
@@ -74,7 +74,8 @@
             this.IssueId.Name = "IssueId";
             this.IssueId.ReadOnly = true;
             this.IssueId.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.IssueId.Width = 47;
+            this.IssueId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.IssueId.Width = 40;
             // 
             // Project
             // 
@@ -82,6 +83,7 @@
             this.Project.HeaderText = "Project";
             this.Project.Name = "Project";
             this.Project.ReadOnly = true;
+            this.Project.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // IssueDetail
             // 
@@ -94,12 +96,13 @@
             this.IssueDetail.Name = "IssueDetail";
             this.IssueDetail.ReadOnly = true;
             this.IssueDetail.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.IssueDetail.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // frmSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(248, 469);
+            this.ClientSize = new System.Drawing.Size(248, 509);
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmSearch";

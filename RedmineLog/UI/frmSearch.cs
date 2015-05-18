@@ -45,23 +45,25 @@ namespace RedmineLog
             {
                 main = App.Context.IssuesCache.GetIssue(item.Id);
 
-                if (main != null && main.IdParent.HasValue)
-                    parent = App.Context.IssuesCache.GetIssue(main.IdParent.Value);
-                else
-                    parent = null;
+                if (main != null)
+                {
+                    if (main.IdParent.HasValue)
+                        parent = App.Context.IssuesCache.GetIssue(main.IdParent.Value);
+                    else
+                        parent = null;
 
-                if (item.Id > 0)
-                    row = dataGridView1.Rows.Add(new Object[] { item.Id, main.Project, String.Format("{0}{1}", GetSubject(parent), GetSubject(main)) });
-                else
-                    row = dataGridView1.Rows.Add(new Object[] { "", "", "" });
+                    if (item.Id > 0)
+                        row = dataGridView1.Rows.Add(new Object[] { item.Id, main.Project, String.Format("{0}{1}", GetSubject(parent), GetSubject(main)) });
+                    else
+                        row = dataGridView1.Rows.Add(new Object[] { "", "", "" });
 
-                if (App.Context.Work.IsStarted(item.Id))
-                    dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.Red;
-                else
-                    dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.White;
+                    if (App.Context.Work.IsStarted(item.Id))
+                        dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.Red;
+                    else
+                        dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.White;
 
-                dataGridView1.Rows[row].Tag = item;
-
+                    dataGridView1.Rows[row].Tag = item;
+                }
             }
 
         }
@@ -98,6 +100,10 @@ namespace RedmineLog
 
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
+
+            if (e.KeyCode == Keys.Escape)
+                this.Close();
+
             if (dataGridView1.SelectedRows.Count == 0)
                 return;
 
@@ -109,5 +115,6 @@ namespace RedmineLog
         {
             appLocation = point;
         }
+
     }
 }

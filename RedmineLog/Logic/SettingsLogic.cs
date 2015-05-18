@@ -2,10 +2,12 @@
 using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using Ninject.Modules;
+using Redmine.Net.Api;
 using RedmineLog.Logic.Common;
 using RedmineLog.UI.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace RedmineLog.Logic
     {
         string Url { get; set; }
         string ApiKey { get; set; }
-        Action Connect { get; set; }
+        int IdUser { get; set; }
     }
 
     internal class SettingsLogic : ILogic<ISettingsView>
@@ -48,6 +50,10 @@ namespace RedmineLog.Logic
         [EventSubscription("topic://RedmineLog/Settings/Connect", typeof(OnPublisher))]
         public void OnConnectEvent(object sender, EventArgs arg)
         {
+            var parameters = new NameValueCollection { };
+            var manager = new RedmineManager(Model.Url, Model.ApiKey);
+            var user = manager.GetCurrentUser(parameters);
+            Model.IdUser = user.Id;
             App.Context.Config.Save();
         }
     }
