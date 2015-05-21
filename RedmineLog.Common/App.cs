@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RedmineLog.Logic.Common
+namespace RedmineLog.Common
 {
-    interface ILogic<TView>
+    public static class Global
     {
-        void Apply(string inCmd);
+        public interface IView
+        {
+        }
     }
 }

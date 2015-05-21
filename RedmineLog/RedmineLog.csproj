@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RedmineLog.App</StartupObject>
+    <StartupObject>RedmineLog.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>RedmineTimeLog.ico</ApplicationIcon>
@@ -70,8 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Bindings.cs" />
-    <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="UI\Common\FormExtensions.cs" />
     <Compile Include="UI\frmWorkLog.cs">
       <SubType>Form</SubType>
@@ -79,12 +77,8 @@
     <Compile Include="UI\frmWorkLog.Designer.cs">
       <DependentUpon>frmWorkLog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\AppLogger.cs" />
+    <Compile Include="UI\Views\IApp.cs" />
     <Compile Include="Bindings.cs" />
-    <Compile Include="Logic\Bindings.cs" />
-    <Compile Include="Logic\Common\ILogic.cs" />
-    <Compile Include="Logic\Data\Entities.cs" />
-    <Compile Include="Logic\SettingsLogic.cs" />
     <Compile Include="UI\Common\IView.cs" />
     <Compile Include="UI\Bindings.cs" />
     <Compile Include="UI\frmMain.cs">
@@ -114,8 +108,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Views\IMainView.cs" />
-    <Compile Include="UI\Views\ISettingsView.cs" />
-    <Compile Include="Util\Common\EventExtension.cs" />
     <EmbeddedResource Include="UI\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -160,7 +152,20 @@
   <ItemGroup>
     <Content Include="RedmineTimeLog.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RedmineLog.Common\RedmineLog.Common.csproj">
+      <Project>{1e0d94b7-e265-430b-b223-e65f9d5bbb23}</Project>
+      <Name>RedmineLog.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RedmineLog.Logic\RedmineLog.Logic.csproj">
+      <Project>{c9b9b20d-e05e-450c-bdba-f980bc4ba8a2}</Project>
+      <Name>RedmineLog.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RedmineLog.Utils\RedmineLog.Utils.csproj">
+      <Project>{7a3108aa-5854-489f-957b-8ed7151248de}</Project>
+      <Name>RedmineLog.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

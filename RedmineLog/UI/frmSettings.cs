@@ -1,11 +1,14 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Matchers;
 using Ninject;
 using Ninject.Modules;
+using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Common;
 using RedmineLog.UI.Common;
 using RedmineLog.UI.Views;
-using RedmineLog.Util.Common;
+using RedmineLog.Utils;
+using RedmineLog.Utils.Common;
 using System;
 using System.Windows.Forms;
 
@@ -17,29 +20,33 @@ namespace RedmineLog
         {
             // This call is required by the Windows Form Designer.
             InitializeComponent();
-            this.Initialize<ISettingsView, frmSettings>();
+            this.Initialize<Settings.IView, frmSettings>();
         }
     }
 
 
-    class SettingsView : ISettingsView, IView<frmSettings>
+    class SettingsView : Settings.IView, IView<frmSettings>
     {
-        ISettingsModel Model;
+        Settings.IModel Model;
 
         frmSettings Form;
 
         [Inject]
-        public SettingsView(ISettingsModel inModel, IEventBroker inEvent)
+        public SettingsView(Settings.IModel inModel, IEventBroker inGlobalEvent)
         {
             Model = inModel;
-            inEvent.Register(this);
+            //  inGlobalEvent.AddGlobalMatcher(new MyMatcher());
+            inGlobalEvent.Register(this);
         }
 
-        [EventPublication("topic://RedmineLog/Settings/Connect")]
+        [EventPublication(Settings.Connect, typeof(Publish<Settings.IView>))]
         public event EventHandler ConnectEvent;
 
-        [EventPublication("topic://RedmineLog/Settings/Init")]
-        public event EventHandler InitEvent;
+        [EventPublication(Settings.Load, typeof(Publish<Settings.IView>))]
+        public event EventHandler LoadEvent;
+
+        [EventPublication("topic://Global/Info", typeof(Publish<IAppView>))]
+        public event EventHandler InfoEvent;
 
         public void Init(frmSettings frmSettings)
         {
@@ -49,8 +56,13 @@ namespace RedmineLog
             Form.tbApiKey.Text = Model.ApiKey;
 
             Form.btnConnect.Click += this.OnConnectClick;
+            Form.FormClosed += (s, e) =>
+            {
+                InfoEvent.Fire(this);
+                Console.WriteLine("FormClosed");
+            };
 
-            InitEvent.Fire(this);
+            LoadEvent.Fire(this);
         }
 
 
@@ -62,6 +74,16 @@ namespace RedmineLog
             ConnectEvent.Fire(this);
 
             Form.DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        public void DescribeTo(System.IO.TextWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Match(IPublication publication, ISubscription subscription, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

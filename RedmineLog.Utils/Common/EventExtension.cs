@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RedmineLog.Util.Common
+namespace RedmineLog.Utils.Common
 {
-    static class EventExtension
+    public static class EventExtension
     {
         public static void Fire(this EventHandler inThis, object sender, EventArgs arg = null)
         {

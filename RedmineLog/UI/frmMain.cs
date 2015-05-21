@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Threading;
 using Ninject;
+using RedmineLog.Utils;
+using RedmineLog.Logic;
+using RedmineLog.Logic.Data;
 
 namespace RedmineLog
 {
@@ -121,6 +124,7 @@ namespace RedmineLog
         {
             try
             {
+
                 var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
 
                 var parameters = new NameValueCollection { };
@@ -139,6 +143,7 @@ namespace RedmineLog
                 App.Context.IssuesCache.Load();
                 App.Context.Work.Load();
 
+                idleTime = App.Context.Work.IdleTime;
                 tbIssue.Text = "";
                 issueData = App.Context.History.GetIssue(-1);
                 LoadIssue();
@@ -163,23 +168,28 @@ namespace RedmineLog
 
                 int newIssueId = 0;
 
-                if (!int.TryParse(tbIssue.Text, out newIssueId))
+                if (string.IsNullOrWhiteSpace(tbIssue.Text))
                 {
-                    lblProject.Text = "";
-                    lblProject.Visible = false;
-                    lblIssue.Text = "";
-                    lblIssue.Tag = null;
-                    lblIssue.Visible = false;
-                    lblParentIssue.Text = "";
-                    lblParentIssue.Visible = false;
-                    btnRemoveItem.Visible = false;
-                    issueData = null;
-                    issueComment = null;
-                    tbComment.Text = "";
-                    tbComment.ReadOnly = true;
-                    ManageHide();
-                    return;
+                    newIssueId = -1;
                 }
+                else
+                    if (!int.TryParse(tbIssue.Text, out newIssueId))
+                    {
+                        lblProject.Text = "";
+                        lblProject.Visible = false;
+                        lblIssue.Text = "";
+                        lblIssue.Tag = null;
+                        lblIssue.Visible = false;
+                        lblParentIssue.Text = "";
+                        lblParentIssue.Visible = false;
+                        btnRemoveItem.Visible = false;
+                        issueData = null;
+                        issueComment = null;
+                        tbComment.Text = "";
+                        tbComment.ReadOnly = true;
+                        ManageHide();
+                        return;
+                    }
 
                 if (issueData != null && issueData.Id != newIssueId && clockMode == ClockMode.Play)
                 {
@@ -229,13 +239,34 @@ namespace RedmineLog
                 }
                 else
                 {
-                    lblProject.Text = "Project : " + tmpIssue.Project;
-                    lblProject.Visible = true;
-                    lblIssue.Text = "Task : " + tmpIssue.Subject;
-                    lblIssue.Tag = App.Context.Config.Url + "issues/" + newIssueId;
-                    lblIssue.Visible = true;
+                    if (!string.IsNullOrWhiteSpace(tmpIssue.Project))
+                    {
+                        lblProject.Text = "Project : " + tmpIssue.Project;
+                        lblProject.Visible = true;
+                    }
+                    else
+                    {
 
-                    btnRemoveItem.Visible = true;
+                        lblProject.Text = "";
+                        lblProject.Visible = false;
+                    }
+
+
+                    if (!string.IsNullOrWhiteSpace(tmpIssue.Subject))
+                    {
+                        lblIssue.Text = "Task : " + tmpIssue.Subject;
+                        lblIssue.Tag = App.Context.Config.Url + "issues/" + newIssueId;
+                        lblIssue.Visible = true;
+
+                        btnRemoveItem.Visible = true;
+                    }
+                    else
+                    {
+
+                        lblIssue.Text = "";
+                        lblIssue.Visible = false;
+                        btnRemoveItem.Visible = false;
+                    }
 
                     var tmp = App.Context.History.GetIssue(newIssueId);
 
@@ -381,8 +412,12 @@ namespace RedmineLog
 
         private void OnExitClick(System.Object sender, System.EventArgs e)
         {
+            App.Context.Work.IdleTime = idleTime;
             if (issueData != null)
                 SaveIssueWorkTime(issueData);
+            else
+                App.Context.Work.Save();
+
             close = true;
             Application.Exit();
         }
@@ -414,6 +449,7 @@ namespace RedmineLog
                     }
                 }
 
+                saveIdleTimePopupTime = App.Context.Config.SnoozeTime;
                 lblIssue.Text = "";
 
                 LoadAppData();
@@ -435,13 +471,18 @@ namespace RedmineLog
         {
             while (!close)
             {
-                if (!saveIdleTimePopup && new TimeSpan(idleTime.Ticks).TotalMinutes > saveIdleTimePopupTime)
+                if (this.WindowState != FormWindowState.Minimized && WorkTimer.Enabled && DateTime.Now.Minute % 2 == 0)
+                {
+                    OnHideClick(this, EventArgs.Empty);
+                }
+
+
+                if (!saveIdleTimePopup && new TimeSpan(idleTime.Hour, idleTime.Minute, idleTime.Second).TotalMinutes > saveIdleTimePopupTime)
                 {
                     saveIdleTimePopup = true;
 
                     ThreadPool.QueueUserWorkItem(new WaitCallback((obj) =>
                     {
-
                         this.Invoke(new Action(() =>
                         {
                             MessageBox.Show("Zapisz czas nieaktywności", "Przypomienie", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -724,10 +765,17 @@ namespace RedmineLog
 
                 var tmp = App.Context.Work.Get(issueData.Id);
 
-                if (tmp != null)
+                if (tmp != null && issueComment != null)
                 {
                     tmp.IdComment = issueComment.Id;
                     App.Context.Work.Save();
+                }
+                else
+                {
+                    OnNewCommentClick(this, EventArgs.Empty);
+                    tbComment.Text = e.ClickedItem.Text;
+                    issueComment.Text = e.ClickedItem.Text;
+                    AcceptComment();
                 }
 
             }
@@ -862,7 +910,8 @@ namespace RedmineLog
                 }
                 System.Diagnostics.Debug.WriteLine(WindowState.ToString());
             }
-            else if (WindowState == FormWindowState.Minimized)
+            else if (WindowState == FormWindowState.Minimized
+                && issueData != null)
             {
                 var issue = App.Context.IssuesCache.GetIssue(issueData.Id);
 
@@ -940,7 +989,9 @@ namespace RedmineLog
 
         private void OnHideClick(object sender, EventArgs e)
         {
-            if (clockMode == ClockMode.Play)
+            if (clockMode == ClockMode.Play
+                && issueData != null
+                && issueData.Id > 0)
                 WindowState = FormWindowState.Minimized;
         }
 

@@ -1,5 +1,7 @@
 ﻿using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
+using RedmineLog.Logic;
+using RedmineLog.Logic.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

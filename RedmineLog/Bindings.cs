@@ -3,6 +3,7 @@ using Ninject.Modules;
 using NLog;
 using RedmineLog.Logic;
 using RedmineLog.UI.Views;
+using RedmineLog.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

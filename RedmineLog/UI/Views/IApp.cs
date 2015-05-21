@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.UI.Views
 {
-    interface ISettingsView
+    interface IAppView
     {
     }
 }

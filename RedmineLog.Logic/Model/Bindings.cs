@@ -1,4 +1,5 @@
 ﻿using Ninject.Modules;
+using RedmineLog.Common;
 using RedmineLog.Logic;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Model
 {
-    class Bindings : NinjectModule
+    public class Bindings : NinjectModule
     {
         public override void Load()
         {
-            Bind<ISettingsModel>().To<SettingsModel>().InSingletonScope();
+            Bind<Settings.IModel>().To<SettingsModel>().InSingletonScope();
         }
     }
 }

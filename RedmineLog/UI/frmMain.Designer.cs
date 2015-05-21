@@ -35,7 +35,7 @@
             this.lnkIssues = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.tbComment = new System.Windows.Forms.TextBox();
-            this.Timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tAppTimer = new System.Windows.Forms.Timer(this.components);
             this.btnStop = new System.Windows.Forms.Button();
             this.btnClock = new System.Windows.Forms.Button();
             this.lblClockActive = new System.Windows.Forms.Label();
@@ -49,10 +49,10 @@
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
             this.btnWorkTime = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnSubmitAll = new System.Windows.Forms.Button();
+            this.btnComments = new System.Windows.Forms.Button();
             this.tbIssue = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnIssues = new System.Windows.Forms.Button();
             this.pComments = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnRemoveComment = new System.Windows.Forms.Button();
@@ -129,10 +129,10 @@
             this.tbComment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnCommentKeyDown);
             this.tbComment.Leave += new System.EventHandler(this.OnCommentLostFocus);
             // 
-            // Timer1
+            // tAppTimer
             // 
-            this.Timer1.Enabled = true;
-            this.Timer1.Interval = 1000;
+            this.tAppTimer.Enabled = true;
+            this.tAppTimer.Interval = 1000;
             // 
             // btnStop
             // 
@@ -269,10 +269,10 @@
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
             this.pManage.Controls.Add(this.btnWorkTime);
-            this.pManage.Controls.Add(this.button1);
-            this.pManage.Controls.Add(this.button3);
+            this.pManage.Controls.Add(this.btnSubmitAll);
+            this.pManage.Controls.Add(this.btnComments);
             this.pManage.Controls.Add(this.tbIssue);
-            this.pManage.Controls.Add(this.button2);
+            this.pManage.Controls.Add(this.btnIssues);
             this.pManage.Controls.Add(this.pComments);
             this.pManage.Controls.Add(this.btnResetIdle);
             this.pManage.Controls.Add(this.lblClockIndle);
@@ -299,26 +299,26 @@
             this.btnWorkTime.UseVisualStyleBackColor = true;
             this.btnWorkTime.Click += new System.EventHandler(this.btnWorkTime_Click);
             // 
-            // button1
+            // btnSubmitAll
             // 
-            this.button1.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(196, 288);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(32, 32);
-            this.button1.TabIndex = 45;
-            this.button1.Text = "All";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.OnSubmitAllClick);
+            this.btnSubmitAll.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSubmitAll.Location = new System.Drawing.Point(196, 288);
+            this.btnSubmitAll.Name = "btnSubmitAll";
+            this.btnSubmitAll.Size = new System.Drawing.Size(32, 32);
+            this.btnSubmitAll.TabIndex = 45;
+            this.btnSubmitAll.Text = "All";
+            this.btnSubmitAll.UseVisualStyleBackColor = true;
+            this.btnSubmitAll.Click += new System.EventHandler(this.OnSubmitAllClick);
             // 
-            // button3
+            // btnComments
             // 
-            this.button3.Location = new System.Drawing.Point(28, 153);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 22);
-            this.button3.TabIndex = 44;
-            this.button3.Text = "Comments";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.OnCommentShowClick);
+            this.btnComments.Location = new System.Drawing.Point(28, 153);
+            this.btnComments.Name = "btnComments";
+            this.btnComments.Size = new System.Drawing.Size(75, 22);
+            this.btnComments.TabIndex = 44;
+            this.btnComments.Text = "Comments";
+            this.btnComments.UseVisualStyleBackColor = true;
+            this.btnComments.Click += new System.EventHandler(this.OnCommentShowClick);
             // 
             // tbIssue
             // 
@@ -331,15 +331,15 @@
             this.tbIssue.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnIssueMouseClick);
             this.tbIssue.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnIssueKeyDown);
             // 
-            // button2
+            // btnIssues
             // 
-            this.button2.Location = new System.Drawing.Point(28, 261);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(72, 23);
-            this.button2.TabIndex = 42;
-            this.button2.Text = "Issues";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.OnSearchIssueClick);
+            this.btnIssues.Location = new System.Drawing.Point(28, 261);
+            this.btnIssues.Name = "btnIssues";
+            this.btnIssues.Size = new System.Drawing.Size(72, 23);
+            this.btnIssues.TabIndex = 42;
+            this.btnIssues.Text = "Issues";
+            this.btnIssues.UseVisualStyleBackColor = true;
+            this.btnIssues.Click += new System.EventHandler(this.OnSearchIssueClick);
             // 
             // pComments
             // 
@@ -458,7 +458,7 @@
         internal System.Windows.Forms.Label lnkIssues;
         internal System.Windows.Forms.Button btnSubmit;
         internal System.Windows.Forms.TextBox tbComment;
-        internal System.Windows.Forms.Timer Timer1;
+        internal System.Windows.Forms.Timer tAppTimer;
         internal System.Windows.Forms.Button btnStop;
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClockActive;
@@ -477,10 +477,10 @@
         private System.Windows.Forms.ContextMenuStrip cmComments;
         private System.Windows.Forms.Button btnNewComment;
         internal System.Windows.Forms.Label lHide;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnIssues;
         private System.Windows.Forms.TextBox tbIssue;
-        private System.Windows.Forms.Button button3;
-        internal System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnComments;
+        internal System.Windows.Forms.Button btnSubmitAll;
         private System.Windows.Forms.Label lblProject;
         private System.Windows.Forms.Button btnWorkTime;
     }

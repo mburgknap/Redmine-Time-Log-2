@@ -1,4 +1,5 @@
 ﻿using Ninject.Modules;
+using RedmineLog.Common;
 using RedmineLog.UI.Common;
 using RedmineLog.UI.Views;
 using System;
@@ -13,7 +14,7 @@ namespace RedmineLog.UI
     {
         public override void Load()
         {
-            Bind<ISettingsView>().To<SettingsView>().InSingletonScope();
+            Bind<Settings.IView>().To<SettingsView>().InSingletonScope();
             Bind<SettingsView>().ToSelf();
         }
     }

@@ -1,6 +1,6 @@
 ﻿using NLog;
 
-namespace RedmineLog
+namespace RedmineLog.Utils
 {
     public static class AppLogger
     {

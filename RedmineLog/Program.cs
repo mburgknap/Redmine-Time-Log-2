@@ -1,27 +1,18 @@
 ﻿using Ninject;
+using NLog;
+using RedmineLog.Common;
+using RedmineLog.Logic.Data;
 using System;
 using System.Reflection;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
-
-    public class AppContext
-    {
-        public readonly AppSettings Config = new AppSettings();
-
-        public readonly LogData History = new LogData();
-
-        public readonly TimeLogData Work = new TimeLogData();
-
-        public readonly RedmineIssues IssuesCache = new RedmineIssues();
-
-    }
-
-    internal static class App
+    
+    internal static class Program
     {
 
-        static App()
+        static Program()
         {
             Context = new AppContext();
         }
@@ -41,9 +32,15 @@ namespace RedmineLog
                           new UI.Bindings(),
                           new Model.Bindings(),
                           new Logic.Bindings());
+            Application.ThreadException += OnUnhandledException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmMain());
+        }
+
+        static void OnUnhandledException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            Program.Kernel.Get<Logger>().Error("Unhandled Exception ", e.Exception);
         }
     }
 }

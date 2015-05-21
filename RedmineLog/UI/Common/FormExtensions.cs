@@ -15,9 +15,9 @@ namespace RedmineLog.UI.Common
         //public static void Initialize(this Form inThis, object sender, EventArgs arg = null)
         public static void Initialize<TView, TWinForm>(this TWinForm inThis)
         {
-            App.Kernel.Get<ILogic<TView>>();
+            Program.Kernel.Get<ILogic<TView>>();
 
-            var view = App.Kernel.Get<TView>() as IView<TWinForm>;
+            var view = Program.Kernel.Get<TView>() as IView<TWinForm>;
             if (view != null)
                 view.Init(inThis);
         }

@@ -5,6 +5,12 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedmineLog", "RedmineLog\RedmineLog.csproj", "{0AEA868F-1A32-415E-872B-13CD19D68A57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedmineLog.Common", "RedmineLog.Common\RedmineLog.Common.csproj", "{1E0D94B7-E265-430B-B223-E65F9D5BBB23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedmineLog.Logic", "RedmineLog.Logic\RedmineLog.Logic.csproj", "{C9B9B20D-E05E-450C-BDBA-F980BC4BA8A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedmineLog.Utils", "RedmineLog.Utils\RedmineLog.Utils.csproj", "{7A3108AA-5854-489F-957B-8ED7151248DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{0AEA868F-1A32-415E-872B-13CD19D68A57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AEA868F-1A32-415E-872B-13CD19D68A57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AEA868F-1A32-415E-872B-13CD19D68A57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0D94B7-E265-430B-B223-E65F9D5BBB23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0D94B7-E265-430B-B223-E65F9D5BBB23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0D94B7-E265-430B-B223-E65F9D5BBB23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0D94B7-E265-430B-B223-E65F9D5BBB23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9B9B20D-E05E-450C-BDBA-F980BC4BA8A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B9B20D-E05E-450C-BDBA-F980BC4BA8A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B9B20D-E05E-450C-BDBA-F980BC4BA8A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B9B20D-E05E-450C-BDBA-F980BC4BA8A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A3108AA-5854-489F-957B-8ED7151248DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A3108AA-5854-489F-957B-8ED7151248DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A3108AA-5854-489F-957B-8ED7151248DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A3108AA-5854-489F-957B-8ED7151248DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
