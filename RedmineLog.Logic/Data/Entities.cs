@@ -73,6 +73,21 @@ namespace RedmineLog.Logic.Data
     }
 
 
+    public class ActivityData : List<ActivityData.TaskActivity>
+    {
+        public class TaskActivity
+        {
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+        }
+
+        public void Add(int inId, string inName)
+        {
+            Add(new TaskActivity() { Id = inId, Name = inName });
+        }
+    }
+
     public class TimeLogData : List<TimeLogData.TaskTime>
     {
         public DateTime IdleTime { get; set; }

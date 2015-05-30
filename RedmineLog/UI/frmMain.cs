@@ -131,13 +131,20 @@ namespace RedmineLog
 
                 var responseList = manager.GetObjectList<TimeEntryActivity>(parameters);
 
+
+                foreach (var item in responseList)
+                {
+                    App.Context.Activity.Add(item.Id, item.Name);
+                }
+
                 cbActivity.Items.Clear();
-                cbActivity.DataSource = responseList;
+                cbActivity.DataSource = App.Context.Activity;
                 cbActivity.DisplayMember = "Name";
                 cbActivity.ValueMember = "Id";
 
                 if (cbActivity.Items.Count > 0)
                     cbActivity.SelectedItem = cbActivity.Items[0];
+
 
                 App.Context.History.Load();
                 App.Context.IssuesCache.Load();
@@ -782,15 +789,6 @@ namespace RedmineLog
         }
 
 
-        private void OnCommentKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == (Keys.LButton | Keys.MButton | Keys.Back))
-            {
-                AcceptComment();
-                e.Handled = true;
-            }
-        }
-
         private void AcceptComment()
         {
             var tmpIssue = App.Context.History.GetIssue(issueData);
@@ -952,7 +950,7 @@ namespace RedmineLog
                 LoadIssue();
 
             };
-            search.Show();
+            search.ShowDialog();
         }
 
         private void OnIssueKeyDown(object sender, KeyEventArgs e)
@@ -1036,7 +1034,15 @@ namespace RedmineLog
 
                 }
             };
-            worklog.Show();
+            worklog.ShowDialog();
+        }
+
+        private void tbComment_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 19)
+            {
+                AcceptComment();
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Redmine.Net.Api.Types;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
+using RedmineLog.UI;
 using RedmineLog.Utils;
 using System;
 using System.Collections.Generic;
@@ -26,15 +27,17 @@ namespace RedmineLog
             InitializeComponent();
         }
 
-        private void OnSearchDeactivate(object sender, EventArgs e)
-        {
-            this.Close();
-        }
 
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
             this.Location = new Point(appLocation.X - 100, appLocation.Y);
 
+            LoadWorkinIssue();
+
+        }
+
+        private void LoadWorkinIssue()
+        {
             try
             {
                 var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
@@ -49,6 +52,8 @@ namespace RedmineLog
                               orderby p.SpentOn descending
                               group p by p.SpentOn.Value.Date into g
                               select new { Date = g.Key, Entities = g.ToList() };
+
+                dataGridView1.Rows.Clear();
 
                 foreach (var listItem in results)
                 {
@@ -104,11 +109,6 @@ namespace RedmineLog
             return "";
         }
 
-        private void OnSearchMouseLeave(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         internal void Init(Point point)
         {
             appLocation = point;
@@ -116,8 +116,19 @@ namespace RedmineLog
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex > 0)
+            if (e.RowIndex > 0 && e.ColumnIndex != 1)
                 SelectIssue(dataGridView1.Rows[e.RowIndex].Tag as TimeEntry);
+            else if (e.ColumnIndex == 1)
+            {
+                var form = new frmEditTimeLog();
+                form.Location = new Point(this.Location.X - form.Width, this.Location.Y);
+                form.Init(dataGridView1.Rows[e.RowIndex].Tag as TimeEntry);
+                form.OnChange = () =>
+                {
+                    LoadWorkinIssue();
+                };
+                form.ShowDialog();
+            }
         }
 
         private void SelectIssue(TimeEntry item)

@@ -126,7 +126,7 @@
             this.tbComment.Size = new System.Drawing.Size(177, 76);
             this.tbComment.TabIndex = 21;
             this.tbComment.Click += new System.EventHandler(this.OnCommentClick);
-            this.tbComment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnCommentKeyDown);
+            this.tbComment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbComment_KeyPress);
             this.tbComment.Leave += new System.EventHandler(this.OnCommentLostFocus);
             // 
             // tAppTimer
@@ -181,8 +181,8 @@
             // 
             // lblParentIssue
             // 
-            this.lblParentIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblParentIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblParentIssue.AutoSize = true;
             this.lblParentIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -216,8 +216,8 @@
             // 
             // lblProject
             // 
-            this.lblProject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lblProject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProject.AutoSize = true;
             this.lblProject.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
