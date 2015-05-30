@@ -29,7 +29,7 @@ namespace RedmineLog.UI
         {
             timeEntry = inTimeEntry;
 
-            this.Text = timeEntry.Project.Name;
+            this.Text = "(" + timeEntry.Issue.Id.ToString() + ") " + timeEntry.Project.Name;
 
             var time = new TimeSpan(0, (int)(timeEntry.Hours * 60), 0);
 
@@ -49,9 +49,7 @@ namespace RedmineLog.UI
                     break;
                 }
             }
-
-            tbIssue.Text = timeEntry.Issue.Id.ToString();
-
+            
             calWorkDate.SetDate(timeEntry.SpentOn.GetValueOrDefault(DateTime.Now));
             calWorkDate.AddMonthlyBoldedDate(timeEntry.SpentOn.GetValueOrDefault(DateTime.Now));
 
@@ -64,7 +62,8 @@ namespace RedmineLog.UI
             {
                 try
                 {
-                    timeEntry.Issue.Id = Int32.Parse(tbIssue.Text);
+                    var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
+
                     timeEntry.Hours = nHour.Value + nMinute.Value / 60;
 
                     timeEntry.SpentOn = calWorkDate.SelectionStart;
@@ -73,7 +72,6 @@ namespace RedmineLog.UI
                     timeEntry.Activity.Id = (int)cbEventType.SelectedValue;
                     timeEntry.Activity.Name = cbEventType.Text;
 
-                    var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
 
                     manager.UpdateObject<TimeEntry>(timeEntry.Id.ToString(), timeEntry);
 

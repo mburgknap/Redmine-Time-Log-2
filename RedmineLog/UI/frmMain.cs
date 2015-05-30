@@ -973,7 +973,7 @@ namespace RedmineLog
         private void OnClockClick(object sender, EventArgs e)
         {
             if (clockMode == ClockMode.Play)
-            { SetClockMode(ClockMode.Pause); }
+            { SetClockMode(ClockMode.Pause); return; }
 
             if (clockMode == ClockMode.Pause
                 || clockMode == ClockMode.Stop)
