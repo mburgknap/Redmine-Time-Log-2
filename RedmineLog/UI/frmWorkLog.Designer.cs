@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.IssueId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Project = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Activity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.blLoadMore = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,9 +69,9 @@
             // IssueId
             // 
             this.IssueId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.IssueId.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.IssueId.DefaultCellStyle = dataGridViewCellStyle1;
             this.IssueId.HeaderText = "#id";
             this.IssueId.MinimumWidth = 40;
             this.IssueId.Name = "IssueId";
@@ -102,9 +103,9 @@
             // Activity
             // 
             this.Activity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.Activity.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.Activity.DefaultCellStyle = dataGridViewCellStyle2;
             this.Activity.FillWeight = 101.6471F;
             this.Activity.HeaderText = "Activity";
             this.Activity.Name = "Activity";
@@ -112,11 +113,22 @@
             this.Activity.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Activity.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // blLoadMore
+            // 
+            this.blLoadMore.Location = new System.Drawing.Point(285, 483);
+            this.blLoadMore.Name = "blLoadMore";
+            this.blLoadMore.Size = new System.Drawing.Size(60, 23);
+            this.blLoadMore.TabIndex = 3;
+            this.blLoadMore.Text = "More ...";
+            this.blLoadMore.UseVisualStyleBackColor = true;
+            this.blLoadMore.Click += new System.EventHandler(this.blLoadMore_Click);
+            // 
             // frmWorkLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(348, 509);
+            this.Controls.Add(this.blLoadMore);
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmWorkLog";
@@ -137,5 +149,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Time;
         private System.Windows.Forms.DataGridViewTextBoxColumn Project;
         private System.Windows.Forms.DataGridViewTextBoxColumn Activity;
+        private System.Windows.Forms.Button blLoadMore;
     }
 }

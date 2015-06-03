@@ -623,7 +623,7 @@ namespace RedmineLog
                 var response = manager.CreateObject<TimeEntry>(new TimeEntry()
                 {
                     Issue = new IdentifiableName() { Id = issueData.Id },
-                    Activity = new IdentifiableName() { Id = ((TimeEntryActivity)cbActivity.SelectedItem).Id },
+                    Activity = new IdentifiableName() { Id = ((ActivityData.TaskActivity)cbActivity.SelectedItem).Id },
                     Comments = tbComment.Text,
                     Hours = decimal.Round(hours, 2),
                     SpentOn = DateTime.Now

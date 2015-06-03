@@ -21,6 +21,7 @@ namespace RedmineLog
     {
         public Action<int, string> OnSelect;
         private Point appLocation;
+        private DateTime backDate;
 
         public frmWorkLog()
         {
@@ -32,11 +33,19 @@ namespace RedmineLog
         {
             this.Location = new Point(appLocation.X - 100, appLocation.Y);
 
-            LoadWorkinIssue();
+            LoadWorkinIssue(DateTime.Now, true);
+
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                LoadWorkinIssue(backDate = DateTime.Now.AddDays(-3), false);
+            else
+                LoadWorkinIssue(backDate = DateTime.Now.AddDays(-1), false);
+
+            if (dataGridView1.RowCount > 0)
+                dataGridView1.FirstDisplayedScrollingRowIndex = 0;
 
         }
 
-        private void LoadWorkinIssue()
+        private void LoadWorkinIssue(DateTime inSpendOn, bool inClear)
         {
             try
             {
@@ -44,6 +53,7 @@ namespace RedmineLog
 
                 var parameters = new NameValueCollection { };
                 parameters.Add("user_id", App.Context.Config.IdUser.ToString());
+                parameters.Add("spent_on", inSpendOn.ToString("yyyy-MM-dd"));
 
                 int headrow = 0;
                 int row = 0;
@@ -53,7 +63,8 @@ namespace RedmineLog
                               group p by p.SpentOn.Value.Date into g
                               select new { Date = g.Key, Entities = g.ToList() };
 
-                dataGridView1.Rows.Clear();
+                if (inClear)
+                    dataGridView1.Rows.Clear();
 
                 foreach (var listItem in results)
                 {
@@ -85,6 +96,9 @@ namespace RedmineLog
                         dataGridView1.Rows[headrow].Cells[1].Style.BackColor = Color.Red;
                 }
 
+                dataGridView1.FirstDisplayedScrollingRowIndex = headrow;
+
+                dataGridView1.Focus();
 
             }
             catch (Exception ex)
@@ -116,18 +130,26 @@ namespace RedmineLog
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex > 0 && e.ColumnIndex != 1)
-                SelectIssue(dataGridView1.Rows[e.RowIndex].Tag as TimeEntry);
-            else if (e.ColumnIndex == 1)
+            if (e.RowIndex < 0)
+                return;
+
+            var timeEntry = dataGridView1.Rows[e.RowIndex].Tag as TimeEntry;
+
+            if (timeEntry != null)
             {
-                var form = new frmEditTimeLog();
-                form.Location = new Point(this.Location.X - form.Width, this.Location.Y);
-                form.Init(dataGridView1.Rows[e.RowIndex].Tag as TimeEntry);
-                form.OnChange = () =>
+                if (e.ColumnIndex != 1)
+                    SelectIssue(timeEntry);
+                else if (e.ColumnIndex == 1)
                 {
-                    LoadWorkinIssue();
-                };
-                form.ShowDialog();
+                    var form = new frmEditTimeLog();
+                    form.Location = new Point(this.Location.X - form.Width, this.Location.Y);
+                    form.Init(timeEntry);
+                    form.OnChange = () =>
+                    {
+                        LoadWorkinIssue(DateTime.Now, true);
+                    };
+                    form.ShowDialog();
+                }
             }
         }
 
@@ -156,6 +178,19 @@ namespace RedmineLog
 
             if (e.KeyCode == Keys.Enter && dataGridView1.SelectedRows.Count > 0)
                 SelectIssue(dataGridView1.SelectedRows[0].Tag as TimeEntry);
+        }
+
+        private void blLoadMore_Click(object sender, EventArgs e)
+        {
+            backDate = backDate.AddDays(-1);
+
+            if (backDate.DayOfWeek == DayOfWeek.Sunday)
+                backDate = backDate.AddDays(-2);
+            if (backDate.DayOfWeek == DayOfWeek.Saturday)
+                backDate = backDate.AddDays(-1);
+
+            LoadWorkinIssue(backDate, false);
+
         }
 
     }
