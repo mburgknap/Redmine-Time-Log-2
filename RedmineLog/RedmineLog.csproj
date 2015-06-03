@@ -171,10 +171,6 @@
       <Project>{c9b9b20d-e05e-450c-bdba-f980bc4ba8a2}</Project>
       <Name>RedmineLog.Logic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RedmineLog.Utils\RedmineLog.Utils.csproj">
-      <Project>{7a3108aa-5854-489f-957b-8ed7151248de}</Project>
-      <Name>RedmineLog.Utils</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

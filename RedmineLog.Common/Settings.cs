@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RedmineLog.Common
+﻿namespace RedmineLog.Common
 {
     public static class Settings
     {
-        public const string Load = "topic://Load";
+        public static class Events
+        {
+            public const string Load = "topic://Settings/Load";
 
-        public const string Connect = "topic://Connect";
+            public const string Connect = "topic://Settings/Connect";
+        }
 
         public interface IView
         {
@@ -19,7 +16,9 @@ namespace RedmineLog.Common
         public interface IModel
         {
             string Url { get; set; }
+
             string ApiKey { get; set; }
+
             int IdUser { get; set; }
         }
     }

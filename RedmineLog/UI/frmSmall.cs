@@ -1,15 +1,8 @@
-﻿using Redmine.Net.Api.Types;
+﻿using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
-using RedmineLog.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -33,7 +26,6 @@ namespace RedmineLog
         {
             var screen = Screen.FromPoint(this.Location);
             this.Location = new Point(screen.WorkingArea.Right - this.Width, screen.WorkingArea.Bottom - this.Height);
-
         }
 
         private void OnFormClick(object sender, EventArgs e)
@@ -65,8 +57,6 @@ namespace RedmineLog
             }
         }
 
-
-
         internal void SetMainIssue(RedmineIssues.Item inIssue)
         {
             if (inIssue != null)
@@ -90,7 +80,6 @@ namespace RedmineLog
             else
                 SetText(lbParentIssue, "");
         }
-
 
         public void SetText(Label inLabel, string inText)
         {

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
-    public static class Global
+    public interface IRedmineClient
     {
-        public interface IView
-        {
-        }
+        int GetCurrentUser();
     }
 }

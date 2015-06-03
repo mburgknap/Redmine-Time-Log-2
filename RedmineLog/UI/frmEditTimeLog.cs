@@ -1,16 +1,8 @@
 ﻿using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
+using RedmineLog.Common;
 using RedmineLog.Logic;
-using RedmineLog.Utils;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedmineLog.UI
@@ -20,6 +12,7 @@ namespace RedmineLog.UI
         public Action OnChange;
 
         private TimeEntry timeEntry;
+
         public frmEditTimeLog()
         {
             InitializeComponent();
@@ -49,7 +42,7 @@ namespace RedmineLog.UI
                     break;
                 }
             }
-            
+
             calWorkDate.SetDate(timeEntry.SpentOn.GetValueOrDefault(DateTime.Now));
             calWorkDate.AddMonthlyBoldedDate(timeEntry.SpentOn.GetValueOrDefault(DateTime.Now));
 
@@ -71,7 +64,6 @@ namespace RedmineLog.UI
 
                     timeEntry.Activity.Id = (int)cbEventType.SelectedValue;
                     timeEntry.Activity.Name = cbEventType.Text;
-
 
                     manager.UpdateObject<TimeEntry>(timeEntry.Id.ToString(), timeEntry);
 

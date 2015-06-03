@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RedmineLog.UI.Common
+﻿namespace RedmineLog.UI.Common
 {
-    interface IView<T>
+    internal interface IView<T>
     {
         void Init(T inView);
     }

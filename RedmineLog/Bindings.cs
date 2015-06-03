@@ -1,18 +1,11 @@
 ﻿using Appccelerate.EventBroker;
 using Ninject.Modules;
 using NLog;
-using RedmineLog.Logic;
-using RedmineLog.UI.Views;
-using RedmineLog.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RedmineLog.Common;
 
 namespace RedmineLog
 {
-    class Bindings : NinjectModule
+    internal class Bindings : NinjectModule
     {
         public override void Load()
         {

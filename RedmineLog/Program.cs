@@ -1,17 +1,13 @@
 ﻿using Ninject;
 using NLog;
-using RedmineLog.Common;
 using RedmineLog.Logic.Data;
 using System;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    
     internal static class Program
     {
-
         static Program()
         {
             Context = new AppContext();
@@ -38,7 +34,7 @@ namespace RedmineLog
             Application.Run(new frmMain());
         }
 
-        static void OnUnhandledException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        private static void OnUnhandledException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             Program.Kernel.Get<Logger>().Error("Unhandled Exception ", e.Exception);
         }

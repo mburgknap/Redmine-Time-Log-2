@@ -1,11 +1,6 @@
 ﻿using Ninject.Modules;
 using RedmineLog.Common;
 using RedmineLog.Logic.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RedmineLog.Logic
 {
@@ -13,9 +8,15 @@ namespace RedmineLog.Logic
     {
         public override void Load()
         {
+            Bind<IDatabase>().To<Database>().InSingletonScope();
+            Bind<IDbRedmine>().To<RedmineSetting>().InSingletonScope();
+            Bind<IDbConfig>().To<AppConfig>().InSingletonScope();
+
+            Bind<IRedmineClient>().To<RedmineClient>().InSingletonScope();
+            Bind<RedmineClient>().ToSelf();
+
             Bind<ILogic<Settings.IView>>().To<SettingsLogic>().InSingletonScope();
             Bind<SettingsLogic>().ToSelf();
-
         }
     }
 }

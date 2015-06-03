@@ -1,13 +1,11 @@
 ﻿using Polenter.Serialization;
 using Redmine.Net.Api.Types;
-using RedmineLog.Utils;
+using RedmineLog.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RedmineLog.Logic.Data
 {
@@ -33,7 +31,7 @@ namespace RedmineLog.Logic.Data
             {
                 try
                 {
-                    new SharpSerializer().Serialize(this, typeof(AppSettings).Name + ".xml");
+                    new SharpSerializer().Serialize(this, Path.Combine("Database", typeof(AppSettings).Name + ".xml"));
                     AppLogger.Log.Info("RedmineConfig saved");
                 }
                 catch (Exception ex)
@@ -43,9 +41,9 @@ namespace RedmineLog.Logic.Data
 
         public bool Load()
         {
-            if (File.Exists(new Uri(typeof(AppSettings).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(Path.Combine("Database", typeof(AppSettings).Name + ".xml"), UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(AppSettings).Name + ".xml") as AppSettings;
+                var obj = new SharpSerializer().Deserialize(Path.Combine("Database", typeof(AppSettings).Name + ".xml")) as AppSettings;
 
                 if (obj != null)
                 {
@@ -69,9 +67,7 @@ namespace RedmineLog.Logic.Data
 
             return false;
         }
-
     }
-
 
     public class ActivityData : List<ActivityData.TaskActivity>
     {
@@ -104,11 +100,13 @@ namespace RedmineLog.Logic.Data
                 WorkTime = inWorkTime;
                 IdComment = inIdComment;
             }
+
             public int IdIssue { get; set; }
+
             public Guid? IdComment { get; set; }
+
             public DateTime WorkTime { get; set; }
         }
-
 
         public void Save()
         {
@@ -116,7 +114,7 @@ namespace RedmineLog.Logic.Data
             {
                 try
                 {
-                    new SharpSerializer().Serialize(this, typeof(TimeLogData).Name + ".xml");
+                    new SharpSerializer().Serialize(this, Path.Combine("Database", typeof(TimeLogData).Name + ".xml"));
                     AppLogger.Log.Info("TimeLogData saved");
                 }
                 catch (Exception ex)
@@ -126,9 +124,9 @@ namespace RedmineLog.Logic.Data
 
         public bool Load()
         {
-            if (File.Exists(new Uri(typeof(TimeLogData).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(Path.Combine("Database", typeof(TimeLogData).Name + ".xml"), UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(TimeLogData).Name + ".xml") as TimeLogData;
+                var obj = new SharpSerializer().Deserialize(Path.Combine("Database", typeof(TimeLogData).Name + ".xml")) as TimeLogData;
 
                 if (obj != null)
                 {
@@ -138,13 +136,11 @@ namespace RedmineLog.Logic.Data
                 }
             }
 
-
             IdleTime = DateTime.MinValue;
             Save();
 
             return false;
         }
-
 
         public TimeLogData.TaskTime Get(int inIdIssue)
         {
@@ -169,7 +165,6 @@ namespace RedmineLog.Logic.Data
 
     public class RedmineIssues : List<RedmineIssues.Item>
     {
-
         public class Item
         {
             public Item()
@@ -188,8 +183,8 @@ namespace RedmineLog.Logic.Data
 
                 if (project != null)
                     Project = project.Name;
-
             }
+
             public int Id { get; set; }
 
             public int? IdParent { get; set; }
@@ -197,7 +192,6 @@ namespace RedmineLog.Logic.Data
             public string Subject { get; set; }
 
             public string Project { get; set; }
-
         }
 
         public void Save()
@@ -206,7 +200,7 @@ namespace RedmineLog.Logic.Data
             {
                 try
                 {
-                    new SharpSerializer().Serialize(this, typeof(RedmineIssues).Name + ".xml");
+                    new SharpSerializer().Serialize(this, Path.Combine("Database", typeof(RedmineIssues).Name + ".xml"));
                     AppLogger.Log.Info("RedmineIssuesCache saved");
                 }
                 catch (Exception ex)
@@ -216,9 +210,9 @@ namespace RedmineLog.Logic.Data
 
         public bool Load()
         {
-            if (File.Exists(new Uri(typeof(RedmineIssues).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(Path.Combine("Database", typeof(RedmineIssues).Name + ".xml"), UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(RedmineIssues).Name + ".xml") as RedmineIssues;
+                var obj = new SharpSerializer().Deserialize(Path.Combine("Database", typeof(RedmineIssues).Name + ".xml")) as RedmineIssues;
 
                 if (obj != null)
                 {
@@ -262,6 +256,7 @@ namespace RedmineLog.Logic.Data
                 }
 
                 public Guid Id { get; set; }
+
                 public string Text { get; set; }
 
                 public override string ToString()
@@ -304,6 +299,7 @@ namespace RedmineLog.Logic.Data
             {
                 Id = id;
             }
+
             public int Id { get; set; }
 
             public List<Comment> Comments { get; set; }
@@ -340,7 +336,7 @@ namespace RedmineLog.Logic.Data
             {
                 try
                 {
-                    new SharpSerializer().Serialize(this, typeof(LogData).Name + ".xml");
+                    new SharpSerializer().Serialize(this, Path.Combine("Database", typeof(LogData).Name + ".xml"));
                     AppLogger.Log.Info("IssueHistory saved");
                 }
                 catch (Exception ex)
@@ -350,9 +346,9 @@ namespace RedmineLog.Logic.Data
 
         public bool Load()
         {
-            if (File.Exists(new Uri(typeof(LogData).Name + ".xml", UriKind.Relative).ToString()))
+            if (File.Exists(new Uri(Path.Combine("Database", typeof(LogData).Name + ".xml"), UriKind.Relative).ToString()))
             {
-                var obj = new SharpSerializer().Deserialize(typeof(LogData).Name + ".xml") as LogData;
+                var obj = new SharpSerializer().Deserialize(Path.Combine("Database", typeof(LogData).Name + ".xml")) as LogData;
 
                 if (obj != null)
                 {

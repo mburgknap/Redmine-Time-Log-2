@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RedmineLog.Logic.Data
+﻿namespace RedmineLog.Logic.Data
 {
     public class AppContext
     {
@@ -17,6 +11,5 @@ namespace RedmineLog.Logic.Data
         public readonly TimeLogData Work = new TimeLogData();
 
         public readonly RedmineIssues IssuesCache = new RedmineIssues();
-
     }
 }

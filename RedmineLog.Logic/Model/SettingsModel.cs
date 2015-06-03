@@ -1,21 +1,25 @@
-﻿using RedmineLog.Common;
+﻿using Ninject;
+using RedmineLog.Common;
 using RedmineLog.Logic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RedmineLog.Model
 {
-    class SettingsModel : Settings.IModel
+    internal class SettingsModel : Settings.IModel
     {
-        public string Url { get { return App.Context.Config.Url; } set { App.Context.Config.Url = value; } }
+        private IDbRedmine dbRedmine;
+        private IDbConfig dbConfig;
 
-        public string ApiKey { get { return App.Context.Config.ApiKey; } set { App.Context.Config.ApiKey = value; } }
+        [Inject]
+        public SettingsModel(IDbRedmine inDbRedmine, IDbConfig inDbConfig)
+        {
+            dbRedmine = inDbRedmine;
+            dbConfig = inDbConfig;
+        }
 
-        public int IdUser { get { return App.Context.Config.IdUser; } set { App.Context.Config.IdUser = value; } }
+        public string Url { get { return dbRedmine.GetUrl(); } set { dbRedmine.SetUrl(value); } }
 
+        public string ApiKey { get { return dbRedmine.GetApiKey(); } set { dbRedmine.SetApiKey(value); } }
 
+        public int IdUser { get { return dbConfig.GetIdUser(); } set { dbConfig.SetIdUser(value); } }
     }
 }

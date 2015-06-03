@@ -1,18 +1,13 @@
 ﻿using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
+using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
 using RedmineLog.UI;
-using RedmineLog.Utils;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -28,7 +23,6 @@ namespace RedmineLog
             InitializeComponent();
         }
 
-
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
             this.Location = new Point(appLocation.X - 100, appLocation.Y);
@@ -42,7 +36,6 @@ namespace RedmineLog
 
             if (dataGridView1.RowCount > 0)
                 dataGridView1.FirstDisplayedScrollingRowIndex = 0;
-
         }
 
         private void LoadWorkinIssue(DateTime inSpendOn, bool inClear)
@@ -81,9 +74,9 @@ namespace RedmineLog
                         var time = new TimeSpan(0, (int)(item.Hours * 60), 0);
                         workTime = workTime.Add(time);
 
-                        row = dataGridView1.Rows.Add(new Object[] { 
+                        row = dataGridView1.Rows.Add(new Object[] {
                             item.Issue.Id,
-                            time.ToString(@"hh\:mm"), 
+                            time.ToString(@"hh\:mm"),
                             item.Project.Name ,
                             "(" + item.Activity.Name + ")" + Environment.NewLine + item.Comments });
 
@@ -99,7 +92,6 @@ namespace RedmineLog
                 dataGridView1.FirstDisplayedScrollingRowIndex = headrow;
 
                 dataGridView1.Focus();
-
             }
             catch (Exception ex)
             {
@@ -114,7 +106,6 @@ namespace RedmineLog
 
             return inDate.DayOfWeek.ToString();
         }
-
 
         private string GetSubject(RedmineIssues.Item main)
         {
@@ -175,7 +166,6 @@ namespace RedmineLog
             if (e.KeyCode == Keys.Escape)
                 this.Close();
 
-
             if (e.KeyCode == Keys.Enter && dataGridView1.SelectedRows.Count > 0)
                 SelectIssue(dataGridView1.SelectedRows[0].Tag as TimeEntry);
         }
@@ -190,8 +180,6 @@ namespace RedmineLog
                 backDate = backDate.AddDays(-1);
 
             LoadWorkinIssue(backDate, false);
-
         }
-
     }
 }
