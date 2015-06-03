@@ -8,15 +8,26 @@ namespace RedmineLog.Logic
     {
         public override void Load()
         {
-            Bind<IDatabase>().To<Database>().InSingletonScope();
-            Bind<IDbRedmine>().To<RedmineSetting>().InSingletonScope();
-            Bind<IDbConfig>().To<AppConfig>().InSingletonScope();
 
             Bind<IRedmineClient>().To<RedmineClient>().InSingletonScope();
-            Bind<RedmineClient>().ToSelf();
 
-            Bind<ILogic<Settings.IView>>().To<SettingsLogic>().InSingletonScope();
-            Bind<SettingsLogic>().ToSelf();
+            Bind<ILogic<Settings.IView>>().To<SettingFormLogic>().InSingletonScope();
+            Bind<SettingFormLogic>().ToSelf();
+
+            Bind<ILogic<Main.IView>>().To<MainFormLogic>().InSingletonScope();
+            Bind<MainFormLogic>().ToSelf();
+
+            Bind<ILogic<Small.IView>>().To<SmallFormLogic>().InSingletonScope();
+            Bind<SmallFormLogic>().ToSelf();
+
+            Bind<ILogic<Search.IView>>().To<SearchFormLogic>().InSingletonScope();
+            Bind<SearchFormLogic>().ToSelf();
+
+            Bind<ILogic<WorkLog.IView>>().To<WorkLogFormLogic>().InSingletonScope();
+            Bind<WorkLogFormLogic>().ToSelf();
+
+            Bind<ILogic<EditLogTime.IView>>().To<EditLogTimeLogic>().InSingletonScope();
+            Bind<EditLogTimeLogic>().ToSelf();
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using Redmine.Net.Api;
+﻿using Appccelerate.EventBroker;
+using Ninject;
+using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
 using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
 using RedmineLog.UI;
+using RedmineLog.UI.Common;
 using System;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -21,6 +24,7 @@ namespace RedmineLog
         public frmWorkLog()
         {
             InitializeComponent();
+            this.Initialize<WorkLog.IView, frmWorkLog>();
         }
 
         private void OnWorkLogLoad(object sender, EventArgs e)
@@ -180,6 +184,29 @@ namespace RedmineLog
                 backDate = backDate.AddDays(-1);
 
             LoadWorkinIssue(backDate, false);
+        }
+    }
+
+    internal class WorkLogView : WorkLog.IView, IView<frmWorkLog>
+    {
+        private WorkLog.IModel Model;
+
+        private frmWorkLog Form;
+
+        [Inject]
+        public WorkLogView(WorkLog.IModel inModel, IEventBroker inGlobalEvent)
+        {
+            Model = inModel;
+            inGlobalEvent.Register(this);
+        }
+
+        [EventPublication(WorkLog.Events.Load, typeof(Publish<WorkLog.IView>))]
+        public event EventHandler LoadEvent;
+
+        public void Init(frmWorkLog inView)
+        {
+            Form = inView;
+            LoadEvent.Fire(this);
         }
     }
 }

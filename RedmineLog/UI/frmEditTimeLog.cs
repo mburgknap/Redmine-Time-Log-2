@@ -1,7 +1,10 @@
-﻿using Redmine.Net.Api;
+﻿using Appccelerate.EventBroker;
+using Ninject;
+using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
 using RedmineLog.Common;
 using RedmineLog.Logic;
+using RedmineLog.UI.Common;
 using System;
 using System.Windows.Forms;
 
@@ -16,6 +19,7 @@ namespace RedmineLog.UI
         public frmEditTimeLog()
         {
             InitializeComponent();
+            this.Initialize<EditLogTime.IView, frmEditTimeLog>();
         }
 
         internal void Init(TimeEntry inTimeEntry)
@@ -76,6 +80,29 @@ namespace RedmineLog.UI
                     AppLogger.Log.Error("frmEditTimeLog_KeyPress", ex);
                 }
             }
+        }
+    }
+
+    internal class EditTimeLogView : EditLogTime.IView, IView<frmEditTimeLog>
+    {
+        private EditLogTime.IModel Model;
+
+        private frmEditTimeLog Form;
+
+        [Inject]
+        public EditTimeLogView(EditLogTime.IModel inModel, IEventBroker inGlobalEvent)
+        {
+            Model = inModel;
+            inGlobalEvent.Register(this);
+        }
+
+        [EventPublication(EditLogTime.Events.Load, typeof(Publish<EditLogTime.IView>))]
+        public event EventHandler LoadEvent;
+
+        public void Init(frmEditTimeLog inView)
+        {
+            Form = inView;
+            LoadEvent.Fire(this);
         }
     }
 }

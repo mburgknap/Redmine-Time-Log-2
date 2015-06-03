@@ -2,7 +2,6 @@
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.UI.Common;
-using RedmineLog.UI.Views;
 using System;
 using System.Windows.Forms;
 
@@ -37,7 +36,7 @@ namespace RedmineLog
         [EventPublication(Settings.Events.Load, typeof(Publish<Settings.IView>))]
         public event EventHandler LoadEvent;
 
-        [EventPublication(Global.Events.Info, typeof(Publish<IAppView>))]
+        [EventPublication(Global.Events.Info, typeof(Publish<Global.IView>))]
         public event EventHandler InfoEvent;
 
         public void Init(frmSettings frmSettings)

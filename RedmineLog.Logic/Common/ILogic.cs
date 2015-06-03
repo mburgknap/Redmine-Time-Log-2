@@ -2,6 +2,5 @@
 {
     public interface ILogic<TView>
     {
-        void Apply(string inCmd);
     }
 }

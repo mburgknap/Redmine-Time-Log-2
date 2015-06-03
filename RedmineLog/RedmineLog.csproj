@@ -84,7 +84,6 @@
     <Compile Include="UI\frmWorkLog.Designer.cs">
       <DependentUpon>frmWorkLog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Views\IApp.cs" />
     <Compile Include="Bindings.cs" />
     <Compile Include="UI\Common\IView.cs" />
     <Compile Include="UI\Bindings.cs" />
@@ -114,7 +113,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Views\IMainView.cs" />
     <EmbeddedResource Include="UI\frmEditTimeLog.resx">
       <DependentUpon>frmEditTimeLog.cs</DependentUpon>
     </EmbeddedResource>

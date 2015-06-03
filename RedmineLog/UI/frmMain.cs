@@ -1,8 +1,11 @@
-﻿using Redmine.Net.Api;
+﻿using Appccelerate.EventBroker;
+using Ninject;
+using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
 using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
+using RedmineLog.UI.Common;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -44,6 +47,7 @@ namespace RedmineLog
         public frmMain()
         {
             InitializeComponent();
+            this.Initialize<Main.IView, frmMain>();
             FormClosing += OnFormClosing;
             CheckForIllegalCrossThreadCalls = false;
             WorkTimer = new System.Timers.Timer(1000);
@@ -1014,6 +1018,29 @@ namespace RedmineLog
             {
                 AcceptComment();
             }
+        }
+    }
+
+    internal class MainView : Main.IView, IView<frmMain>
+    {
+        private Main.IModel Model;
+
+        private frmMain Form;
+
+        [Inject]
+        public MainView(Main.IModel inModel, IEventBroker inGlobalEvent)
+        {
+            Model = inModel;
+            inGlobalEvent.Register(this);
+        }
+
+        [EventPublication(Main.Events.Load, typeof(Publish<Main.IView>))]
+        public event EventHandler LoadEvent;
+
+        public void Init(frmMain inView)
+        {
+            Form = inView;
+            LoadEvent.Fire(this);
         }
     }
 }

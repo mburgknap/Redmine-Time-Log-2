@@ -1,5 +1,9 @@
-﻿using RedmineLog.Logic;
+﻿using Appccelerate.EventBroker;
+using Ninject;
+using RedmineLog.Common;
+using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
+using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -15,6 +19,7 @@ namespace RedmineLog
         public frmSearch()
         {
             InitializeComponent();
+            this.Initialize<Search.IView, frmSearch>();
         }
 
         private void OnSearchDeactivate(object sender, EventArgs e)
@@ -106,6 +111,29 @@ namespace RedmineLog
         internal void Init(Point point)
         {
             appLocation = point;
+        }
+    }
+
+    internal class SearchView : Search.IView, IView<frmSearch>
+    {
+        private Search.IModel Model;
+
+        private frmSearch Form;
+
+        [Inject]
+        public SearchView(Search.IModel inModel, IEventBroker inGlobalEvent)
+        {
+            Model = inModel;
+            inGlobalEvent.Register(this);
+        }
+
+        [EventPublication(Search.Events.Load, typeof(Publish<Search.IView>))]
+        public event EventHandler LoadEvent;
+
+        public void Init(frmSearch inView)
+        {
+            Form = inView;
+            LoadEvent.Fire(this);
         }
     }
 }

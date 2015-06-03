@@ -9,10 +9,10 @@ using System.Collections.Specialized;
 
 namespace RedmineLog.Logic
 {
-    internal class SettingsLogic : ILogic<Settings.IView>
+    internal class SettingFormLogic : ILogic<Settings.IView>
     {
         [Inject]
-        public SettingsLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient)
+        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient)
         {
             View = inView;
             Model = inModel;

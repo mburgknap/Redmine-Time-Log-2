@@ -1,6 +1,9 @@
-﻿using RedmineLog.Common;
+﻿using Appccelerate.EventBroker;
+using Ninject;
+using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.Logic.Data;
+using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -14,6 +17,7 @@ namespace RedmineLog
         public frmSmall()
         {
             InitializeComponent();
+            this.Initialize<Small.IView, frmSmall>();
         }
 
         public frmSmall(frmMain frmMain)
@@ -89,6 +93,29 @@ namespace RedmineLog
                 return;
             }
             inLabel.Text = inText;
+        }
+    }
+
+    internal class SmallView : Small.IView, IView<frmSmall>
+    {
+        private Small.IModel Model;
+
+        private frmSmall Form;
+
+        [Inject]
+        public SmallView(Small.IModel inModel, IEventBroker inGlobalEvent)
+        {
+            Model = inModel;
+            inGlobalEvent.Register(this);
+        }
+
+        [EventPublication(Small.Events.Load, typeof(Publish<Small.IView>))]
+        public event EventHandler LoadEvent;
+
+        public void Init(frmSmall inView)
+        {
+            Form = inView;
+            LoadEvent.Fire(this);
         }
     }
 }

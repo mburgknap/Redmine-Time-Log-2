@@ -27,7 +27,8 @@ namespace RedmineLog
                     .Load(new Bindings(),
                           new UI.Bindings(),
                           new Model.Bindings(),
-                          new Logic.Bindings());
+                          new Logic.Bindings(),
+                          new Logic.Data.Bindings());
             Application.ThreadException += OnUnhandledException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
