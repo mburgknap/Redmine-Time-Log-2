@@ -32,6 +32,7 @@ namespace RedmineLog
             Application.ThreadException += OnUnhandledException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
             Application.Run(new frmMain());
         }
 

@@ -1021,6 +1021,8 @@ namespace RedmineLog
         }
     }
 
+
+
     internal class MainView : Main.IView, IView<frmMain>
     {
         private Main.IModel Model;
@@ -1044,10 +1046,10 @@ namespace RedmineLog
         public event EventHandler HideEvent;
 
         [EventPublication(Main.Events.Submit, typeof(Publish<Main.IView>))]
-        public event EventHandler<Main.Actions> SubmitEvent;
+        public event EventHandler<Args<Main.Actions>> SubmitEvent;
 
         [EventPublication(Main.Events.Reset, typeof(Publish<Main.IView>))]
-        public event EventHandler<Main.Actions> ResetEvent;
+        public event EventHandler<Args<Main.Actions>> ResetEvent;
 
         public void Init(frmMain inView)
         {
