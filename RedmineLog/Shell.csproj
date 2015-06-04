@@ -161,13 +161,13 @@
     <Content Include="RedmineTimeLog.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RedmineLog.Common\RedmineLog.Common.csproj">
+    <ProjectReference Include="..\RedmineLog.Common\Shell.Common.csproj">
       <Project>{1e0d94b7-e265-430b-b223-e65f9d5bbb23}</Project>
-      <Name>RedmineLog.Common</Name>
+      <Name>Shell.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RedmineLog.Logic\RedmineLog.Logic.csproj">
+    <ProjectReference Include="..\RedmineLog.Logic\Shell.Logic.csproj">
       <Project>{c9b9b20d-e05e-450c-bdba-f980bc4ba8a2}</Project>
-      <Name>RedmineLog.Logic</Name>
+      <Name>Shell.Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

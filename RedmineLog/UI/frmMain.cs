@@ -1037,10 +1037,27 @@ namespace RedmineLog
         [EventPublication(Main.Events.Load, typeof(Publish<Main.IView>))]
         public event EventHandler LoadEvent;
 
+        [EventPublication(Main.Events.Exit, typeof(Publish<Main.IView>))]
+        public event EventHandler ExitEvent;
+
+        [EventPublication(Main.Events.Hide, typeof(Publish<Main.IView>))]
+        public event EventHandler HideEvent;
+
+        [EventPublication(Main.Events.Submit, typeof(Publish<Main.IView>))]
+        public event EventHandler<Main.Actions> SubmitEvent;
+
+        [EventPublication(Main.Events.Reset, typeof(Publish<Main.IView>))]
+        public event EventHandler<Main.Actions> ResetEvent;
+
         public void Init(frmMain inView)
         {
             Form = inView;
             LoadEvent.Fire(this);
+        }
+
+        public void Update(RedmineIssueData parent, RedmineIssueData issue)
+        {
+            throw new NotImplementedException();
         }
     }
 }
