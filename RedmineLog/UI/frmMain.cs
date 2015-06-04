@@ -432,6 +432,8 @@ namespace RedmineLog
             var screen = Screen.FromPoint(this.Location);
             this.Location = new Point(screen.WorkingArea.Right - this.Width, screen.WorkingArea.Bottom - this.Height);
 
+            return;
+
             try
             {
                 if (!App.Context.Config.Load())
@@ -1025,15 +1027,16 @@ namespace RedmineLog
 
     internal class MainView : Main.IView, IView<frmMain>
     {
-        private Main.IModel Model;
+        private Main.IModel model;
 
         private frmMain Form;
 
         [Inject]
         public MainView(Main.IModel inModel, IEventBroker inGlobalEvent)
         {
-            Model = inModel;
+            model = inModel;
             inGlobalEvent.Register(this);
+            model.Sync.Bind(SyncTarget.View, this);
         }
 
         [EventPublication(Main.Events.Load, typeof(Publish<Main.IView>))]
@@ -1045,6 +1048,12 @@ namespace RedmineLog
         [EventPublication(Main.Events.Hide, typeof(Publish<Main.IView>))]
         public event EventHandler HideEvent;
 
+        [EventPublication(Main.Events.AddIssue, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<string>> AddIssueEvent;
+
+        [EventPublication(Main.Events.DelIssue, typeof(Publish<Main.IView>))]
+        public event EventHandler DelIssueEvent;
+
         [EventPublication(Main.Events.Submit, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<Main.Actions>> SubmitEvent;
 
@@ -1054,12 +1063,47 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
+            Form.tbIssue.KeyDown += (s, e) =>
+            {
+                if (e.KeyValue == 13)
+                    AddIssueEvent.Fire(this, Form.tbIssue.Text);
+            };
+
+            Form.btnRemoveItem.Click += (s, e) =>
+            {
+                DelIssueEvent.Fire(this);
+            };
+
             LoadEvent.Fire(this);
         }
 
-        public void Update(RedmineIssueData parent, RedmineIssueData issue)
+        void OnWorkActivitiesChange()
         {
-            throw new NotImplementedException();
+            Form.cbActivity.Items.Clear();
+            Form.cbActivity.DataSource = model.WorkActivities;
+            Form.cbActivity.DisplayMember = "Name";
+            Form.cbActivity.ValueMember = "Id";
+
+            if (Form.cbActivity.Items.Count > 0)
+                Form.cbActivity.SelectedItem = Form.cbActivity.Items[0];
+        }
+        void OnIssueParentInfoChange()
+        {
+            if (model.IssueParentInfo != null)
+            {
+                Form.lblParentIssue.Text = model.IssueParentInfo.Subject;
+                Form.lblParentIssue.Visible = true;
+            }
+            else
+                Form.lblParentIssue.Visible = false;
+        }
+        void OnIssueInfoChange()
+        {
+            Form.tbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
+            Form.lblIssue.Text = model.IssueInfo.Subject;
+            Form.lblProject.Text = model.IssueInfo.Project;
+
+            Form.btnRemoveItem.Visible = model.IssueInfo.Id > 0;
         }
     }
 }

@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Entities.cs" />
     <Compile Include="Forms\EditLogTime.cs" />
+    <Compile Include="IModelSync.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="AppLogger.cs" />
     <Compile Include="EventExtension.cs" />

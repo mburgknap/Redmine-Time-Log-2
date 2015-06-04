@@ -1,4 +1,6 @@
 ﻿using DBreeze;
+using DBreeze.DataTypes;
+using Newtonsoft.Json;
 using Ninject;
 using NLog;
 using RedmineLog.Common;
@@ -10,6 +12,97 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic
 {
+
+    internal class IssuesTable : IDbIssue
+    {
+        private IDatabase database;
+
+        [Inject]
+        public IssuesTable(IDatabase inDatabase)
+        {
+            database = inDatabase;
+        }
+
+        public void Init()
+        {
+            database.Set<IssuesTable, int, DbMJSON<IssueData>>(0, new IssueData() { Id = 0 });
+        }
+
+        public IssueData Get(int id)
+        {
+            var result = database.Get<IssuesTable, int, DbMJSON<IssueData>>(id, null);
+
+            if (result != null)
+                return result.Get;
+
+            return null;
+        }
+
+        public void Update(IssueData issueData)
+        {
+            database.Set<IssuesTable, int, DbMJSON<IssueData>>(issueData.Id, issueData);
+        }
+
+
+        public void Delete(IssueData issueData)
+        {
+            database.Delete<IssuesTable, int>(issueData.Id);
+        }
+    }
+    internal class CommentsTable : IDbComment
+    {
+        private IDatabase database;
+
+        [Inject]
+        public CommentsTable(IDatabase inDatabase)
+        {
+            database = inDatabase;
+        }
+
+        public void Init()
+        {
+
+        }
+
+
+        public IEnumerable<CommentData> GetList(IssueData inIssue)
+        {
+            return database.Get<CommentsTable, Guid, DbMJSON<CommentData>>(inIssue.Comments).Select(x => x.Get).ToList();
+        }
+    }
+
+    internal class RedmineIssuesTable : IDbRedmineIssue
+    {
+        private IDatabase database;
+
+        [Inject]
+        public RedmineIssuesTable(IDatabase inDatabase)
+        {
+            database = inDatabase;
+        }
+
+        public void Init()
+        {
+            database.Set<RedmineIssuesTable, int, DbMJSON<RedmineIssueData>>(0, new RedmineIssueData() { Id = 0, Project = "", Subject = "" });
+        }
+
+
+        public RedmineIssueData Get(int id)
+        {
+            var result = database.Get<RedmineIssuesTable, int, DbMJSON<RedmineIssueData>>(id, null);
+
+            if (result != null)
+                return result.Get;
+
+            return null;
+        }
+
+        public void Update(RedmineIssueData issue)
+        {
+            database.Set<RedmineIssuesTable, int, DbMJSON<RedmineIssueData>>(issue.Id, issue);
+        }
+    }
+
     internal class RedmineSetting : IDbRedmine
     {
         private IDatabase database;
@@ -22,22 +115,22 @@ namespace RedmineLog.Logic
 
         public string GetUrl()
         {
-            return database.Get<string, string>(typeof(RedmineSetting), "Url", "");
+            return database.Get<RedmineSetting, string, string>("Url", "");
         }
 
         public void SetUrl(string value)
         {
-            database.Set<string, string>(typeof(RedmineSetting), "Url", value);
+            database.Set<RedmineSetting, string, string>("Url", value);
         }
 
         public string GetApiKey()
         {
-            return database.Get<string, string>(typeof(RedmineSetting), "ApiKey", "");
+            return database.Get<RedmineSetting, string, string>("ApiKey", "");
         }
 
         public void SetApiKey(string value)
         {
-            database.Set<string, string>(typeof(RedmineSetting), "ApiKey", value);
+            database.Set<RedmineSetting, string, string>("ApiKey", value);
         }
     }
 
@@ -53,12 +146,12 @@ namespace RedmineLog.Logic
 
         public int GetIdUser()
         {
-            return database.Get<string, int>(typeof(AppConfig), "IdUser", 0);
+            return database.Get<AppConfig, string, int>("IdUser", 0);
         }
 
         public void SetIdUser(int value)
         {
-            database.Set<string, int>(typeof(AppConfig), "IdUser", value);
+            database.Set<AppConfig, string, int>("IdUser", value);
         }
     }
 
@@ -74,6 +167,9 @@ namespace RedmineLog.Logic
 
             try
             {
+                DBreeze.Utils.CustomSerializator.Serializator = JsonConvert.SerializeObject;
+                DBreeze.Utils.CustomSerializator.Deserializator = JsonConvert.DeserializeObject;
+
                 engine = new DBreezeEngine(new Uri("Database", UriKind.Relative).ToString());
 
                 using (var tran = engine.GetTransaction())
@@ -85,19 +181,22 @@ namespace RedmineLog.Logic
                         tran.Insert<string, bool>("DbSetting", "Init", true);
                         tran.Commit();
                     }
+
+                    tran.Insert<string, bool>("DbSetting", "Init", true);
+                    tran.Commit();
                 }
             }
             catch (Exception ex)
             { logger.Error("AppDatabase", ex); }
         }
 
-        public TValue Get<TKey, TValue>(Type inTable, TKey inKey, TValue inDefault)
+        public TValue Get<Table, TKey, TValue>(TKey inKey, TValue inDefault)
         {
             try
             {
                 using (var tran = engine.GetTransaction())
                 {
-                    var item = tran.Select<TKey, TValue>(inTable.Name, inKey);
+                    var item = tran.Select<TKey, TValue>(typeof(Table).Name, inKey);
 
                     if (item.Exists)
                         return item.Value;
@@ -105,7 +204,7 @@ namespace RedmineLog.Logic
             }
             catch (Exception ex)
             {
-                logger.Error("Get " + inTable.Name
+                logger.Error("Get " + typeof(Table).Name
                           + " Key (" + typeof(TKey).Name + ") =" + inKey, ex);
             }
 
@@ -113,22 +212,65 @@ namespace RedmineLog.Logic
         }
 
 
-        public void Set<TKey, TValue>(Type inTable, TKey inKey, TValue inValue)
+        public void Set<Table, TKey, TValue>(TKey inKey, TValue inValue)
         {
             try
             {
                 using (var tran = engine.GetTransaction())
                 {
-                    tran.Insert<TKey, TValue>(inTable.Name, inKey, inValue);
+                    tran.Insert<TKey, TValue>(typeof(Table).Name, inKey, inValue);
                     tran.Commit();
                 }
             }
             catch (Exception ex)
             {
-                logger.Error("Set " + inTable.Name
+                logger.Error("Set " + typeof(Table).Name
                           + " Key (" + typeof(TKey).Name + ") =" + inKey
                           + " Value (" + typeof(TValue).Name + ") =" + inValue, ex);
             }
+        }
+
+        public void Delete<Table, TKey>(TKey inKey)
+        {
+            try
+            {
+                using (var tran = engine.GetTransaction())
+                {
+                    tran.RemoveKey<TKey>(typeof(Table).Name, inKey);
+                    tran.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Delete " + typeof(Table).Name
+                          + " Key (" + typeof(TKey).Name + ") =" + inKey, ex);
+            }
+        }
+
+
+        public IEnumerable<TValue> Get<Table, TKey, TValue>(IEnumerable<TKey> inKeys)
+        {
+            try
+            {
+                using (var tran = engine.GetTransaction())
+                {
+                    var result = new List<TValue>();
+
+                    foreach (var key in inKeys)
+                    {
+                        var item = tran.Select<TKey, TValue>(typeof(Table).Name, key);
+
+                        if (item.Exists)
+                            result.Add(item.Value);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Get " + typeof(Table).Name, ex);
+            }
+
+            return new List<TValue>();
         }
     }
 }

@@ -45,6 +45,14 @@ namespace RedmineLog.Common
         }
     }
 
+    public class IssueCommentList : List<CommentData>
+    {
+        public void Init(IEnumerable<CommentData> enumerable)
+        {
+            Clear();
+            AddRange(enumerable);
+        }
+    }
 
     public class IssueData
     {
@@ -59,9 +67,6 @@ namespace RedmineLog.Common
 
         public override string ToString()
         {
-            if (Id == -1)
-                return "";
-
             return Id.ToString();
         }
 

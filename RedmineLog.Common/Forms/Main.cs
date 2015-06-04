@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
+
+
     public static class Main
     {
         public enum Actions
@@ -32,16 +34,19 @@ namespace RedmineLog.Common
 
         public interface IView
         {
-            void Update(RedmineIssueData parent, RedmineIssueData issue);
         }
 
         public interface IModel
         {
+            IModelSync Sync { get; }
             TimeSpan WorkTime { get; set; }
             TimeSpan IdleTime { get; set; }
             WorkActivityList WorkActivities { get; }
             CommentData Comment { get; set; }
             IssueData Issue { get; set; }
+            IssueCommentList IssueComments { get; }
+            RedmineIssueData IssueParentInfo { get; set; }
+            RedmineIssueData IssueInfo { get; set; }
         }
     }
 }

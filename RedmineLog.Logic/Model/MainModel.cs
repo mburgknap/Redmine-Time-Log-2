@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic.Model
 {
+
     internal class MainModel : Main.IModel
     {
         public MainModel()
         {
+            IssueComments = new IssueCommentList();
             WorkActivities = new WorkActivityList();
+            Sync = new ModelSync<Main.IModel>();
         }
 
         public TimeSpan WorkTime { get; set; }
@@ -23,5 +26,13 @@ namespace RedmineLog.Logic.Model
         public CommentData Comment { get; set; }
 
         public IssueData Issue { get; set; }
+
+        public IModelSync Sync { get; private set; }
+
+        public RedmineIssueData IssueParentInfo { get; set; }
+
+        public RedmineIssueData IssueInfo { get; set; }
+
+        public IssueCommentList IssueComments { get; private set; }
     }
 }

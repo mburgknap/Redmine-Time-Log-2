@@ -3,9 +3,13 @@
 namespace RedmineLog.Common
 {
 
-    public class Args<T>: EventArgs
+    public class Args<T> : EventArgs
     {
-        T Data { get; set; }
+        public Args(T inValue)
+        {
+            Data = inValue;
+        }
+        public T Data { get; private set; }
     }
 
     public static class EventExtension
@@ -14,6 +18,11 @@ namespace RedmineLog.Common
         {
             if (inThis != null)
                 inThis(sender, arg ?? EventArgs.Empty);
+        }
+        public static void Fire<T>(this EventHandler<Args<T>> inThis, object sender, T arg)
+        {
+            if (inThis != null)
+                inThis(sender, new Args<T>(arg));
         }
     }
 }

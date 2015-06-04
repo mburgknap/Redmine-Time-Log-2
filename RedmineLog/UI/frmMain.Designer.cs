@@ -181,8 +181,8 @@
             // 
             // lblParentIssue
             // 
-            this.lblParentIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lblParentIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblParentIssue.AutoSize = true;
             this.lblParentIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -216,8 +216,8 @@
             // 
             // lblProject
             // 
-            this.lblProject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lblProject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProject.AutoSize = true;
             this.lblProject.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -329,7 +329,6 @@
             this.tbIssue.TabIndex = 43;
             this.tbIssue.WordWrap = false;
             this.tbIssue.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnIssueMouseClick);
-            this.tbIssue.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnIssueKeyDown);
             // 
             // btnIssues
             // 
@@ -463,10 +462,7 @@
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClockActive;
         internal System.Windows.Forms.ComboBox cbActivity;
-        private System.Windows.Forms.Label lblParentIssue;
-        private System.Windows.Forms.LinkLabel lblIssue;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
-        private System.Windows.Forms.Button btnRemoveItem;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label lblClockIndle;
         private System.Windows.Forms.Panel pManage;
@@ -478,10 +474,13 @@
         private System.Windows.Forms.Button btnNewComment;
         internal System.Windows.Forms.Label lHide;
         private System.Windows.Forms.Button btnIssues;
-        private System.Windows.Forms.TextBox tbIssue;
         private System.Windows.Forms.Button btnComments;
         internal System.Windows.Forms.Button btnSubmitAll;
-        private System.Windows.Forms.Label lblProject;
         private System.Windows.Forms.Button btnWorkTime;
+        internal System.Windows.Forms.Label lblParentIssue;
+        internal System.Windows.Forms.LinkLabel lblIssue;
+        internal System.Windows.Forms.Button btnRemoveItem;
+        internal System.Windows.Forms.Label lblProject;
+        internal System.Windows.Forms.TextBox tbIssue;
     }
 }
