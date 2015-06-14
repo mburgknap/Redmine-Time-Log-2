@@ -25,13 +25,21 @@ namespace RedmineLog.Logic
 
         public void Init()
         {
-            if (database.Get<IssuesTable, int, DbMJSON<IssueData>>(0, null) == null)
-                database.Set<IssuesTable, int, DbMJSON<IssueData>>(0, new IssueData() { Id = 0 });
+            try
+            {
+                if (database.Get<IssuesTable, int, DbCustomSerializer<IssueData>>(0, null).Get == null)
+                    database.Set<IssuesTable, int, DbCustomSerializer<IssueData>>(0, new IssueData() { Id = 0 });
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                database.Set<IssuesTable, int, DbCustomSerializer<IssueData>>(0, new IssueData() { Id = 0 });
+            }
         }
 
         public IssueData Get(int id)
         {
-            var result = database.Get<IssuesTable, int, DbMJSON<IssueData>>(id, null);
+            var result = database.Get<IssuesTable, int, DbCustomSerializer<IssueData>>(id, null);
 
             if (result != null)
                 return result.Get;
@@ -41,13 +49,26 @@ namespace RedmineLog.Logic
 
         public void Update(IssueData issueData)
         {
-            database.Set<IssuesTable, int, DbMJSON<IssueData>>(issueData.Id, issueData);
+            database.Set<IssuesTable, int, DbCustomSerializer<IssueData>>(issueData.Id, issueData);
         }
 
 
         public void Delete(IssueData issueData)
         {
             database.Delete<IssuesTable, int>(issueData.Id);
+        }
+
+
+        public IEnumerable<IssueData> GetList()
+        {
+            var result = new List<IssueData>();
+
+            database.ForEach<IssuesTable, int, DbCustomSerializer<IssueData>>(item =>
+            {
+                result.Add(item.Get);
+            });
+
+            return result;
         }
     }
     internal class CommentsTable : IDbComment
@@ -68,13 +89,19 @@ namespace RedmineLog.Logic
 
         public IEnumerable<CommentData> GetList(IssueData inIssue)
         {
-            return database.Get<CommentsTable, string, DbMJSON<CommentData>>(inIssue.Comments.Select(x => x.ToString())).Select(x => x.Get).ToList();
+            return database.Get<CommentsTable, string, DbCustomSerializer<CommentData>>(inIssue.Comments.Select(x => x.ToString())).Select(x => x.Get).ToList();
         }
 
 
         public void Update(CommentData comment)
         {
-            database.Set<CommentsTable, string, DbMJSON<CommentData>>(comment.Id.ToString(), comment);
+            database.Set<CommentsTable, string, DbCustomSerializer<CommentData>>(comment.Id.ToString(), comment);
+        }
+
+
+        public void Delete(CommentData comment)
+        {
+            database.Delete<CommentsTable, string>(comment.Id);
         }
     }
 
@@ -90,13 +117,13 @@ namespace RedmineLog.Logic
 
         public void Init()
         {
-            database.Set<RedmineIssuesTable, int, DbMJSON<RedmineIssueData>>(0, new RedmineIssueData() { Id = 0, Project = "", Subject = "" });
+            database.Set<RedmineIssuesTable, int, DbCustomSerializer<RedmineIssueData>>(0, new RedmineIssueData() { Id = 0, Project = "", Subject = "" });
         }
 
 
         public RedmineIssueData Get(int id)
         {
-            var result = database.Get<RedmineIssuesTable, int, DbMJSON<RedmineIssueData>>(id, null);
+            var result = database.Get<RedmineIssuesTable, int, DbCustomSerializer<RedmineIssueData>>(id, null);
 
             if (result != null)
                 return result.Get;
@@ -106,7 +133,7 @@ namespace RedmineLog.Logic
 
         public void Update(RedmineIssueData issue)
         {
-            database.Set<RedmineIssuesTable, int, DbMJSON<RedmineIssueData>>(issue.Id, issue);
+            database.Set<RedmineIssuesTable, int, DbCustomSerializer<RedmineIssueData>>(issue.Id, issue);
         }
     }
 
@@ -280,6 +307,26 @@ namespace RedmineLog.Logic
             }
 
             return new List<TValue>();
+        }
+
+
+        public void ForEach<Table, TKey, TValue>(Action<TValue> OnValue)
+        {
+            try
+            {
+                using (var tran = engine.GetTransaction())
+                {
+                    foreach (var item in tran.SelectForward<TKey, TValue>(typeof(Table).Name))
+                    {
+                        if (item.Exists)
+                            OnValue(item.Value);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("ForEach " + typeof(Table).Name, ex);
+            }
         }
     }
 }

@@ -34,5 +34,7 @@ namespace RedmineLog.Logic.Model
         public RedmineIssueData IssueInfo { get; set; }
 
         public IssueCommentList IssueComments { get; private set; }
+
+        public WorkActivityType Activity { get; set; }
     }
 }

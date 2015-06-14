@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic.Common;
@@ -46,6 +47,21 @@ namespace RedmineLog.Logic
 
         }
 
+        [EventSubscription(Main.Events.Link, typeof(Subscribe<Main.IView>))]
+        public void OnLinkEvent(object sender, Args<String> arg)
+        {
+            if (arg.Data.Equals("Redmine"))
+            { view.GoLink(redmine.IssueListUrl()); }
+            else if (arg.Data.Equals("Issue"))
+            { view.GoLink(redmine.IssueUrl(model.Issue)); }
+        }
+
+        [EventSubscription(Main.Events.Exit, typeof(Subscribe<Main.IView>))]
+        public void OnExitEvent(object sender, EventArgs arg)
+        {
+            model.Issue.SetWorkTime(model.WorkTime);
+            dbIssue.Update(model.Issue);
+        }
 
         [EventSubscription(Main.Events.AddComment, typeof(Subscribe<Main.IView>))]
         public void OnAddCommentEvent(object sender, Args<string> arg)
@@ -69,6 +85,10 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.DelComment, typeof(Subscribe<Main.IView>))]
         public void OnDelCommentEvent(object sender, EventArgs arg)
         {
+            dbComment.Delete(model.Comment);
+            model.IssueComments.Remove(model.Comment);
+            model.Comment = null;
+            model.Sync.Value(SyncTarget.View, "Comment");
         }
 
         [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
@@ -88,12 +108,91 @@ namespace RedmineLog.Logic
                     dbIssue.Update(issue = new IssueData() { Id = tmpIssue.Id, UsedCount = 1 });
 
                 if (issue != null)
+                {
+                    SetupLastIssue(issue);
                     LoadIssue(issue);
-                else
-                    LoadIssue(dbIssue.Get(0));
+                    return;
+                }
+            }
+            LoadIssue(dbIssue.Get(0));
+        }
+
+        [EventSubscription(Main.Events.ClockStop, typeof(Subscribe<Main.IView>))]
+        public void OnClockStopEvent(object sender, EventArgs arg)
+        {
+            model.WorkTime = new TimeSpan(0);
+            model.Issue.Time = null;
+            dbIssue.Update(model.Issue);
+            model.Sync.Value(SyncTarget.View, "WorkTime");
+        }
+
+        [EventSubscription(Main.Events.Submit, typeof(Subscribe<Main.IView>))]
+        public void OnSubmitEvent(object sender, Args<Main.Actions> arg)
+        {
+            if (model.Comment == null)
+            {
+                view.Info("Write comment to the task");
+                return;
+            }
+
+            if (!(model.Issue.Id > 0))
+            {
+                view.Info("Select issue to the task");
+                return;
+            }
+
+            var workData = new WorkTimeData()
+            {
+                IdUssue = model.Issue.Id,
+                IdActivityType = model.Activity.Id,
+                Time = new TimeSpan(),
+                Comment = model.Comment.Text
+            };
+
+            if (arg.Data == Main.Actions.Issue || arg.Data == Main.Actions.All)
+            {
+                workData.Time = workData.Time.Add(model.WorkTime);
+                model.WorkTime = new TimeSpan(0);
+                model.Sync.Value(SyncTarget.View, "WorkTime");
+            }
+
+            if (arg.Data == Main.Actions.Idle || arg.Data == Main.Actions.All)
+            {
+                workData.Time = workData.Time.Add(model.IdleTime);
+                model.IdleTime = new TimeSpan(0);
+                model.Sync.Value(SyncTarget.View, "IdleTime");
+            }
+
+            model.Issue.Time = null;
+
+            if (!redmine.AddWorkTime(workData))
+            { model.Issue.SetWorkTime(workData.Time); }
+
+            dbIssue.Update(model.Issue);
+            LoadIssue(model.Issue);
+        }
+
+        [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
+        public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
+        {
+            SetupLastIssue(arg.Data.Data);
+            LoadIssue(arg.Data.Data);
+        }
+
+        private void SetupLastIssue(IssueData issue)
+        {
+            if (model.Issue.Id > 0)
+            {
+                model.Issue.SetWorkTime(model.WorkTime);
+                dbIssue.Update(model.Issue);
+
+                model.WorkTime = new TimeSpan(0);
+                model.Sync.Value(SyncTarget.View, "WorkTime");
             }
             else
-                LoadIssue(dbIssue.Get(0));
+            {
+                issue.AddWorkTime(model.WorkTime);
+            }
         }
 
         private void DownloadIssue(int idIssue)
@@ -127,6 +226,8 @@ namespace RedmineLog.Logic
         private void LoadIssue(IssueData inIssue)
         {
             model.Issue = inIssue;
+
+            model.WorkTime = inIssue.GetWorkTime(model.WorkTime);
             model.Comment = null;
 
             model.IssueComments.Clear();

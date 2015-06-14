@@ -89,5 +89,42 @@ namespace RedmineLog.Logic
 
             return null;
         }
+
+
+        public bool AddWorkTime(WorkTimeData workData)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+                var parameters = new NameValueCollection { };
+
+                var response = manager.CreateObject<TimeEntry>(new TimeEntry()
+                {
+                    Issue = new IdentifiableName() { Id = workData.IdUssue },
+                    Activity = new IdentifiableName() { Id = workData.IdActivityType },
+                    Comments = workData.Comment,
+                    Hours = decimal.Round(workData.ToHours(), 2),
+                    SpentOn = DateTime.Now
+                });
+
+                if (response != null)
+                    return true;
+            }
+            catch (Exception ex)
+            { logger.Error("AddWorkTime", ex); }
+
+            return false;
+        }
+
+
+        public Uri IssueListUrl()
+        {
+            return new Uri(dbRedmine.GetUrl() + "issues");
+        }
+
+        public Uri IssueUrl(IssueData issue)
+        {
+            return new Uri(dbRedmine.GetUrl() + "issues/" + issue.Id.ToString());
+        }
     }
 }

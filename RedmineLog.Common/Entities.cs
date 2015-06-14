@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
-
     public class RedmineIssueData
     {
         public int Id { get; set; }
@@ -57,6 +56,8 @@ namespace RedmineLog.Common
         }
     }
 
+
+
     public class IssueData
     {
         public IssueData()
@@ -87,7 +88,73 @@ namespace RedmineLog.Common
         }
 
         public int UsedCount { get; set; }
+
+        public long? Time { get; set; }
+
+        public TimeSpan GetWorkTime(TimeSpan inDefualt)
+        {
+            if (!Time.HasValue)
+                return inDefualt;
+
+            return new TimeSpan(Time.Value);
+        }
+        public void SetWorkTime(TimeSpan timeSpan)
+        {
+            if (Time == null)
+                Time = 0;
+
+            Time = timeSpan.Ticks;
+        }
+
+        public void AddWorkTime(TimeSpan timeSpan)
+        {
+            if (Time == null)
+                Time = 0;
+
+            Time = Time + timeSpan.Ticks;
+        }
     }
+
+    public class WorkTimeData
+    {
+        public int IdUssue { get; set; }
+        public int IdActivityType { get; set; }
+        public TimeSpan Time { get; set; }
+        public String Comment { get; set; }
+
+
+        public decimal ToHours()
+        {
+            return Convert.ToDecimal(Time.Hours)
+                   + Convert.ToDecimal(Time.Minutes) / 60;
+        }
+    }
+
+    public class WorkingIssue
+    {
+        public IssueData Data { get; set; }
+
+        public RedmineIssueData Issue { get; set; }
+
+        public RedmineIssueData Parent { get; set; }
+
+    }
+
+
+    public class WorkingIssueList : List<WorkingIssue>
+    {
+        public void Add(IssueData inData, RedmineIssueData inIssue, RedmineIssueData inParent)
+        {
+            Add(new WorkingIssue()
+            {
+                Data = inData,
+                Issue = inIssue,
+                Parent = inParent
+            });
+        }
+    }
+
+
 
     public class WorkActivityType
     {

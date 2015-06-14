@@ -8,7 +8,6 @@ namespace RedmineLog.Common
 {
     public interface IDbIssue
     {
-
         void Init();
 
         IssueData Get(int id);
@@ -16,6 +15,8 @@ namespace RedmineLog.Common
         void Update(IssueData issueData);
 
         void Delete(IssueData issueData);
+
+        IEnumerable<IssueData> GetList();
     }
     public interface IDbComment
     {
@@ -25,6 +26,8 @@ namespace RedmineLog.Common
         IEnumerable<CommentData> GetList(IssueData inIssue);
 
         void Update(CommentData comment);
+
+        void Delete(CommentData comment);
     }
     public interface IDbRedmineIssue
     {
@@ -60,6 +63,8 @@ namespace RedmineLog.Common
         TValue Get<Table, TKey, TValue>(TKey inKey, TValue inDefault);
 
         IEnumerable<TValue> Get<Table, TKey, TValue>(IEnumerable<TKey> inKey);
+
+        void ForEach<Table, TKey, TValue>(Action<TValue> OnValue);
 
         void Set<Table, TKey, TValue>(TKey inKey, TValue inValue);
 

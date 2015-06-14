@@ -35,7 +35,6 @@
             this.lnkIssues = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.tbComment = new System.Windows.Forms.TextBox();
-            this.tAppTimer = new System.Windows.Forms.Timer(this.components);
             this.btnStop = new System.Windows.Forms.Button();
             this.btnClock = new System.Windows.Forms.Button();
             this.lblClockActive = new System.Windows.Forms.Label();
@@ -77,7 +76,6 @@
             this.lnkExit.Size = new System.Drawing.Size(29, 17);
             this.lnkExit.TabIndex = 31;
             this.lnkExit.Text = "Exit";
-            this.lnkExit.Click += new System.EventHandler(this.OnExitClick);
             // 
             // lnkSettings
             // 
@@ -90,7 +88,6 @@
             this.lnkSettings.Size = new System.Drawing.Size(57, 17);
             this.lnkSettings.TabIndex = 27;
             this.lnkSettings.Text = "Settings";
-            this.lnkSettings.Click += new System.EventHandler(this.OnSettingsClick);
             // 
             // lnkIssues
             // 
@@ -103,7 +100,6 @@
             this.lnkIssues.Size = new System.Drawing.Size(103, 17);
             this.lnkIssues.TabIndex = 24;
             this.lnkIssues.Text = "Redmine Issues";
-            this.lnkIssues.Click += new System.EventHandler(this.OnRedmineIssuesClick);
             // 
             // btnSubmit
             // 
@@ -114,7 +110,6 @@
             this.btnSubmit.TabIndex = 22;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
-            this.btnSubmit.Click += new System.EventHandler(this.OnSubmitClick);
             // 
             // tbComment
             // 
@@ -126,13 +121,6 @@
             this.tbComment.ReadOnly = true;
             this.tbComment.Size = new System.Drawing.Size(177, 76);
             this.tbComment.TabIndex = 21;
-            this.tbComment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbComment_KeyPress);
-            this.tbComment.Leave += new System.EventHandler(this.OnCommentLostFocus);
-            // 
-            // tAppTimer
-            // 
-            this.tAppTimer.Enabled = true;
-            this.tAppTimer.Interval = 1000;
             // 
             // btnStop
             // 
@@ -143,7 +131,6 @@
             this.btnStop.TabIndex = 20;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.OnStopClick);
             // 
             // btnClock
             // 
@@ -154,7 +141,6 @@
             this.btnClock.TabIndex = 19;
             this.btnClock.Text = "Play";
             this.btnClock.UseVisualStyleBackColor = true;
-            this.btnClock.Click += new System.EventHandler(this.OnClockClick);
             // 
             // lblClockActive
             // 
@@ -166,7 +152,6 @@
             this.lblClockActive.Size = new System.Drawing.Size(166, 45);
             this.lblClockActive.TabIndex = 18;
             this.lblClockActive.Text = "00:00:00";
-            this.lblClockActive.Click += new System.EventHandler(this.OnClockActiveClick);
             // 
             // cbActivity
             // 
@@ -201,7 +186,6 @@
             this.lblIssue.Name = "lblIssue";
             this.lblIssue.Size = new System.Drawing.Size(0, 19);
             this.lblIssue.TabIndex = 34;
-            this.lblIssue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnIssueLinkClick);
             // 
             // issueInfoPanel
             // 
@@ -241,7 +225,6 @@
             this.btnRemoveItem.TabIndex = 35;
             this.btnRemoveItem.Text = "X";
             this.btnRemoveItem.UseVisualStyleBackColor = false;
-            this.btnRemoveItem.Click += new System.EventHandler(this.OnRemoveItem);
             // 
             // lblVersion
             // 
@@ -263,7 +246,6 @@
             this.lblClockIndle.Size = new System.Drawing.Size(65, 19);
             this.lblClockIndle.TabIndex = 38;
             this.lblClockIndle.Text = "00:00:00";
-            this.lblClockIndle.Click += new System.EventHandler(this.OnClockIdleClick);
             // 
             // pManage
             // 
@@ -297,7 +279,6 @@
             this.btnWorkTime.TabIndex = 46;
             this.btnWorkTime.Text = "Working";
             this.btnWorkTime.UseVisualStyleBackColor = true;
-            this.btnWorkTime.Click += new System.EventHandler(this.btnWorkTime_Click);
             // 
             // btnSubmitAll
             // 
@@ -308,7 +289,6 @@
             this.btnSubmitAll.TabIndex = 45;
             this.btnSubmitAll.Text = "All";
             this.btnSubmitAll.UseVisualStyleBackColor = true;
-            this.btnSubmitAll.Click += new System.EventHandler(this.OnSubmitAllClick);
             // 
             // btnComments
             // 
@@ -327,7 +307,6 @@
             this.tbIssue.Size = new System.Drawing.Size(72, 32);
             this.tbIssue.TabIndex = 43;
             this.tbIssue.WordWrap = false;
-            this.tbIssue.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnIssueMouseClick);
             // 
             // btnIssues
             // 
@@ -337,7 +316,6 @@
             this.btnIssues.TabIndex = 42;
             this.btnIssues.Text = "Issues";
             this.btnIssues.UseVisualStyleBackColor = true;
-            this.btnIssues.Click += new System.EventHandler(this.OnSearchIssueClick);
             // 
             // pComments
             // 
@@ -370,7 +348,6 @@
             this.btnRemoveComment.TabIndex = 1;
             this.btnRemoveComment.Text = "X";
             this.btnRemoveComment.UseVisualStyleBackColor = true;
-            this.btnRemoveComment.Click += new System.EventHandler(this.OnRemoveCommentClick);
             // 
             // btnNewComment
             // 
@@ -384,7 +361,6 @@
             this.btnNewComment.TabIndex = 0;
             this.btnNewComment.Text = "+";
             this.btnNewComment.UseVisualStyleBackColor = true;
-            this.btnNewComment.Click += new System.EventHandler(this.OnNewCommentClick);
             // 
             // btnResetIdle
             // 
@@ -395,7 +371,6 @@
             this.btnResetIdle.TabIndex = 39;
             this.btnResetIdle.Text = "Reset";
             this.btnResetIdle.UseVisualStyleBackColor = true;
-            this.btnResetIdle.Click += new System.EventHandler(this.OnResetIdleClick);
             // 
             // cmComments
             // 
@@ -413,7 +388,6 @@
             this.lHide.Size = new System.Drawing.Size(37, 17);
             this.lHide.TabIndex = 40;
             this.lHide.Text = "Hide";
-            this.lHide.Click += new System.EventHandler(this.OnHideClick);
             // 
             // frmMain
             // 
@@ -432,10 +406,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "RedmineLog";
             this.TopMost = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
-            this.Load += new System.EventHandler(this.OnFormLoad);
-            this.Resize += new System.EventHandler(this.OnFormResize);
+            this.Load += new System.EventHandler(this.OnMainLoad);
             this.issueInfoPanel.ResumeLayout(false);
             this.issueInfoPanel.PerformLayout();
             this.pManage.ResumeLayout(false);
@@ -455,22 +426,17 @@
         internal System.Windows.Forms.Label lnkIssues;
         internal System.Windows.Forms.Button btnSubmit;
         internal System.Windows.Forms.TextBox tbComment;
-        internal System.Windows.Forms.Timer tAppTimer;
         internal System.Windows.Forms.Button btnStop;
         internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClockActive;
         internal System.Windows.Forms.ComboBox cbActivity;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
         private System.Windows.Forms.Label lblVersion;
-        private System.Windows.Forms.Label lblClockIndle;
-        private System.Windows.Forms.Panel pManage;
         internal System.Windows.Forms.Button btnResetIdle;
         private System.Windows.Forms.Panel pComments;
         private System.Windows.Forms.Panel panel1;
         internal System.Windows.Forms.Label lHide;
-        private System.Windows.Forms.Button btnIssues;
         internal System.Windows.Forms.Button btnSubmitAll;
-        private System.Windows.Forms.Button btnWorkTime;
         internal System.Windows.Forms.Label lblParentIssue;
         internal System.Windows.Forms.LinkLabel lblIssue;
         internal System.Windows.Forms.Button btnRemoveItem;
@@ -480,5 +446,9 @@
         internal System.Windows.Forms.ContextMenuStrip cmComments;
         internal System.Windows.Forms.Button btnRemoveComment;
         internal System.Windows.Forms.Button btnNewComment;
+        internal System.Windows.Forms.Button btnIssues;
+        internal System.Windows.Forms.Label lblClockIndle;
+        internal System.Windows.Forms.Button btnWorkTime;
+        internal System.Windows.Forms.Panel pManage;
     }
 }

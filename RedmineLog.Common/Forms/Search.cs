@@ -11,6 +11,7 @@ namespace RedmineLog.Common
         public static class Events
         {
             public const string Load = "topic://Search/Load";
+            public const string Select = "topic://Search/Select";
         }
 
         public interface IView
@@ -19,6 +20,9 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
+            IModelSync Sync { get; }
+
+            WorkingIssueList Issues { get; }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic;
@@ -7,70 +8,17 @@ using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
     public partial class frmSearch : Form
     {
-        public Action<int> OnSelect;
-        private Point appLocation;
-
         public frmSearch()
         {
             InitializeComponent();
             this.Initialize<Search.IView, frmSearch>();
-        }
-
-        private void OnSearchDeactivate(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void OnSearchLoad(object sender, EventArgs e)
-        {
-            this.Location = appLocation;
-
-            RedmineIssues.Item main = null;
-            RedmineIssues.Item parent = null;
-
-            int row;
-
-            foreach (var item in App.Context.History.OrderByDescending(x =>
-            {
-                if (x.Id == -1) return int.MaxValue;
-                return x.UsedCount;
-            }))
-            {
-                main = App.Context.IssuesCache.GetIssue(item.Id);
-
-                if (main != null)
-                {
-                    if (main.IdParent.HasValue)
-                        parent = App.Context.IssuesCache.GetIssue(main.IdParent.Value);
-                    else
-                        parent = null;
-
-                    if (item.Id > 0)
-                        row = dataGridView1.Rows.Add(new Object[] { item.Id, main.Project, String.Format("{0}{1}", GetSubject(parent), GetSubject(main)) });
-                    else
-                        row = dataGridView1.Rows.Add(new Object[] { "", "", "" });
-
-                    if (App.Context.Work.IsStarted(item.Id))
-                        dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.Red;
-                    else
-                        dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.White;
-
-                    dataGridView1.Rows[row].Tag = item;
-                }
-            }
-        }
-
-        private string GetSubject(RedmineIssues.Item parent)
-        {
-            if (parent != null)
-                return parent.Subject + Environment.NewLine + "   ";
-            return "";
         }
 
         private void OnSearchMouseLeave(object sender, EventArgs e)
@@ -78,62 +26,95 @@ namespace RedmineLog
             this.Close();
         }
 
-        private void OnGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void OnSearchLoad(object sender, EventArgs e)
         {
-            if (e.RowIndex > 0)
-                SelectIssue(dataGridView1.Rows[e.RowIndex].Tag as LogData.Issue);
-        }
-
-        private void SelectIssue(LogData.Issue item)
-        {
-            if (item != null && OnSelect != null)
-            {
-                var data = App.Context.History.Where(x => x.Id == item.Id).First();
-                data.UsedCount += 1;
-                App.Context.History.Save();
-                OnSelect(item.Id);
-            }
-            this.Close();
-        }
-
-        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-                this.Close();
-
-            if (dataGridView1.SelectedRows.Count == 0)
-                return;
-
-            if (e.KeyCode == Keys.Enter)
-                SelectIssue(dataGridView1.SelectedRows[0].Tag as LogData.Issue);
-        }
-
-        internal void Init(Point point)
-        {
-            appLocation = point;
+            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
     }
 
     internal class SearchView : Search.IView, IView<frmSearch>
     {
-        private Search.IModel Model;
+        private Search.IModel model;
 
         private frmSearch Form;
 
         [Inject]
         public SearchView(Search.IModel inModel, IEventBroker inGlobalEvent)
         {
-            Model = inModel;
+            model = inModel;
+            model.Sync.Bind(SyncTarget.View, this);
             inGlobalEvent.Register(this);
         }
 
         [EventPublication(Search.Events.Load, typeof(Publish<Search.IView>))]
         public event EventHandler LoadEvent;
 
+        [EventPublication(Search.Events.Select)]
+        public event EventHandler<Args<WorkingIssue>> SelectEvent;
+
         public void Init(frmSearch inView)
         {
             Form = inView;
+            Form.dataGridView1.KeyDown += OnKeyDown;
+            Form.dataGridView1.CellClick += OnCellClick;
             LoadEvent.Fire(this);
+        }
+
+
+        void OnIssuesChange()
+        {
+            int row;
+
+            Form.dataGridView1.Rows.Clear();
+
+            foreach (var item in model.Issues.OrderByDescending(x =>
+            {
+                if (x.Issue.Id == 0) return int.MaxValue;
+                return x.Data.UsedCount;
+            }))
+            {
+                if (item.Data.Id > 0)
+                    row = Form.dataGridView1.Rows.Add(new Object[] {
+                        item.Data.Id,
+                        item.Issue.Project,
+                        String.Format("{0}{1}",  item.Parent != null ? item.Parent.Subject + Environment.NewLine + "   ":"" , item.Issue.Subject )});
+                else
+                    row = Form.dataGridView1.Rows.Add(new Object[] { "", "", "" });
+
+                if (item.Data.Time.HasValue && item.Data.Time.Value > 0)
+                    Form.dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.Red;
+                else
+                    Form.dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.White;
+
+                Form.dataGridView1.Rows[row].Tag = item;
+            }
+        }
+
+        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > 0)
+                SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
+        }
+
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Form.Close();
+
+            if (Form.dataGridView1.SelectedRows.Count == 0)
+                return;
+
+            if (e.KeyCode == Keys.Enter)
+                SelectIssue(Form.dataGridView1.SelectedRows[0].Tag as WorkingIssue);
+        }
+
+        private void SelectIssue(WorkingIssue item)
+        {
+            if (item != null)
+                SelectEvent.Fire(this, item);
+
+            Form.Close();
         }
     }
 }

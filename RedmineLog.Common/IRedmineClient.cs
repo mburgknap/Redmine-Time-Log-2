@@ -12,5 +12,11 @@ namespace RedmineLog.Common
         IEnumerable<WorkActivityType> GetWorkActivityTypes();
 
         RedmineIssueData GetIssue(int idIssue);
+
+        bool AddWorkTime(WorkTimeData workData);
+
+        Uri IssueListUrl();
+
+        Uri IssueUrl(IssueData issueData);
     }
 }

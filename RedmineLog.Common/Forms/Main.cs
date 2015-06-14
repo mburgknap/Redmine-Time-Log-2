@@ -19,12 +19,10 @@ namespace RedmineLog.Common
 
         public static class Events
         {
+            public const string Link = "topic://Main/Link";
             public const string Load = "topic://Main/Load";
-            public const string Hide = "topic://Main/Hide";
+            public const string ClockStop = "topic://Main/ClockStop";
             public const string Exit = "topic://Main/Exit";
-            public const string Play = "topic://Main/Play";
-            public const string Stop = "topic://Main/Stop";
-            public const string Reset = "topic://Main/Reset";
             public const string Submit = "topic://Main/Submit";
             public const string AddIssue = "topic://Main/AddIssue";
             public const string DelIssue = "topic://Main/DelIssue";
@@ -35,6 +33,9 @@ namespace RedmineLog.Common
 
         public interface IView
         {
+            void Info(string p);
+
+            void GoLink(Uri inUri);
         }
 
         public interface IModel
@@ -43,6 +44,7 @@ namespace RedmineLog.Common
             TimeSpan WorkTime { get; set; }
             TimeSpan IdleTime { get; set; }
             WorkActivityList WorkActivities { get; }
+            WorkActivityType Activity { get; set; }
             CommentData Comment { get; set; }
             IssueData Issue { get; set; }
             IssueCommentList IssueComments { get; }
