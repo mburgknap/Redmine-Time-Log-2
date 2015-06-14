@@ -123,9 +123,9 @@
             this.tbComment.Location = new System.Drawing.Point(0, 0);
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
+            this.tbComment.ReadOnly = true;
             this.tbComment.Size = new System.Drawing.Size(177, 76);
             this.tbComment.TabIndex = 21;
-            this.tbComment.Click += new System.EventHandler(this.OnCommentClick);
             this.tbComment.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbComment_KeyPress);
             this.tbComment.Leave += new System.EventHandler(this.OnCommentLostFocus);
             // 
@@ -318,7 +318,6 @@
             this.btnComments.TabIndex = 44;
             this.btnComments.Text = "Comments";
             this.btnComments.UseVisualStyleBackColor = true;
-            this.btnComments.Click += new System.EventHandler(this.OnCommentShowClick);
             // 
             // tbIssue
             // 
@@ -402,7 +401,6 @@
             // 
             this.cmComments.Name = "cmComments";
             this.cmComments.Size = new System.Drawing.Size(61, 4);
-            this.cmComments.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.OnSelectComment);
             // 
             // lHide
             // 
@@ -469,12 +467,8 @@
         internal System.Windows.Forms.Button btnResetIdle;
         private System.Windows.Forms.Panel pComments;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btnRemoveComment;
-        private System.Windows.Forms.ContextMenuStrip cmComments;
-        private System.Windows.Forms.Button btnNewComment;
         internal System.Windows.Forms.Label lHide;
         private System.Windows.Forms.Button btnIssues;
-        private System.Windows.Forms.Button btnComments;
         internal System.Windows.Forms.Button btnSubmitAll;
         private System.Windows.Forms.Button btnWorkTime;
         internal System.Windows.Forms.Label lblParentIssue;
@@ -482,5 +476,9 @@
         internal System.Windows.Forms.Button btnRemoveItem;
         internal System.Windows.Forms.Label lblProject;
         internal System.Windows.Forms.TextBox tbIssue;
+        internal System.Windows.Forms.Button btnComments;
+        internal System.Windows.Forms.ContextMenuStrip cmComments;
+        internal System.Windows.Forms.Button btnRemoveComment;
+        internal System.Windows.Forms.Button btnNewComment;
     }
 }

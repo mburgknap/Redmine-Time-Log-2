@@ -816,14 +816,6 @@ namespace RedmineLog
             }
         }
 
-        private void OnCommentClick(object sender, EventArgs e)
-        {
-            if (issueComment != null)
-                return;
-
-            ShowComments();
-        }
-
         private void ShowComments()
         {
             var tmp = App.Context.History.GetIssue(issueData);
@@ -938,10 +930,6 @@ namespace RedmineLog
                 LoadIssue(true);
         }
 
-        private void OnCommentShowClick(object sender, EventArgs e)
-        {
-            ShowComments();
-        }
 
         private void OnIssueMouseClick(object sender, MouseEventArgs e)
         {
@@ -1048,6 +1036,15 @@ namespace RedmineLog
         [EventPublication(Main.Events.Hide, typeof(Publish<Main.IView>))]
         public event EventHandler HideEvent;
 
+        [EventPublication(Main.Events.AddComment, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<string>> AddCommentEvent;
+
+        [EventPublication(Main.Events.UpdateComment, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<string>> UpdateCommentEvent;
+
+        [EventPublication(Main.Events.DelComment, typeof(Publish<Main.IView>))]
+        public event EventHandler DelCommentEvent;
+
         [EventPublication(Main.Events.AddIssue, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> AddIssueEvent;
 
@@ -1063,20 +1060,110 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
-            Form.tbIssue.KeyDown += (s, e) =>
-            {
-                if (e.KeyValue == 13)
-                    AddIssueEvent.Fire(this, Form.tbIssue.Text);
-            };
-
-            Form.btnRemoveItem.Click += (s, e) =>
-            {
-                DelIssueEvent.Fire(this);
-            };
+            Form.tbIssue.KeyDown += AddIssue;
+            Form.btnRemoveItem.Click += DelIssue;
+            Form.btnComments.Click += LoadComment;
+            Form.btnNewComment.Click += AddComment;
+            Form.btnRemoveComment.Click += DelComment;
+            Form.tbComment.KeyDown += SaveComment;
+            Form.cmComments.ItemClicked += SelectComment;
 
             LoadEvent.Fire(this);
         }
 
+        private void SelectComment(object sender, ToolStripItemClickedEventArgs e)
+        {
+            var comment = e.ClickedItem.Tag as CommentData;
+
+            if (comment.IsGlobal)
+                AddCommentEvent.Fire(this, comment.Text);
+            else
+            {
+                model.Comment = e.ClickedItem.Tag as CommentData;
+                model.Sync.Value(SyncTarget.View, "Comment");
+            }
+        }
+
+        private void SaveComment(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.S)
+                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+        }
+
+        private void DelComment(object sender, EventArgs e)
+        {
+            DelIssueEvent.Fire(this);
+        }
+
+        private void AddComment(object sender, EventArgs e)
+        {
+            AddCommentEvent.Fire(this, Form.tbComment.Text);
+        }
+
+        private void DelIssue(object sender, EventArgs e)
+        {
+            DelIssueEvent.Fire(this);
+        }
+
+        private void AddIssue(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 13)
+                AddIssueEvent.Fire(this, Form.tbIssue.Text);
+        }
+
+        private void LoadComment(object sender, EventArgs e)
+        {
+            Form.cmComments.Items.Clear();
+
+            var list = model.IssueComments.Where(x => !x.IsGlobal).ToList();
+
+            if (list.Count > 0)
+            {
+                Form.cmComments.Items.Add(new ToolStripSeparator());
+                var tmpStrip = new ToolStripStatusLabel("Issue comments");
+                tmpStrip.Font = new Font(tmpStrip.Font, FontStyle.Bold);
+                Form.cmComments.Items.Add(tmpStrip);
+                Form.cmComments.Items.Add(new ToolStripSeparator());
+            }
+
+            foreach (var item in list)
+            {
+                var cmItem = Form.cmComments.Items.Add(item.Text);
+                cmItem.Overflow = ToolStripItemOverflow.AsNeeded;
+                cmItem.Tag = item;
+            }
+
+
+            list = model.IssueComments.Where(x => x.IsGlobal).ToList();
+
+            if (list.Count > 0)
+            {
+                Form.cmComments.Items.Add(new ToolStripSeparator());
+
+                var tmpStrip = new ToolStripStatusLabel("Global comments");
+                tmpStrip.Font = new Font(tmpStrip.Font, FontStyle.Bold);
+                Form.cmComments.Items.Add(tmpStrip);
+                Form.cmComments.Items.Add(new ToolStripSeparator());
+            }
+
+            foreach (var item in list)
+            {
+                var cmItem = Form.cmComments.Items.Add(item.Text);
+                cmItem.Overflow = ToolStripItemOverflow.AsNeeded;
+                cmItem.Tag = item;
+            }
+
+            if (Form.cmComments.Items.Count > 0)
+                Form.cmComments.Show(Form.tbComment, 0, 0);
+
+            //ShowCommentEvent.Fire(this);
+        }
+
+        void OnCommentChange()
+        {
+            Form.tbComment.Text = model.Comment != null ? model.Comment.Text : string.Empty;
+            Form.tbComment.ReadOnly = model.Comment == null;
+        }
         void OnWorkActivitiesChange()
         {
             Form.cbActivity.Items.Clear();

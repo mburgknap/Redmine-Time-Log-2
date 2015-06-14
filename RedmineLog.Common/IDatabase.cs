@@ -23,6 +23,8 @@ namespace RedmineLog.Common
         void Init();
 
         IEnumerable<CommentData> GetList(IssueData inIssue);
+
+        void Update(CommentData comment);
     }
     public interface IDbRedmineIssue
     {

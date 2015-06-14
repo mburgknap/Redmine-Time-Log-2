@@ -20,9 +20,10 @@ namespace RedmineLog.Common
         public CommentData()
         {
             Text = "";
+            IsGlobal = false;
         }
 
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Text { get; set; }
 
@@ -43,6 +44,8 @@ namespace RedmineLog.Common
         {
             return Id.GetHashCode();
         }
+
+        public bool IsGlobal { get; set; }
     }
 
     public class IssueCommentList : List<CommentData>
@@ -58,12 +61,12 @@ namespace RedmineLog.Common
     {
         public IssueData()
         {
-            Comments = new List<Guid>();
+            Comments = new List<string>();
         }
 
         public int Id { get; set; }
 
-        public List<Guid> Comments { get; set; }
+        public List<string> Comments { get; set; }
 
         public override string ToString()
         {

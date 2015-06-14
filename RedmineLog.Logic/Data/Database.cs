@@ -25,7 +25,8 @@ namespace RedmineLog.Logic
 
         public void Init()
         {
-            database.Set<IssuesTable, int, DbMJSON<IssueData>>(0, new IssueData() { Id = 0 });
+            if (database.Get<IssuesTable, int, DbMJSON<IssueData>>(0, null) == null)
+                database.Set<IssuesTable, int, DbMJSON<IssueData>>(0, new IssueData() { Id = 0 });
         }
 
         public IssueData Get(int id)
@@ -67,7 +68,13 @@ namespace RedmineLog.Logic
 
         public IEnumerable<CommentData> GetList(IssueData inIssue)
         {
-            return database.Get<CommentsTable, Guid, DbMJSON<CommentData>>(inIssue.Comments).Select(x => x.Get).ToList();
+            return database.Get<CommentsTable, string, DbMJSON<CommentData>>(inIssue.Comments.Select(x => x.ToString())).Select(x => x.Get).ToList();
+        }
+
+
+        public void Update(CommentData comment)
+        {
+            database.Set<CommentsTable, string, DbMJSON<CommentData>>(comment.Id.ToString(), comment);
         }
     }
 
@@ -263,6 +270,8 @@ namespace RedmineLog.Logic
                         if (item.Exists)
                             result.Add(item.Value);
                     }
+
+                    return result;
                 }
             }
             catch (Exception ex)

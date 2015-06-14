@@ -46,6 +46,31 @@ namespace RedmineLog.Logic
 
         }
 
+
+        [EventSubscription(Main.Events.AddComment, typeof(Subscribe<Main.IView>))]
+        public void OnAddCommentEvent(object sender, Args<string> arg)
+        {
+            var comment = new CommentData() { Id = Guid.NewGuid().ToString(), Text = arg.Data };
+            model.Comment = comment;
+            dbComment.Update(comment);
+            model.Issue.Comments.Add(comment.Id);
+            dbIssue.Update(model.Issue);
+            model.IssueComments.Add(comment);
+            model.Sync.Value(SyncTarget.View, "Comment");
+        }
+
+        [EventSubscription(Main.Events.UpdateComment, typeof(Subscribe<Main.IView>))]
+        public void OnUpdateCommentEvent(object sender, Args<string> arg)
+        {
+            model.Comment.Text = arg.Data;
+            dbComment.Update(model.Comment);
+        }
+
+        [EventSubscription(Main.Events.DelComment, typeof(Subscribe<Main.IView>))]
+        public void OnDelCommentEvent(object sender, EventArgs arg)
+        {
+        }
+
         [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
         public void OnAddIssueEvent(object sender, Args<string> arg)
         {
@@ -102,11 +127,17 @@ namespace RedmineLog.Logic
         private void LoadIssue(IssueData inIssue)
         {
             model.Issue = inIssue;
-            model.IssueComments.Init(dbComment.GetList(inIssue));
+            model.Comment = null;
+
+            model.IssueComments.Clear();
+            model.IssueComments.AddRange(dbComment.GetList(inIssue));
+            if (inIssue.Id > 0)
+                model.IssueComments.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
 
             model.IssueInfo = dbRedmineIssue.Get(inIssue.Id);
             model.IssueParentInfo = dbRedmineIssue.Get(model.IssueInfo.IdParent.GetValueOrDefault(-1));
 
+            model.Sync.Value(SyncTarget.View, "Comment");
             model.Sync.Value(SyncTarget.View, "IssueInfo");
             model.Sync.Value(SyncTarget.View, "IssueParentInfo");
         }
