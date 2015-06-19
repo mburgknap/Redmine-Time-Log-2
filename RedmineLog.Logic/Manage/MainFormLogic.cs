@@ -78,8 +78,11 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.UpdateComment, typeof(Subscribe<Main.IView>))]
         public void OnUpdateCommentEvent(object sender, Args<string> arg)
         {
-            model.Comment.Text = arg.Data;
-            dbComment.Update(model.Comment);
+            if (model.Comment != null)
+            {
+                model.Comment.Text = arg.Data;
+                dbComment.Update(model.Comment);
+            }
         }
 
         [EventSubscription(Main.Events.DelComment, typeof(Subscribe<Main.IView>))]
