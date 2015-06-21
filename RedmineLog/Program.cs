@@ -8,14 +8,9 @@ namespace RedmineLog
 {
     internal static class Program
     {
-        static Program()
-        {
-            Context = new AppContext();
-        }
 
         public static IKernel Kernel { get; private set; }
 
-        public static AppContext Context { get; private set; }
 
         /// <summary>
         /// The main entry point for the application.

@@ -50,9 +50,6 @@
     <Reference Include="NLog">
       <HintPath>..\Lib\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Polenter.SharpSerializer">
-      <HintPath>..\Lib\Polenter.SharpSerializer.dll</HintPath>
-    </Reference>
     <Reference Include="Redmine.Net.Api">
       <HintPath>..\Lib\Redmine.Net.Api.dll</HintPath>
     </Reference>
@@ -65,13 +62,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
     <Compile Include="Data\Bindings.cs" />
     <Compile Include="Data\Database.cs" />
-    <Compile Include="Data\AppContext.cs" />
     <Compile Include="Bindings.cs" />
     <Compile Include="Common\ILogic.cs" />
-    <Compile Include="Data\Entities.cs" />
     <Compile Include="Manage\EditLogLogic.cs" />
     <Compile Include="Manage\MainFormLogic.cs" />
     <Compile Include="Model\Bindings.cs" />
