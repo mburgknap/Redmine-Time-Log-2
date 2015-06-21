@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmEditTimeLog));
             this.nHour = new System.Windows.Forms.NumericUpDown();
             this.nMinute = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -121,6 +122,7 @@
             this.Controls.Add(this.nMinute);
             this.Controls.Add(this.nHour);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmEditTimeLog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "frmEditTimeLog";
