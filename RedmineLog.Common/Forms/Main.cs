@@ -21,8 +21,8 @@ namespace RedmineLog.Common
         {
             public const string Link = "topic://Main/Link";
             public const string Load = "topic://Main/Load";
-            public const string ClockStop = "topic://Main/ClockStop";
             public const string Exit = "topic://Main/Exit";
+            public const string Reset = "topic://Main/Reset";
             public const string Submit = "topic://Main/Submit";
             public const string AddIssue = "topic://Main/AddIssue";
             public const string DelIssue = "topic://Main/DelIssue";

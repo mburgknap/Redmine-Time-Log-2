@@ -999,8 +999,8 @@ namespace RedmineLog
         [EventPublication(Main.Events.Submit, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<Main.Actions>> SubmitEvent;
 
-        [EventPublication(Main.Events.ClockStop, typeof(Publish<Main.IView>))]
-        public event EventHandler ClockStopEvent;
+        [EventPublication(Main.Events.Reset, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<Main.Actions>> ResetEvent;
 
         [EventPublication(Main.Events.Link, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> GoLinkEvent;
@@ -1017,12 +1017,6 @@ namespace RedmineLog
         {
             model.IdleTime = model.IdleTime.Add(new TimeSpan(0, 0, arg.Data));
             model.Sync.Value(SyncTarget.View, "IdleTime");
-        }
-
-        [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
-        public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
-        {
-            OnStartClockClick(this, EventArgs.Empty);
         }
 
         void OnWorkTimeChange()
@@ -1061,8 +1055,6 @@ namespace RedmineLog
             Form.btnSubmit.Click += OnSubmitClick;
             Form.btnSubmitAll.Click += OnSubmitAllClick;
             Form.btnResetIdle.Click += OnResetClockClick;
-            Form.btnClock.Click += OnStartClockClick;
-            Form.btnStop.Click += OnStopClockClik;
             Form.lHide.Click += OnHideClick;
             Form.lnkExit.Click += OnExitClick;
             Form.lblClockActive.Click += OnWorkMode;
@@ -1071,10 +1063,19 @@ namespace RedmineLog
             Form.lnkSettings.Click += OnSettingClick;
             Form.lnkIssues.Click += OnRedmineIssuesLink;
             Form.lblIssue.Click += OnRedmineIssueLink;
+            Form.tbComment.Click += OnCommentClick;
 
             OnWorkMode(this, EventArgs.Empty);
 
             LoadEvent.Fire(this);
+        }
+
+        private void OnCommentClick(object sender, EventArgs e)
+        {
+            if (Form.tbComment.ReadOnly)
+            {
+                LoadComment(Form.btnComments, EventArgs.Empty);
+            }
         }
 
         private void OnRedmineIssuesLink(object sender, EventArgs e)
@@ -1101,37 +1102,19 @@ namespace RedmineLog
 
         private void OnIdleMode(object sender, EventArgs e)
         {
-            Form.btnResetIdle.Visible = true;
-            Form.btnClock.Visible = false;
-            Form.btnStop.Visible = false;
-
             Form.pManage.BackColor = Color.Azure;
             currentMode = Main.Actions.Idle;
         }
 
         private void OnWorkMode(object sender, EventArgs e)
         {
-            Form.btnResetIdle.Visible = false;
-            Form.btnClock.Visible = true;
-            Form.btnStop.Visible = true;
-
             Form.pManage.BackColor = Color.Wheat;
             currentMode = Main.Actions.Issue;
         }
-        private void OnStopClockClik(object sender, EventArgs e)
-        {
-            AppTimers.StopWork();
-            ClockStopEvent.Fire(this);
-        }
 
-        private void OnStartClockClick(object sender, EventArgs e)
-        {
-            AppTimers.StartWork();
-        }
         private void OnResetClockClick(object sender, EventArgs e)
         {
-            model.IdleTime = new TimeSpan(0);
-            model.Sync.Value(SyncTarget.View, "IdleTime");
+            ResetEvent.Fire(this, currentMode);
         }
 
         private void OnExitClick(object sender, EventArgs e)
@@ -1143,21 +1126,26 @@ namespace RedmineLog
 
         private void OnHideClick(object sender, EventArgs e)
         {
+            Form.WindowState = FormWindowState.Minimized;
+
+            var form = new frmSmall();
+
+            form.FormClosed += (s, arg) =>
+            {
+                Form.WindowState = FormWindowState.Normal;
+            };
+
+            form.ShowDialog();
         }
 
         private void OnSubmitAllClick(object sender, EventArgs e)
         {
-            AppTimers.StopWork();
-
             UpdateCommentEvent.Fire(this, Form.tbComment.Text);
             SubmitEvent.Fire(this, Main.Actions.All);
         }
 
         private void OnSubmitClick(object sender, EventArgs e)
         {
-            if (currentMode == Main.Actions.Issue)
-                AppTimers.StopWork();
-
             UpdateCommentEvent.Fire(this, Form.tbComment.Text);
             SubmitEvent.Fire(this, currentMode);
         }
@@ -1276,7 +1264,7 @@ namespace RedmineLog
         {
             if (model.IssueParentInfo != null)
             {
-                Form.lblParentIssue.Text = model.IssueParentInfo.Subject;
+                Form.lblParentIssue.Text = model.IssueParentInfo.Subject + " :";
                 Form.lblParentIssue.Visible = true;
             }
             else
@@ -1285,10 +1273,13 @@ namespace RedmineLog
         void OnIssueInfoChange()
         {
             Form.tbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
-            Form.lblIssue.Text = model.IssueInfo.Subject;
+
             Form.lblProject.Text = model.IssueInfo.Project;
+            Form.lblTracker.Text = model.IssueInfo.Id > 0 ? "(" + model.IssueInfo.Tracker + ")" : "";
+            Form.lblIssue.Text = model.IssueInfo.Subject;
 
             Form.btnRemoveItem.Visible = model.IssueInfo.Id > 0;
+            Form.lHide.Visible = model.IssueInfo.Id > 0;
         }
 
         public void Info(string inMessage)

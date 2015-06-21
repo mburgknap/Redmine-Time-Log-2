@@ -35,14 +35,13 @@
             this.lnkIssues = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.tbComment = new System.Windows.Forms.TextBox();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.btnClock = new System.Windows.Forms.Button();
             this.lblClockActive = new System.Windows.Forms.Label();
             this.cbActivity = new System.Windows.Forms.ComboBox();
             this.lblParentIssue = new System.Windows.Forms.Label();
             this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.issueInfoPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblProject = new System.Windows.Forms.Label();
+            this.lblTracker = new System.Windows.Forms.Label();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
@@ -95,7 +94,7 @@
             this.lnkIssues.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkIssues.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkIssues.ForeColor = System.Drawing.Color.Blue;
-            this.lnkIssues.Location = new System.Drawing.Point(130, 156);
+            this.lnkIssues.Location = new System.Drawing.Point(132, 116);
             this.lnkIssues.Name = "lnkIssues";
             this.lnkIssues.Size = new System.Drawing.Size(103, 17);
             this.lnkIssues.TabIndex = 24;
@@ -119,28 +118,8 @@
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
             this.tbComment.ReadOnly = true;
-            this.tbComment.Size = new System.Drawing.Size(177, 76);
+            this.tbComment.Size = new System.Drawing.Size(177, 114);
             this.tbComment.TabIndex = 21;
-            // 
-            // btnStop
-            // 
-            this.btnStop.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStop.Location = new System.Drawing.Point(142, 82);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(87, 33);
-            this.btnStop.TabIndex = 20;
-            this.btnStop.Text = "Stop";
-            this.btnStop.UseVisualStyleBackColor = true;
-            // 
-            // btnClock
-            // 
-            this.btnClock.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClock.Location = new System.Drawing.Point(26, 82);
-            this.btnClock.Name = "btnClock";
-            this.btnClock.Size = new System.Drawing.Size(95, 33);
-            this.btnClock.TabIndex = 19;
-            this.btnClock.Text = "Play";
-            this.btnClock.UseVisualStyleBackColor = true;
             // 
             // lblClockActive
             // 
@@ -159,7 +138,7 @@
             this.cbActivity.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbActivity.FormattingEnabled = true;
-            this.cbActivity.Location = new System.Drawing.Point(28, 121);
+            this.cbActivity.Location = new System.Drawing.Point(32, 72);
             this.cbActivity.Name = "cbActivity";
             this.cbActivity.Size = new System.Drawing.Size(203, 28);
             this.cbActivity.TabIndex = 17;
@@ -170,18 +149,18 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblParentIssue.AutoSize = true;
-            this.lblParentIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblParentIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblParentIssue.Location = new System.Drawing.Point(5, 19);
             this.lblParentIssue.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.lblParentIssue.Name = "lblParentIssue";
-            this.lblParentIssue.Size = new System.Drawing.Size(5, 19);
+            this.lblParentIssue.Size = new System.Drawing.Size(6, 19);
             this.lblParentIssue.TabIndex = 33;
             // 
             // lblIssue
             // 
             this.lblIssue.AutoSize = true;
             this.lblIssue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblIssue.Location = new System.Drawing.Point(10, 38);
+            this.lblIssue.Location = new System.Drawing.Point(10, 58);
             this.lblIssue.Margin = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.lblIssue.Name = "lblIssue";
             this.lblIssue.Size = new System.Drawing.Size(0, 19);
@@ -191,6 +170,7 @@
             // 
             this.issueInfoPanel.Controls.Add(this.lblProject);
             this.issueInfoPanel.Controls.Add(this.lblParentIssue);
+            this.issueInfoPanel.Controls.Add(this.lblTracker);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.issueInfoPanel.Location = new System.Drawing.Point(28, 330);
@@ -208,8 +188,18 @@
             this.lblProject.Location = new System.Drawing.Point(0, 0);
             this.lblProject.Margin = new System.Windows.Forms.Padding(0);
             this.lblProject.Name = "lblProject";
-            this.lblProject.Size = new System.Drawing.Size(10, 19);
+            this.lblProject.Size = new System.Drawing.Size(11, 19);
             this.lblProject.TabIndex = 35;
+            // 
+            // lblTracker
+            // 
+            this.lblTracker.AutoSize = true;
+            this.lblTracker.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblTracker.Location = new System.Drawing.Point(3, 38);
+            this.lblTracker.Name = "lblTracker";
+            this.lblTracker.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
+            this.lblTracker.Size = new System.Drawing.Size(5, 20);
+            this.lblTracker.TabIndex = 36;
             // 
             // btnRemoveItem
             // 
@@ -241,7 +231,7 @@
             this.lblClockIndle.BackColor = System.Drawing.Color.Transparent;
             this.lblClockIndle.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblClockIndle.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lblClockIndle.Location = new System.Drawing.Point(164, 50);
+            this.lblClockIndle.Location = new System.Drawing.Point(109, 47);
             this.lblClockIndle.Name = "lblClockIndle";
             this.lblClockIndle.Size = new System.Drawing.Size(65, 19);
             this.lblClockIndle.TabIndex = 38;
@@ -259,11 +249,9 @@
             this.pManage.Controls.Add(this.btnResetIdle);
             this.pManage.Controls.Add(this.lblClockIndle);
             this.pManage.Controls.Add(this.btnRemoveItem);
-            this.pManage.Controls.Add(this.btnClock);
             this.pManage.Controls.Add(this.lblClockActive);
             this.pManage.Controls.Add(this.cbActivity);
             this.pManage.Controls.Add(this.issueInfoPanel);
-            this.pManage.Controls.Add(this.btnStop);
             this.pManage.Controls.Add(this.btnSubmit);
             this.pManage.Controls.Add(this.lnkIssues);
             this.pManage.Location = new System.Drawing.Point(-5, 36);
@@ -292,7 +280,7 @@
             // 
             // btnComments
             // 
-            this.btnComments.Location = new System.Drawing.Point(28, 153);
+            this.btnComments.Location = new System.Drawing.Point(30, 113);
             this.btnComments.Name = "btnComments";
             this.btnComments.Size = new System.Drawing.Size(75, 22);
             this.btnComments.TabIndex = 44;
@@ -321,9 +309,9 @@
             // 
             this.pComments.Controls.Add(this.panel1);
             this.pComments.Controls.Add(this.tbComment);
-            this.pComments.Location = new System.Drawing.Point(28, 179);
+            this.pComments.Location = new System.Drawing.Point(28, 141);
             this.pComments.Name = "pComments";
-            this.pComments.Size = new System.Drawing.Size(202, 76);
+            this.pComments.Size = new System.Drawing.Size(202, 114);
             this.pComments.TabIndex = 40;
             // 
             // panel1
@@ -333,7 +321,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel1.Location = new System.Drawing.Point(177, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(25, 76);
+            this.panel1.Size = new System.Drawing.Size(25, 114);
             this.panel1.TabIndex = 22;
             // 
             // btnRemoveComment
@@ -341,7 +329,7 @@
             this.btnRemoveComment.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnRemoveComment.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveComment.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveComment.Location = new System.Drawing.Point(0, 41);
+            this.btnRemoveComment.Location = new System.Drawing.Point(0, 79);
             this.btnRemoveComment.Name = "btnRemoveComment";
             this.btnRemoveComment.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
             this.btnRemoveComment.Size = new System.Drawing.Size(25, 35);
@@ -364,10 +352,10 @@
             // 
             // btnResetIdle
             // 
-            this.btnResetIdle.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnResetIdle.Location = new System.Drawing.Point(142, 82);
+            this.btnResetIdle.Font = new System.Drawing.Font("Century Gothic", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetIdle.Location = new System.Drawing.Point(180, 13);
             this.btnResetIdle.Name = "btnResetIdle";
-            this.btnResetIdle.Size = new System.Drawing.Size(87, 33);
+            this.btnResetIdle.Size = new System.Drawing.Size(55, 53);
             this.btnResetIdle.TabIndex = 39;
             this.btnResetIdle.Text = "Reset";
             this.btnResetIdle.UseVisualStyleBackColor = true;
@@ -426,8 +414,6 @@
         internal System.Windows.Forms.Label lnkIssues;
         internal System.Windows.Forms.Button btnSubmit;
         internal System.Windows.Forms.TextBox tbComment;
-        internal System.Windows.Forms.Button btnStop;
-        internal System.Windows.Forms.Button btnClock;
         internal System.Windows.Forms.Label lblClockActive;
         internal System.Windows.Forms.ComboBox cbActivity;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
@@ -450,5 +436,6 @@
         internal System.Windows.Forms.Label lblClockIndle;
         internal System.Windows.Forms.Button btnWorkTime;
         internal System.Windows.Forms.Panel pManage;
+        protected internal System.Windows.Forms.Label lblTracker;
     }
 }

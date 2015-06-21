@@ -81,6 +81,7 @@ namespace RedmineLog.Logic
                     Id = idIssue,
                     IdParent = issue.ParentIssue != null ? issue.ParentIssue.Id : (int?)null,
                     Project = project.Name,
+                    Tracker = issue.Tracker.Name,
                     Subject = issue.Subject
                 };
             }

@@ -81,6 +81,8 @@ namespace RedmineLog.Logic
             if (model.Comment != null)
             {
                 model.Comment.Text = arg.Data;
+                model.Issue.IdComment = model.Comment.Id;
+                dbIssue.Update(model.Issue);
                 dbComment.Update(model.Comment);
             }
         }
@@ -120,13 +122,21 @@ namespace RedmineLog.Logic
             LoadIssue(dbIssue.Get(0));
         }
 
-        [EventSubscription(Main.Events.ClockStop, typeof(Subscribe<Main.IView>))]
-        public void OnClockStopEvent(object sender, EventArgs arg)
+        [EventSubscription(Main.Events.Reset, typeof(Subscribe<Main.IView>))]
+        public void OnClockStopEvent(object sender, Args<Main.Actions> arg)
         {
-            model.WorkTime = new TimeSpan(0);
-            model.Issue.Time = null;
-            dbIssue.Update(model.Issue);
-            model.Sync.Value(SyncTarget.View, "WorkTime");
+            if (arg.Data == Main.Actions.Issue)
+            {
+                model.WorkTime = new TimeSpan(0);
+                model.Sync.Value(SyncTarget.View, "WorkTime");
+                dbIssue.Update(model.Issue);
+            }
+            else
+            {
+                model.IdleTime = new TimeSpan(0);
+                model.Sync.Value(SyncTarget.View, "IdleTime");
+                dbIssue.Update(model.Issue);
+            }
         }
 
         [EventSubscription(Main.Events.Submit, typeof(Subscribe<Main.IView>))]
@@ -186,6 +196,7 @@ namespace RedmineLog.Logic
         {
             if (model.Issue.Id > 0)
             {
+                model.Issue.IdComment = model.Comment != null ? model.Comment.Id : null;
                 model.Issue.SetWorkTime(model.WorkTime);
                 dbIssue.Update(model.Issue);
 
@@ -203,14 +214,14 @@ namespace RedmineLog.Logic
             var issue = redmine.GetIssue(idIssue);
             dbRedmineIssue.Update(issue);
 
-
             if (issue.IdParent.HasValue)
             {
-                issue = dbRedmineIssue.Get(issue.IdParent.Value);
+                var idParent = issue.IdParent.Value;
+                issue = dbRedmineIssue.Get(idParent);
 
                 if (issue == null)
                 {
-                    issue = redmine.GetIssue(idIssue);
+                    issue = redmine.GetIssue(idParent);
                     dbRedmineIssue.Update(issue);
                 }
             }
@@ -231,12 +242,13 @@ namespace RedmineLog.Logic
             model.Issue = inIssue;
 
             model.WorkTime = inIssue.GetWorkTime(model.WorkTime);
-            model.Comment = null;
 
             model.IssueComments.Clear();
             model.IssueComments.AddRange(dbComment.GetList(inIssue));
             if (inIssue.Id > 0)
                 model.IssueComments.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
+
+            model.Comment = model.IssueComments.Where(x => x.Id == inIssue.IdComment).FirstOrDefault();
 
             model.IssueInfo = dbRedmineIssue.Get(inIssue.Id);
             model.IssueParentInfo = dbRedmineIssue.Get(model.IssueInfo.IdParent.GetValueOrDefault(-1));

@@ -21,14 +21,19 @@ namespace RedmineLog.UI
             Idle
         }
 
-        internal struct LastInput
+        [StructLayout(LayoutKind.Sequential)]
+        struct LASTINPUTINFO
         {
-            public uint cSize;
-            public uint dtime;
+            public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
+
+            [MarshalAs(UnmanagedType.U4)]
+            public int cbSize;
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 dwTime;
         }
 
         [DllImport("user32.dll")]
-        private static extern bool GetLastInputInfo(ref LastInput rLI);
+        static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
 
         private static AppTimers instance = new AppTimers();
@@ -41,7 +46,6 @@ namespace RedmineLog.UI
 
         [EventPublication(IdleUpdate)]
         public event EventHandler<Args<int>> IdleUpdateEvent;
-        private static bool isWorkClockEnabled;
 
 
         private System.Timers.Timer WorkTimer
@@ -58,41 +62,29 @@ namespace RedmineLog.UI
             }
         }
 
+        static uint GetLastInputTime()
+        {
+            uint nIdleTime = 0;
+            LASTINPUTINFO liiInfo = new LASTINPUTINFO();
+            liiInfo.cbSize = Marshal.SizeOf(liiInfo);
+            liiInfo.dwTime = 0;
+            uint nEnvTicks = Convert.ToUInt32(Environment.TickCount);
+            if (GetLastInputInfo(ref liiInfo))
+            {
+                uint nLastInputTick = liiInfo.dwTime;
+                nIdleTime = nEnvTicks - nLastInputTick;
+            }
+            return ((nIdleTime > 0) ? (nIdleTime / 1000) : nIdleTime);
+        }
 
         private void OnWorkElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-
-            int sysupTime = Environment.TickCount;
-            int lstTick = 0;
-            int idlTick = 0;
-
-            LastInput lInput = new LastInput();
-            lInput.cSize = Convert.ToUInt32(Marshal.SizeOf(lInput));
-            lInput.dtime = 0;
-
-            if (GetLastInputInfo(ref lInput))
-            {
-                lstTick = Convert.ToInt32(lInput.dtime);
-                idlTick = sysupTime - lstTick;
-            }
-
-            int totalIdleTimeInSeconds = idlTick / 1000;
+            uint totalIdleTimeInSeconds = GetLastInputTime();
 
             if (totalIdleTimeInSeconds > 1)
                 IdleUpdateEvent.Fire(this, 1);
             else
-                if (isWorkClockEnabled)
-                    WorkUpdateEvent.Fire(this, 1);
-        }
-
-        internal static void StartWork()
-        {
-            isWorkClockEnabled = true;
-        }
-
-        internal static void StopWork()
-        {
-            isWorkClockEnabled = false;
+                WorkUpdateEvent.Fire(this, 1);
         }
 
         internal static void Init(IEventBroker inGlobalEvent)

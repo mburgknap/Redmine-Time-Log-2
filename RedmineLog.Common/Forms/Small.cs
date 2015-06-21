@@ -19,6 +19,12 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
+            IModelSync Sync { get; }
+            TimeSpan WorkTime { get; }
+            TimeSpan IdleTime { get; }
+            CommentData Comment { get; }
+            RedmineIssueData IssueParentInfo { get; }
+            RedmineIssueData IssueInfo { get; }
         }
     }
 }

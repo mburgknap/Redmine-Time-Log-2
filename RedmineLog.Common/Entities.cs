@@ -12,6 +12,7 @@ namespace RedmineLog.Common
         public int? IdParent { get; set; }
         public String Subject { get; set; }
         public String Project { get; set; }
+        public String Tracker { get; set; }
     }
 
     public class CommentData
@@ -113,6 +114,8 @@ namespace RedmineLog.Common
 
             Time = Time + timeSpan.Ticks;
         }
+
+        public string IdComment { get; set; }
     }
 
     public class WorkTimeData
