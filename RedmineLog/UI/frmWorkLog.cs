@@ -57,7 +57,14 @@ namespace RedmineLog
             Form.blLoadMore.Click += OnLoadMore;
             Form.dataGridView1.KeyDown += OnGridViewKeyDown;
             Form.dataGridView1.CellClick += OnGridCellClick;
+            Form.FormClosing += OnCloseForm;
             LoadEvent.Fire(this);
+        }
+
+        private void OnCloseForm(object sender, FormClosingEventArgs e)
+        {
+            if (editform != null)
+                editform.Close();
         }
 
         private void OnGridCellClick(object sender, DataGridViewCellEventArgs e)
