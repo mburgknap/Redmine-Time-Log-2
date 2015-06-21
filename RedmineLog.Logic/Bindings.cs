@@ -26,8 +26,8 @@ namespace RedmineLog.Logic
             Bind<ILogic<WorkLog.IView>>().To<WorkLogFormLogic>().InSingletonScope();
             Bind<WorkLogFormLogic>().ToSelf();
 
-            Bind<ILogic<EditLogTime.IView>>().To<EditLogTimeLogic>().InSingletonScope();
-            Bind<EditLogTimeLogic>().ToSelf();
+            Bind<ILogic<EditLog.IView>>().To<EditLogLogic>().InSingletonScope();
+            Bind<EditLogLogic>().ToSelf();
         }
     }
 }

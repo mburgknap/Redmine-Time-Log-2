@@ -45,20 +45,23 @@
             this.nHour.Name = "nHour";
             this.nHour.Size = new System.Drawing.Size(54, 20);
             this.nHour.TabIndex = 0;
-            this.nHour.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             // 
             // nMinute
             // 
             this.nMinute.Increment = new decimal(new int[] {
-            10,
+            15,
             0,
             0,
             0});
             this.nMinute.Location = new System.Drawing.Point(92, 24);
+            this.nMinute.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
             this.nMinute.Name = "nMinute";
             this.nMinute.Size = new System.Drawing.Size(60, 20);
             this.nMinute.TabIndex = 1;
-            this.nMinute.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             // 
             // label1
             // 
@@ -77,7 +80,6 @@
             this.cbEventType.Name = "cbEventType";
             this.cbEventType.Size = new System.Drawing.Size(157, 21);
             this.cbEventType.TabIndex = 3;
-            this.cbEventType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             // 
             // tbMessage
             // 
@@ -86,7 +88,6 @@
             this.tbMessage.Name = "tbMessage";
             this.tbMessage.Size = new System.Drawing.Size(158, 81);
             this.tbMessage.TabIndex = 4;
-            this.tbMessage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             // 
             // calWorkDate
             // 
@@ -97,7 +98,6 @@
             this.calWorkDate.ShowToday = false;
             this.calWorkDate.TabIndex = 5;
             this.calWorkDate.TrailingForeColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.calWorkDate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             // 
             // btnSave
             // 
@@ -126,7 +126,6 @@
             this.Text = "frmEditTimeLog";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.OnFormLoad);
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.nHour)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nMinute)).EndInit();
             this.ResumeLayout(false);
@@ -136,12 +135,12 @@
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown nHour;
-        private System.Windows.Forms.NumericUpDown nMinute;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cbEventType;
-        private System.Windows.Forms.TextBox tbMessage;
-        private System.Windows.Forms.MonthCalendar calWorkDate;
         internal System.Windows.Forms.Button btnSave;
+        internal System.Windows.Forms.ComboBox cbEventType;
+        internal System.Windows.Forms.NumericUpDown nHour;
+        internal System.Windows.Forms.NumericUpDown nMinute;
+        internal System.Windows.Forms.TextBox tbMessage;
+        internal System.Windows.Forms.MonthCalendar calWorkDate;
     }
 }

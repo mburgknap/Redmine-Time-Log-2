@@ -1,16 +1,10 @@
 ﻿using Appccelerate.EventBroker;
 using Ninject;
-using Redmine.Net.Api;
-using Redmine.Net.Api.Types;
 using RedmineLog.Common;
-using RedmineLog.Logic;
-using RedmineLog.Logic.Data;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
-using System.Collections.Specialized;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -27,7 +21,6 @@ namespace RedmineLog
         {
             this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
-
     }
 
     internal class WorkLogView : WorkLog.IView, IView<frmWorkLog>
@@ -35,6 +28,8 @@ namespace RedmineLog
         private WorkLog.IModel model;
 
         private frmWorkLog Form;
+
+        private frmEditTimeLog editform;
 
         [Inject]
         public WorkLogView(WorkLog.IModel inModel, IEventBroker inGlobalEvent)
@@ -52,6 +47,9 @@ namespace RedmineLog
 
         [EventPublication(WorkLog.Events.Select)]
         public event EventHandler<Args<WorkLogItem>> SelectEvent;
+
+        [EventPublication(WorkLog.Events.Edit)]
+        public event EventHandler<Args<WorkLogItem>> EditEvent;
 
         public void Init(frmWorkLog inView)
         {
@@ -75,8 +73,16 @@ namespace RedmineLog
                     SelectIssue(timeEntry);
                 else if (e.ColumnIndex == 1)
                 {
-                    var form = new frmEditTimeLog();
-                    form.ShowDialog();
+                    if (editform == null)
+                    {
+                        editform = new frmEditTimeLog();
+                        editform.FormClosed += (s, arg) =>
+                        {
+                            editform = null;
+                        };
+                        editform.Show();
+                    }
+                    EditEvent.Fire(this, timeEntry);
                 }
             }
         }
@@ -103,7 +109,7 @@ namespace RedmineLog
             LoadMoreEvent.Fire(this);
         }
 
-        void OnWorkLogsChange()
+        private void OnWorkLogsChange()
         {
             Form.dataGridView1.Rows.Clear();
 

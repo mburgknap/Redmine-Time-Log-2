@@ -72,10 +72,10 @@
     <Compile Include="Bindings.cs" />
     <Compile Include="Common\ILogic.cs" />
     <Compile Include="Data\Entities.cs" />
-    <Compile Include="Manage\EditLogTimeLogic.cs" />
+    <Compile Include="Manage\EditLogLogic.cs" />
     <Compile Include="Manage\MainFormLogic.cs" />
     <Compile Include="Model\Bindings.cs" />
-    <Compile Include="Model\EditLogTimeModel.cs" />
+    <Compile Include="Model\EditLogModel.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\SearchModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />

@@ -37,11 +37,10 @@ namespace RedmineLog
         [EventPublication(Settings.Events.Load, typeof(Publish<Settings.IView>))]
         public event EventHandler LoadEvent;
 
-
         public void Init(frmSettings frmSettings)
         {
             Form = frmSettings;
-            
+
             Form.btnConnect.Click += OnConnectClick;
 
             LoadEvent.Fire(this);
@@ -57,12 +56,12 @@ namespace RedmineLog
             Form.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        void OnUrlChange()
+        private void OnUrlChange()
         {
             Form.tbRedmineURL.Text = model.Url;
         }
 
-        void OnApiKeyChange()
+        private void OnApiKeyChange()
         {
             Form.tbApiKey.Text = model.ApiKey;
         }

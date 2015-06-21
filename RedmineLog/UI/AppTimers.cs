@@ -1,17 +1,12 @@
 ﻿using Appccelerate.EventBroker;
 using RedmineLog.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RedmineLog.UI
 {
-    class AppTimers
+    internal class AppTimers
     {
-
         public const string WorkUpdate = "topic://Timer/Work/Update";
         public const string IdleUpdate = "topic://Timer/Idle/Update";
 
@@ -22,19 +17,19 @@ namespace RedmineLog.UI
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct LASTINPUTINFO
+        private struct LASTINPUTINFO
         {
             public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
 
             [MarshalAs(UnmanagedType.U4)]
             public int cbSize;
+
             [MarshalAs(UnmanagedType.U4)]
             public UInt32 dwTime;
         }
 
         [DllImport("user32.dll")]
-        static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
         private static AppTimers instance = new AppTimers();
 
@@ -46,7 +41,6 @@ namespace RedmineLog.UI
 
         [EventPublication(IdleUpdate)]
         public event EventHandler<Args<int>> IdleUpdateEvent;
-
 
         private System.Timers.Timer WorkTimer
         {
@@ -62,7 +56,7 @@ namespace RedmineLog.UI
             }
         }
 
-        static uint GetLastInputTime()
+        private static uint GetLastInputTime()
         {
             uint nIdleTime = 0;
             LASTINPUTINFO liiInfo = new LASTINPUTINFO();
@@ -92,7 +86,6 @@ namespace RedmineLog.UI
             instance.WorkTimer = new System.Timers.Timer(1000);
             instance.WorkTimer.Start();
             inGlobalEvent.Register(instance);
-
         }
     }
 }

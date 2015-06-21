@@ -20,67 +20,7 @@ namespace RedmineLog.UI
         public frmEditTimeLog()
         {
             InitializeComponent();
-            this.Initialize<EditLogTime.IView, frmEditTimeLog>();
-        }
-
-        internal void Init(TimeEntry inTimeEntry)
-        {
-            timeEntry = inTimeEntry;
-
-            this.Text = "(" + timeEntry.Issue.Id.ToString() + ") " + timeEntry.Project.Name;
-
-            var time = new TimeSpan(0, (int)(timeEntry.Hours * 60), 0);
-
-            nHour.Value = time.Hours;
-            nMinute.Value = time.Minutes;
-
-            cbEventType.Items.Clear();
-            cbEventType.DataSource = App.Context.Activity;
-            cbEventType.DisplayMember = "Name";
-            cbEventType.ValueMember = "Id";
-
-            for (int i = 0; i < App.Context.Activity.Count; i++)
-            {
-                if (App.Context.Activity[i].Id == timeEntry.Activity.Id)
-                {
-                    cbEventType.SelectedItem = cbEventType.Items[i];
-                    break;
-                }
-            }
-
-            calWorkDate.SetDate(timeEntry.SpentOn.GetValueOrDefault(DateTime.Now));
-            calWorkDate.AddMonthlyBoldedDate(timeEntry.SpentOn.GetValueOrDefault(DateTime.Now));
-
-            tbMessage.Text = timeEntry.Comments;
-        }
-
-        private void frmEditTimeLog_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == 19)
-            {
-                try
-                {
-                    var manager = new RedmineManager(App.Context.Config.Url, App.Context.Config.ApiKey);
-
-                    timeEntry.Hours = nHour.Value + nMinute.Value / 60;
-
-                    timeEntry.SpentOn = calWorkDate.SelectionStart;
-                    timeEntry.Comments = tbMessage.Text;
-
-                    timeEntry.Activity.Id = (int)cbEventType.SelectedValue;
-                    timeEntry.Activity.Name = cbEventType.Text;
-
-                    manager.UpdateObject<TimeEntry>(timeEntry.Id.ToString(), timeEntry);
-
-                    this.Close();
-
-                    OnChange();
-                }
-                catch (Exception ex)
-                {
-                    AppLogger.Log.Error("frmEditTimeLog_KeyPress", ex);
-                }
-            }
+            this.Initialize<EditLog.IView, frmEditTimeLog>();
         }
 
         private void OnFormLoad(object sender, EventArgs e)
@@ -89,26 +29,120 @@ namespace RedmineLog.UI
         }
     }
 
-    internal class EditTimeLogView : EditLogTime.IView, IView<frmEditTimeLog>
+    internal class EditTimeLogView : EditLog.IView, IView<frmEditTimeLog>
     {
-        private EditLogTime.IModel model;
+        private EditLog.IModel model;
 
         private frmEditTimeLog Form;
 
         [Inject]
-        public EditTimeLogView(EditLogTime.IModel inModel, IEventBroker inGlobalEvent)
+        public EditTimeLogView(EditLog.IModel inModel, IEventBroker inGlobalEvent)
         {
             model = inModel;
+            model.Sync.Bind(SyncTarget.View, this);
             inGlobalEvent.Register(this);
         }
 
-        [EventPublication(EditLogTime.Events.Load, typeof(Publish<EditLogTime.IView>))]
+        [EventPublication(EditLog.Events.Load, typeof(Publish<EditLog.IView>))]
         public event EventHandler LoadEvent;
+
+        [EventPublication(EditLog.Events.Save, typeof(Publish<EditLog.IView>))]
+        public event EventHandler SaveEvent;
 
         public void Init(frmEditTimeLog inView)
         {
             Form = inView;
+            Form.cbEventType.SelectedIndexChanged += OnActivityTypeChange;
+            Form.btnSave.Click += OnSaveClick;
+            Form.nHour.KeyDown += OnSaveKeyDown;
+            Form.nMinute.KeyDown += OnSaveKeyDown;
+            Form.tbMessage.KeyDown += OnSaveKeyDown;
+            Form.KeyDown += OnSaveKeyDown;
+            Form.cbEventType.KeyDown += OnSaveKeyDown;
+            Form.calWorkDate.KeyDown += OnSaveKeyDown;
+            Form.nHour.ValueChanged += OnHourEdit;
+            Form.nMinute.ValueChanged += OnMinuteEdit;
+            Form.tbMessage.TextChanged += OnMessageEdit;
+            Form.calWorkDate.DateChanged += OnDateEdit;
             LoadEvent.Fire(this);
         }
+
+        private void OnDateEdit(object sender, DateRangeEventArgs e)
+        {
+            model.EditItem.Date = e.Start;
+            model.Sync.Value(SyncTarget.Source, "EditItem");
+        }
+
+        private void OnMessageEdit(object sender, EventArgs e)
+        {
+            model.EditItem.Comment = Form.tbMessage.Text;
+            model.Sync.Value(SyncTarget.Source, "EditItem");
+        }
+
+        private void OnMinuteEdit(object sender, EventArgs e)
+        {
+            model.Time = new TimeSpan(model.Time.Hours, Convert.ToInt32(Form.nMinute.Value), 0);
+            model.Sync.Value(SyncTarget.Source, "Time");
+        }
+
+        private void OnHourEdit(object sender, EventArgs e)
+        {
+            model.Time = new TimeSpan(Convert.ToInt32(Form.nHour.Value), model.Time.Minutes, 0);
+            model.Sync.Value(SyncTarget.Source, "Time");
+        }
+
+        private void OnSaveKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                SaveEvent.Fire(this);
+            }
+        }
+
+        private void OnSaveClick(object sender, EventArgs e)
+        {
+            SaveEvent.Fire(this);
+        }
+
+        private void OnActivityTypeChange(object sender, EventArgs e)
+        {
+            if (model.WorkActivities.Count > Form.cbEventType.SelectedIndex
+                && Form.cbEventType.SelectedIndex >= 0)
+            {
+                model.Activity = model.WorkActivities[Form.cbEventType.SelectedIndex];
+                model.EditItem.IdActivity = model.Activity.Id;
+                model.Sync.Value(SyncTarget.Source, "Activity");
+            }
+        }
+
+
+        private void OnWorkActivitiesChange()
+        {
+            Form.cbEventType.DataSource = null;
+            Form.cbEventType.Items.Clear();
+            Form.cbEventType.DataSource = model.WorkActivities;
+            Form.cbEventType.DisplayMember = "Name";
+            Form.cbEventType.ValueMember = "Id";
+
+            if (Form.cbEventType.Items.Count > 0)
+            {
+                Form.cbEventType.SelectedItem = Form.cbEventType.Items[0];
+                model.Activity = model.WorkActivities[0];
+            }
+        }
+
+        private void OnEditItemChange()
+        {
+            Form.Text = "(" + model.EditItem.IdIssue.ToString() + ") " + model.EditItem.ProjectName;
+            Form.calWorkDate.SetDate(model.EditItem.Date);
+            Form.calWorkDate.AddMonthlyBoldedDate(model.EditItem.Date);
+            Form.tbMessage.Text = model.EditItem.Comment;
+        }
+        private void OnTimeChange()
+        {
+            Form.nHour.Value = model.Time.Hours;
+            Form.nMinute.Value = model.Time.Minutes;
+        }
+
     }
 }

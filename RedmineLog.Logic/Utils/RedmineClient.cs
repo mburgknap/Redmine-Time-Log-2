@@ -177,5 +177,25 @@ namespace RedmineLog.Logic
 
             return list;
         }
+
+
+        public void UpdateLog(WorkLogItem workLogItem)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var timeEntry = new TimeEntry();
+
+                timeEntry.Hours = workLogItem.Hours;
+                timeEntry.SpentOn = workLogItem.Date;
+                timeEntry.Comments = workLogItem.Comment;
+                timeEntry.Activity = new IdentifiableName() { Id = workLogItem.IdActivity };
+
+                manager.UpdateObject<TimeEntry>(workLogItem.Id.ToString(), timeEntry);
+            }
+            catch (Exception ex)
+            { logger.Error("UpdateLog", ex); }
+        }
     }
 }

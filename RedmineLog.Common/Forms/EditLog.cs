@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
-    public static class EditLogTime
+    public static class EditLog
     {
         public static class Events
         {
             public const string Load = "topic://EditLogTime/Load";
+            public const string Save = "topic://EditLogTime/Save";
         }
 
         public interface IView
@@ -19,6 +20,11 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
+            IModelSync Sync { get; }
+            WorkActivityList WorkActivities { get; }
+            WorkActivityType Activity { get; set; }
+            WorkLogItem EditItem { get; set; }
+            TimeSpan Time { get; set; }
         }
     }
 }

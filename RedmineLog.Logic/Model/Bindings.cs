@@ -9,7 +9,7 @@ namespace RedmineLog.Model
         public override void Load()
         {
             Bind<Settings.IModel>().To<SettingsModel>().InSingletonScope();
-            Bind<EditLogTime.IModel>().To<EditLogTimeModel>().InSingletonScope();
+            Bind<EditLog.IModel>().To<EditLogModel>().InSingletonScope();
             Bind<Main.IModel>().To<MainModel>().InSingletonScope();
             Bind<Search.IModel>().To<SearchModel>().InSingletonScope();
             Bind<Small.IModel>().To<SmallModel>().InSingletonScope();

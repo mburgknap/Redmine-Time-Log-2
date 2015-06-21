@@ -10,7 +10,7 @@ namespace RedmineLog.UI
             Bind<Settings.IView>().To<SettingsView>().InSingletonScope();
             Bind<SettingsView>().ToSelf();
 
-            Bind<EditLogTime.IView>().To<EditTimeLogView>().InSingletonScope();
+            Bind<EditLog.IView>().To<EditTimeLogView>().InSingletonScope();
             Bind<EditTimeLogView>().ToSelf();
 
             Bind<Main.IView>().To<MainView>().InSingletonScope();

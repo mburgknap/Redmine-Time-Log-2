@@ -1,28 +1,19 @@
 ﻿using Appccelerate.EventBroker;
 using Appccelerate.EventBroker.Handlers;
 using Ninject;
-using Redmine.Net.Api;
-using Redmine.Net.Api.Types;
 using RedmineLog.Common;
-using RedmineLog.Logic;
-using RedmineLog.Logic.Data;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
     public partial class frmMain : Form
     {
-
         public frmMain()
         {
             InitializeComponent();
@@ -35,10 +26,7 @@ namespace RedmineLog
         {
             this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
-
     }
-
-
 
     internal class MainView : Main.IView, IView<frmMain>
     {
@@ -99,12 +87,12 @@ namespace RedmineLog
             model.Sync.Value(SyncTarget.View, "IdleTime");
         }
 
-        void OnWorkTimeChange()
+        private void OnWorkTimeChange()
         {
             SetText(Form.lblClockActive, model.WorkTime.ToString());
         }
 
-        void OnIdleTimeChange()
+        private void OnIdleTimeChange()
         {
             SetText(Form.lblClockIndle, model.IdleTime.ToString());
         }
@@ -191,9 +179,11 @@ namespace RedmineLog
         private void OnActivityTypeChange(object sender, EventArgs e)
         {
             if (model.WorkActivities.Count > Form.cbActivity.SelectedIndex)
+            {
                 model.Activity = model.WorkActivities[Form.cbActivity.SelectedIndex];
+                model.Sync.Value(SyncTarget.Source, "Activity");
+            }
         }
-
 
         private void OnIdleMode(object sender, EventArgs e)
         {
@@ -312,7 +302,6 @@ namespace RedmineLog
                 cmItem.Tag = item;
             }
 
-
             list = model.IssueComments.Where(x => x.IsGlobal).ToList();
 
             if (list.Count > 0)
@@ -334,15 +323,15 @@ namespace RedmineLog
 
             if (Form.cmComments.Items.Count > 0)
                 Form.cmComments.Show(Form.tbComment, 0, 0);
-
         }
 
-        void OnCommentChange()
+        private void OnCommentChange()
         {
             Form.tbComment.Text = model.Comment != null ? model.Comment.Text : string.Empty;
             Form.tbComment.ReadOnly = model.Comment == null;
         }
-        void OnWorkActivitiesChange()
+
+        private void OnWorkActivitiesChange()
         {
             Form.cbActivity.Items.Clear();
             Form.cbActivity.DataSource = model.WorkActivities;
@@ -355,7 +344,8 @@ namespace RedmineLog
                 model.Activity = model.WorkActivities[0];
             }
         }
-        void OnIssueParentInfoChange()
+
+        private void OnIssueParentInfoChange()
         {
             if (model.IssueParentInfo != null)
             {
@@ -365,7 +355,8 @@ namespace RedmineLog
             else
                 Form.lblParentIssue.Visible = false;
         }
-        void OnIssueInfoChange()
+
+        private void OnIssueInfoChange()
         {
             Form.tbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
 

@@ -1,14 +1,10 @@
 ﻿using Appccelerate.EventBroker;
-using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
-using RedmineLog.Logic;
-using RedmineLog.Logic.Data;
 using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -60,8 +56,7 @@ namespace RedmineLog
             LoadEvent.Fire(this);
         }
 
-
-        void OnIssuesChange()
+        private void OnIssuesChange()
         {
             int row;
 
@@ -95,7 +90,6 @@ namespace RedmineLog
             if (e.RowIndex > 0)
                 SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
         }
-
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
