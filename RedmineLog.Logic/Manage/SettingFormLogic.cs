@@ -11,61 +11,42 @@ namespace RedmineLog.Logic
 {
     internal class SettingFormLogic : ILogic<Settings.IView>
     {
-        [Inject]
-        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient)
-        {
-            View = inView;
-            Model = inModel;
-            redmine = inClient;
-            inEvents.Register(this);
-            inEvents.Register(new Test());
-        }
-
         private Settings.IView View;
 
-        private Settings.IModel Model;
+        private Settings.IModel model;
 
         private IRedmineClient redmine;
+        private IDbRedmine dbRedmine;
+        private IDbConfig dbConfig;
 
-        private class Test
+        [Inject]
+        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig)
         {
-            [EventSubscription(Settings.Events.Load, typeof(Subscribe<Settings.IView>))]
-            public void OnLoadEvent(object sender, EventArgs arg)
-            {
-                Console.WriteLine("OnLoadEvent " + this.GetType().Name);
-            }
-
-            [EventSubscription(Settings.Events.Connect, typeof(Subscribe<Settings.IView>))]
-            public void OnConnectEvent(object sender, EventArgs arg)
-            {
-                Console.WriteLine("OnConnectEvent " + this.GetType().Name);
-            }
-        }
-
-        public void Apply(string inCmd)
-        {
+            View = inView;
+            model = inModel;
+            redmine = inClient;
+            dbRedmine = inDbRedmine;
+            dbConfig = inDbConfig;
+            inEvents.Register(this);
         }
 
         [EventSubscription(Settings.Events.Load, typeof(Subscribe<Settings.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            System.Diagnostics.Debug.WriteLine("View " + View.GetType().Name);
-            System.Diagnostics.Debug.WriteLine("Model " + Model.GetType().Name);
+            model.ApiKey = dbRedmine.GetApiKey();
+            model.Url = dbRedmine.GetUrl();
+
+            model.Sync.Value(SyncTarget.View, "ApiKey");
+            model.Sync.Value(SyncTarget.View, "Url");
         }
 
         [EventSubscription(Settings.Events.Connect, typeof(Subscribe<Settings.IView>))]
         public void OnConnectEvent(object sender, EventArgs arg)
         {
-            Model.IdUser = redmine.GetCurrentUser();
-            App.Context.Config.Save();
+            dbRedmine.SetApiKey(model.ApiKey);
+            dbRedmine.SetUrl(model.Url);
+            dbConfig.SetIdUser(redmine.GetCurrentUser());
         }
 
-        [EventSubscription(Global.Events.Info, typeof(Subscribe<Global.IView>))]
-        public void OnInfoEvent(object sender, EventArgs arg)
-        {
-            var t = "wewew";
-            var t1 = t.ToString();
-            Console.WriteLine("OnInfoEvent");
-        }
     }
 }

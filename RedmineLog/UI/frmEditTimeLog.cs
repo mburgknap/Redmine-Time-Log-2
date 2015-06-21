@@ -6,6 +6,7 @@ using RedmineLog.Common;
 using RedmineLog.Logic;
 using RedmineLog.UI.Common;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace RedmineLog.UI
@@ -81,18 +82,23 @@ namespace RedmineLog.UI
                 }
             }
         }
+
+        private void OnFormLoad(object sender, EventArgs e)
+        {
+            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width - 350, SystemInformation.VirtualScreen.Height - this.Height - 160);
+        }
     }
 
     internal class EditTimeLogView : EditLogTime.IView, IView<frmEditTimeLog>
     {
-        private EditLogTime.IModel Model;
+        private EditLogTime.IModel model;
 
         private frmEditTimeLog Form;
 
         [Inject]
         public EditTimeLogView(EditLogTime.IModel inModel, IEventBroker inGlobalEvent)
         {
-            Model = inModel;
+            model = inModel;
             inGlobalEvent.Register(this);
         }
 

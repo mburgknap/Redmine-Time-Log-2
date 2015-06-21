@@ -127,5 +127,55 @@ namespace RedmineLog.Logic
         {
             return new Uri(dbRedmine.GetUrl() + "issues/" + issue.Id.ToString());
         }
+
+
+        public IEnumerable<WorkLogItem> GetWorkLogs(int idUser, DateTime workDate)
+        {
+            var list = new List<WorkLogItem>();
+
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var parameters = new NameValueCollection { };
+                parameters.Add("user_id", idUser.ToString());
+                parameters.Add("spent_on", workDate.ToString("yyyy-MM-dd"));
+
+
+                foreach (var item in from p in manager.GetObjectList<TimeEntry>(parameters)
+                                     orderby p.SpentOn descending
+                                     group p by p.SpentOn.Value.Date into g
+                                     select new { Date = g.Key, Entities = g.ToList() })
+                {
+
+                    list.Add(new WorkLogItem()
+                    {
+                        Date = item.Date,
+                        Id = -1
+                    });
+
+                    foreach (var item2 in item.Entities)
+                    {
+                        list.Add(new WorkLogItem()
+                        {
+                            Date = item.Date,
+                            Id = item2.Id,
+                            IdIssue = item2.Issue.Id,
+                            ProjectName = item2.Project.Name,
+                            Hours = item2.Hours,
+                            Comment = item2.Comments,
+                            ActivityName = item2.Activity.Name,
+                        });
+                    }
+
+
+                }
+
+            }
+            catch (Exception ex)
+            { logger.Error("GetWorkLogs", ex); }
+
+            return list;
+        }
     }
 }

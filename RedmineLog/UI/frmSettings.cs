@@ -19,14 +19,15 @@ namespace RedmineLog
 
     internal class SettingsView : Settings.IView, IView<frmSettings>
     {
-        private Settings.IModel Model;
+        private Settings.IModel model;
 
         private frmSettings Form;
 
         [Inject]
         public SettingsView(Settings.IModel inModel, IEventBroker inGlobalEvent)
         {
-            Model = inModel;
+            model = inModel;
+            model.Sync.Bind(SyncTarget.View, this);
             inGlobalEvent.Register(this);
         }
 
@@ -36,33 +37,34 @@ namespace RedmineLog
         [EventPublication(Settings.Events.Load, typeof(Publish<Settings.IView>))]
         public event EventHandler LoadEvent;
 
-        [EventPublication(Global.Events.Info, typeof(Publish<Global.IView>))]
-        public event EventHandler InfoEvent;
 
         public void Init(frmSettings frmSettings)
         {
             Form = frmSettings;
-
-            Form.tbRedmineURL.Text = Model.Url;
-            Form.tbApiKey.Text = Model.ApiKey;
-
-            Form.btnConnect.Click += this.OnConnectClick;
-            Form.FormClosed += (s, e) =>
-            {
-                InfoEvent.Fire(this);
-            };
+            
+            Form.btnConnect.Click += OnConnectClick;
 
             LoadEvent.Fire(this);
         }
 
         private void OnConnectClick(System.Object sender, System.EventArgs e)
         {
-            Model.Url = Form.tbRedmineURL.Text;
-            Model.ApiKey = Form.tbApiKey.Text;
+            model.Url = Form.tbRedmineURL.Text;
+            model.ApiKey = Form.tbApiKey.Text;
 
             ConnectEvent.Fire(this);
 
             Form.DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        void OnUrlChange()
+        {
+            Form.tbRedmineURL.Text = model.Url;
+        }
+
+        void OnApiKeyChange()
+        {
+            Form.tbApiKey.Text = model.ApiKey;
         }
     }
 }

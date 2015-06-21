@@ -15,11 +15,12 @@
 
         public interface IModel
         {
+            IModelSync Sync { get; }
+
             string Url { get; set; }
 
             string ApiKey { get; set; }
 
-            int IdUser { get; set; }
         }
     }
 }

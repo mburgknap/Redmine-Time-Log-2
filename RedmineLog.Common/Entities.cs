@@ -174,4 +174,26 @@ namespace RedmineLog.Common
             Add(new WorkActivityType() { Id = inId, Name = inName });
         }
     }
+
+
+    public class WorkLogItem
+    {
+        public DateTime Date { get; set; }
+
+        public decimal Hours { get; set; }
+
+        public int IdIssue { get; set; }
+
+        public string ProjectName { get; set; }
+
+        public string ActivityName { get; set; }
+
+        public string Comment { get; set; }
+
+        public int Id { get; set; }
+    }
+
+    public class WorkLogList : List<WorkLogItem>
+    {
+    }
 }

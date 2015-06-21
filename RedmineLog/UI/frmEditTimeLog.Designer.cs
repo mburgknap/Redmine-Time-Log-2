@@ -34,6 +34,7 @@
             this.cbEventType = new System.Windows.Forms.ComboBox();
             this.tbMessage = new System.Windows.Forms.TextBox();
             this.calWorkDate = new System.Windows.Forms.MonthCalendar();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nHour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nMinute)).BeginInit();
             this.SuspendLayout();
@@ -98,11 +99,21 @@
             this.calWorkDate.TrailingForeColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.calWorkDate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(10, 334);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(158, 23);
+            this.btnSave.TabIndex = 6;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            // 
             // frmEditTimeLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(180, 337);
+            this.ClientSize = new System.Drawing.Size(177, 359);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.calWorkDate);
             this.Controls.Add(this.tbMessage);
             this.Controls.Add(this.cbEventType);
@@ -114,6 +125,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "frmEditTimeLog";
             this.TopMost = true;
+            this.Load += new System.EventHandler(this.OnFormLoad);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmEditTimeLog_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.nHour)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nMinute)).EndInit();
@@ -130,5 +142,6 @@
         private System.Windows.Forms.ComboBox cbEventType;
         private System.Windows.Forms.TextBox tbMessage;
         private System.Windows.Forms.MonthCalendar calWorkDate;
+        internal System.Windows.Forms.Button btnSave;
     }
 }

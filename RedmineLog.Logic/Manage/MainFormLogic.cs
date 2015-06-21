@@ -103,23 +103,31 @@ namespace RedmineLog.Logic
 
             if (Int32.TryParse(arg.Data, out idIssue))
             {
-                DownloadIssue(idIssue);
-
-                var tmpIssue = dbRedmineIssue.Get(idIssue);
-
-                var issue = dbIssue.Get(idIssue);
-
-                if (tmpIssue != null && issue == null)
-                    dbIssue.Update(issue = new IssueData() { Id = tmpIssue.Id, UsedCount = 1 });
-
-                if (issue != null)
-                {
-                    SetupLastIssue(issue);
-                    LoadIssue(issue);
-                    return;
-                }
+                if (ReloadIssueData(idIssue)) return;
             }
-            LoadIssue(dbIssue.Get(0));
+            else
+                LoadIssue(dbIssue.Get(0));
+        }
+
+        private bool ReloadIssueData(int idIssue)
+        {
+            DownloadIssue(idIssue);
+
+            var tmpIssue = dbRedmineIssue.Get(idIssue);
+
+            var issue = dbIssue.Get(idIssue);
+
+            if (tmpIssue != null && issue == null)
+                dbIssue.Update(issue = new IssueData() { Id = tmpIssue.Id, UsedCount = 1 });
+
+            if (issue != null)
+            {
+                SetupLastIssue(issue);
+                LoadIssue(issue);
+                return true;
+            }
+
+            return false;
         }
 
         [EventSubscription(Main.Events.Reset, typeof(Subscribe<Main.IView>))]
@@ -190,6 +198,22 @@ namespace RedmineLog.Logic
         {
             SetupLastIssue(arg.Data.Data);
             LoadIssue(arg.Data.Data);
+        }
+
+        [EventSubscription(WorkLog.Events.Select, typeof(OnPublisher))]
+        public void OnSelectEvent(object sender, Args<WorkLogItem> arg)
+        {
+            var issue = dbIssue.Get(arg.Data.IdIssue);
+
+            if (issue == null)
+            {
+                ReloadIssueData(arg.Data.IdIssue);
+            }
+            else
+            {
+                SetupLastIssue(issue);
+                LoadIssue(issue);
+            }
         }
 
         private void SetupLastIssue(IssueData issue)

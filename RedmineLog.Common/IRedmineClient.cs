@@ -18,5 +18,7 @@ namespace RedmineLog.Common
         Uri IssueListUrl();
 
         Uri IssueUrl(IssueData issueData);
+
+        IEnumerable<WorkLogItem> GetWorkLogs(int idUser, DateTime workData);
     }
 }
