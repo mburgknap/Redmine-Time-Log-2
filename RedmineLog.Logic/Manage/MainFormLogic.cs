@@ -190,7 +190,7 @@ namespace RedmineLog.Logic
             { model.Issue.SetWorkTime(workData.Time); }
 
             dbIssue.Update(model.Issue);
-            LoadIssue(model.Issue);
+            LoadIssue(dbIssue.Get(0));
         }
 
         [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
