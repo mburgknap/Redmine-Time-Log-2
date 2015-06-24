@@ -243,8 +243,10 @@ namespace RedmineLog
                 AddCommentEvent.Fire(this, comment.Text);
             else
             {
+                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                 model.Comment = e.ClickedItem.Tag as CommentData;
                 model.Sync.Value(SyncTarget.View, "Comment");
+                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
             }
         }
 
@@ -272,7 +274,11 @@ namespace RedmineLog
         private void AddIssue(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == 13)
+            {
+                if (String.IsNullOrWhiteSpace(Form.tbComment.Text))
+                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                 AddIssueEvent.Fire(this, Form.tbIssue.Text);
+            }
         }
 
         private void OnSearchIssueClick(object sender, EventArgs e)

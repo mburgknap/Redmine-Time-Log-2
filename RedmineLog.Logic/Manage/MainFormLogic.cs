@@ -66,7 +66,13 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.AddComment, typeof(Subscribe<Main.IView>))]
         public void OnAddCommentEvent(object sender, Args<string> arg)
         {
-            var comment = new CommentData() { Id = Guid.NewGuid().ToString(), Text = arg.Data };
+            var comment = new CommentData()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Text = arg.Data,
+                IsGlobal = model.Issue.Id == 0
+            };
+
             model.Comment = comment;
             dbComment.Update(comment);
             model.Issue.Comments.Add(comment.Id);
@@ -90,10 +96,18 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.DelComment, typeof(Subscribe<Main.IView>))]
         public void OnDelCommentEvent(object sender, EventArgs arg)
         {
-            dbComment.Delete(model.Comment);
-            model.IssueComments.Remove(model.Comment);
-            model.Comment = null;
-            model.Sync.Value(SyncTarget.View, "Comment");
+            if (model.Comment != null)
+            {
+                model.Issue.IdComment = null;
+                model.Issue.Comments.Remove(model.Comment.Id);
+                model.IssueComments.Remove(model.Comment);
+
+                dbIssue.Update(model.Issue);
+                dbComment.Delete(model.Comment);
+                model.Comment = null;
+                model.Sync.Value(SyncTarget.View, "Comment");
+            }
+
         }
 
         [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
@@ -131,19 +145,20 @@ namespace RedmineLog.Logic
         }
 
         [EventSubscription(Main.Events.Reset, typeof(Subscribe<Main.IView>))]
-        public void OnClockStopEvent(object sender, Args<Main.Actions> arg)
+        public void OnResetEvent(object sender, Args<Main.Actions> arg)
         {
             if (arg.Data == Main.Actions.Issue)
             {
                 model.WorkTime = new TimeSpan(0);
                 model.Sync.Value(SyncTarget.View, "WorkTime");
+                model.Issue.SetWorkTime(model.WorkTime);
                 dbIssue.Update(model.Issue);
+                LoadIssue(dbIssue.Get(0));
             }
             else
             {
                 model.IdleTime = new TimeSpan(0);
                 model.Sync.Value(SyncTarget.View, "IdleTime");
-                dbIssue.Update(model.Issue);
             }
         }
 
@@ -230,6 +245,17 @@ namespace RedmineLog.Logic
             else
             {
                 issue.AddWorkTime(model.WorkTime);
+
+                if (model.Comment != null
+                    && model.Comment.IsGlobal)
+                {
+                    var comment = new CommentData() { Id = Guid.NewGuid().ToString(), Text = model.Comment.Text };
+                    issue.IdComment = comment.Id;
+                    issue.Comments.Add(issue.IdComment);
+                    dbComment.Update(comment);
+                    dbIssue.Update(model.Issue);
+                }
+
             }
         }
 
