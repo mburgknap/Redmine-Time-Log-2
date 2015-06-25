@@ -26,6 +26,8 @@ namespace RedmineLog.Logic
         [EventSubscription(Small.Events.Load, typeof(Subscribe<Small.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
+            model.Sync.Value(SyncTarget.View, "WorkTime");
+            model.Sync.Value(SyncTarget.View, "IdleTime");
             model.Sync.Value(SyncTarget.View, "IssueInfo");
             model.Sync.Value(SyncTarget.View, "IssueParentInfo");
         }

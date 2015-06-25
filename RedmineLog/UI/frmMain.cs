@@ -239,7 +239,7 @@ namespace RedmineLog
         {
             var comment = e.ClickedItem.Tag as CommentData;
 
-            if (comment.IsGlobal)
+            if (comment.IsGlobal && model.Issue.Id > 0)
                 AddCommentEvent.Fire(this, comment.Text);
             else
             {
@@ -263,7 +263,7 @@ namespace RedmineLog
 
         private void AddComment(object sender, EventArgs e)
         {
-            AddCommentEvent.Fire(this, Form.tbComment.Text);
+            AddCommentEvent.Fire(this, string.Empty);
         }
 
         private void DelIssue(object sender, EventArgs e)
@@ -275,14 +275,14 @@ namespace RedmineLog
         {
             if (e.KeyValue == 13)
             {
-                if (String.IsNullOrWhiteSpace(Form.tbComment.Text))
-                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                 AddIssueEvent.Fire(this, Form.tbIssue.Text);
             }
         }
 
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
+            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
             new frmSearch().ShowDialog();
         }
 
