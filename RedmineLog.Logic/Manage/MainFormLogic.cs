@@ -13,13 +13,12 @@ namespace RedmineLog.Logic
 {
     internal class MainFormLogic : ILogic<Main.IView>
     {
-        private Main.IView view;
+        private IDbComment dbComment;
+        private IDbIssue dbIssue;
+        private IDbRedmineIssue dbRedmineIssue;
         private Main.IModel model;
         private IRedmineClient redmine;
-        private IDbIssue dbIssue;
-        private IDbComment dbComment;
-        private IDbRedmineIssue dbRedmineIssue;
-
+        private Main.IView view;
         [Inject]
         public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue)
         {
@@ -31,48 +30,6 @@ namespace RedmineLog.Logic
             dbComment = inDbComment;
             dbRedmineIssue = inDbRedmineIssue;
             inEvents.Register(this);
-        }
-
-        [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
-        public void OnLoadEvent(object sender, EventArgs arg)
-        {
-            model.WorkActivities.AddRange(redmine.GetWorkActivityTypes());
-            model.Sync.Value(SyncTarget.View, "WorkActivities");
-
-            dbIssue.Init();
-            dbComment.Init();
-            dbRedmineIssue.Init();
-
-            LoadIssue(dbIssue.Get(0));
-            LoadIdle();
-
-        }
-
-        private void LoadIdle()
-        {
-            var idleIssue = dbIssue.Get(-1);
-            model.IdleTime = idleIssue.GetWorkTime(new TimeSpan(0));
-            model.Sync.Value(SyncTarget.View, "IdleTime");
-        }
-
-        [EventSubscription(Main.Events.Link, typeof(Subscribe<Main.IView>))]
-        public void OnLinkEvent(object sender, Args<String> arg)
-        {
-            if (arg.Data.Equals("Redmine"))
-            { view.GoLink(redmine.IssueListUrl()); }
-            else if (arg.Data.Equals("Issue"))
-            { view.GoLink(redmine.IssueUrl(model.Issue)); }
-        }
-
-        [EventSubscription(Main.Events.Exit, typeof(Subscribe<Main.IView>))]
-        public void OnExitEvent(object sender, EventArgs arg)
-        {
-            var idleIssue = dbIssue.Get(-1);
-            idleIssue.SetWorkTime(model.IdleTime);
-            dbIssue.Update(idleIssue);
-
-            model.Issue.SetWorkTime(model.WorkTime);
-            dbIssue.Update(model.Issue);
         }
 
         [EventSubscription(Main.Events.AddComment, typeof(Subscribe<Main.IView>))]
@@ -98,18 +55,20 @@ namespace RedmineLog.Logic
             model.Sync.Value(SyncTarget.View, "Comment");
         }
 
-        [EventSubscription(Main.Events.UpdateComment, typeof(Subscribe<Main.IView>))]
-        public void OnUpdateCommentEvent(object sender, Args<string> arg)
+        [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
+        public void OnAddIssueEvent(object sender, Args<string> arg)
         {
-            if (model.Comment != null)
+            int idIssue = 0;
+
+            if (Int32.TryParse(arg.Data, out idIssue))
             {
-                model.Comment.Text = arg.Data;
-
-                if (model.Issue.Id > 0)
-                    model.Issue.IdComment = model.Comment.Id;
-
-                dbIssue.Update(model.Issue);
-                dbComment.Update(model.Comment);
+                if (ReloadIssueData(idIssue)) return;
+            }
+            else
+            {
+                model.Comment = null;
+                model.Sync.Value(SyncTarget.View, "Comment");
+                LoadIssue(dbIssue.Get(0));
             }
         }
 
@@ -130,42 +89,49 @@ namespace RedmineLog.Logic
 
         }
 
-        [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
-        public void OnAddIssueEvent(object sender, Args<string> arg)
+        [EventSubscription(Main.Events.DelIssue, typeof(Subscribe<Main.IView>))]
+        public void OnDelIssueEvent(object sender, EventArgs arg)
         {
-            int idIssue = 0;
-
-            if (Int32.TryParse(arg.Data, out idIssue))
+            if (model.Issue.Id > 0)
             {
-                if (ReloadIssueData(idIssue)) return;
-            }
-            else
-            {
-                model.Comment = null;
-                model.Sync.Value(SyncTarget.View, "Comment");
+                dbIssue.Delete(model.Issue);
                 LoadIssue(dbIssue.Get(0));
             }
         }
 
-        private bool ReloadIssueData(int idIssue)
+        [EventSubscription(Main.Events.Exit, typeof(Subscribe<Main.IView>))]
+        public void OnExitEvent(object sender, EventArgs arg)
         {
-            DownloadIssue(idIssue);
+            var idleIssue = dbIssue.Get(-1);
+            idleIssue.SetWorkTime(model.IdleTime);
+            dbIssue.Update(idleIssue);
 
-            var tmpIssue = dbRedmineIssue.Get(idIssue);
+            model.Issue.SetWorkTime(model.WorkTime);
+            dbIssue.Update(model.Issue);
+        }
 
-            var issue = dbIssue.Get(idIssue);
+        [EventSubscription(Main.Events.Link, typeof(Subscribe<Main.IView>))]
+        public void OnLinkEvent(object sender, Args<String> arg)
+        {
+            if (arg.Data.Equals("Redmine"))
+            { view.GoLink(redmine.IssueListUrl()); }
+            else if (arg.Data.Equals("Issue"))
+            { view.GoLink(redmine.IssueUrl(model.Issue)); }
+        }
 
-            if (tmpIssue != null && issue == null)
-                dbIssue.Update(issue = new IssueData() { Id = tmpIssue.Id, UsedCount = 1 });
+        [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
+        public void OnLoadEvent(object sender, EventArgs arg)
+        {
+            model.WorkActivities.AddRange(redmine.GetWorkActivityTypes());
+            model.Sync.Value(SyncTarget.View, "WorkActivities");
 
-            if (issue != null)
-            {
-                SetupLastIssue(issue);
-                LoadIssue(issue);
-                return true;
-            }
+            dbIssue.Init();
+            dbComment.Init();
+            dbRedmineIssue.Init();
 
-            return false;
+            LoadIssue(dbIssue.Get(0));
+            LoadIdle();
+
         }
 
         [EventSubscription(Main.Events.Reset, typeof(Subscribe<Main.IView>))]
@@ -183,6 +149,29 @@ namespace RedmineLog.Logic
             {
                 model.IdleTime = new TimeSpan(0);
                 model.Sync.Value(SyncTarget.View, "IdleTime");
+            }
+        }
+
+        [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
+        public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
+        {
+            SetupLastIssue(arg.Data.Data);
+            LoadIssue(arg.Data.Data);
+        }
+
+        [EventSubscription(WorkLog.Events.Select, typeof(OnPublisher))]
+        public void OnSelectEvent(object sender, Args<WorkLogItem> arg)
+        {
+            var issue = dbIssue.Get(arg.Data.IdIssue);
+
+            if (issue == null)
+            {
+                ReloadIssueData(arg.Data.IdIssue);
+            }
+            else
+            {
+                SetupLastIssue(issue);
+                LoadIssue(issue);
             }
         }
 
@@ -242,29 +231,86 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
-        public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
+        [EventSubscription(Main.Events.UpdateComment, typeof(Subscribe<Main.IView>))]
+        public void OnUpdateCommentEvent(object sender, Args<string> arg)
         {
-            SetupLastIssue(arg.Data.Data);
-            LoadIssue(arg.Data.Data);
+            if (model.Comment != null)
+            {
+                model.Comment.Text = arg.Data;
+
+                if (model.Issue.Id > 0)
+                    model.Issue.IdComment = model.Comment.Id;
+
+                dbIssue.Update(model.Issue);
+                dbComment.Update(model.Comment);
+            }
         }
 
-        [EventSubscription(WorkLog.Events.Select, typeof(OnPublisher))]
-        public void OnSelectEvent(object sender, Args<WorkLogItem> arg)
+        private void DownloadIssue(int idIssue)
         {
-            var issue = dbIssue.Get(arg.Data.IdIssue);
+            var issue = redmine.GetIssue(idIssue);
+            dbRedmineIssue.Update(issue);
 
-            if (issue == null)
+            if (issue.IdParent.HasValue)
             {
-                ReloadIssueData(arg.Data.IdIssue);
+                var idParent = issue.IdParent.Value;
+                issue = dbRedmineIssue.Get(idParent);
+
+                if (issue == null)
+                {
+                    issue = redmine.GetIssue(idParent);
+                    dbRedmineIssue.Update(issue);
+                }
             }
-            else
+        }
+
+        private void LoadIdle()
+        {
+            var idleIssue = dbIssue.Get(-1);
+            model.IdleTime = idleIssue.GetWorkTime(new TimeSpan(0));
+            model.Sync.Value(SyncTarget.View, "IdleTime");
+        }
+        private void LoadIssue(IssueData inIssue)
+        {
+            model.Issue = inIssue;
+
+            model.WorkTime = inIssue.GetWorkTime(model.WorkTime);
+
+            model.IssueComments.Clear();
+            model.IssueComments.AddRange(dbComment.GetList(inIssue));
+            if (inIssue.Id > 0)
+                model.IssueComments.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
+
+            model.Comment = model.IssueComments.Where(x => x.Id == inIssue.IdComment).FirstOrDefault();
+
+            model.IssueInfo = dbRedmineIssue.Get(inIssue.Id);
+            model.IssueParentInfo = dbRedmineIssue.Get(model.IssueInfo.IdParent.GetValueOrDefault(-1));
+
+            model.Sync.Value(SyncTarget.View, "Comment");
+            model.Sync.Value(SyncTarget.View, "IssueInfo");
+            model.Sync.Value(SyncTarget.View, "IssueParentInfo");
+        }
+
+        private bool ReloadIssueData(int idIssue)
+        {
+            DownloadIssue(idIssue);
+
+            var tmpIssue = dbRedmineIssue.Get(idIssue);
+
+            var issue = dbIssue.Get(idIssue);
+
+            if (tmpIssue != null && issue == null)
+                dbIssue.Update(issue = new IssueData() { Id = tmpIssue.Id, UsedCount = 1 });
+
+            if (issue != null)
             {
                 SetupLastIssue(issue);
                 LoadIssue(issue);
+                return true;
             }
-        }
 
+            return false;
+        }
         private void SetupLastIssue(IssueData issue)
         {
             if (model.Issue.Id > 0)
@@ -294,55 +340,6 @@ namespace RedmineLog.Logic
                 }
 
             }
-        }
-
-        private void DownloadIssue(int idIssue)
-        {
-            var issue = redmine.GetIssue(idIssue);
-            dbRedmineIssue.Update(issue);
-
-            if (issue.IdParent.HasValue)
-            {
-                var idParent = issue.IdParent.Value;
-                issue = dbRedmineIssue.Get(idParent);
-
-                if (issue == null)
-                {
-                    issue = redmine.GetIssue(idParent);
-                    dbRedmineIssue.Update(issue);
-                }
-            }
-        }
-
-        [EventSubscription(Main.Events.DelIssue, typeof(Subscribe<Main.IView>))]
-        public void OnDelIssueEvent(object sender, EventArgs arg)
-        {
-            if (model.Issue.Id > 0)
-            {
-                dbIssue.Delete(model.Issue);
-                LoadIssue(dbIssue.Get(0));
-            }
-        }
-
-        private void LoadIssue(IssueData inIssue)
-        {
-            model.Issue = inIssue;
-
-            model.WorkTime = inIssue.GetWorkTime(model.WorkTime);
-
-            model.IssueComments.Clear();
-            model.IssueComments.AddRange(dbComment.GetList(inIssue));
-            if (inIssue.Id > 0)
-                model.IssueComments.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
-
-            model.Comment = model.IssueComments.Where(x => x.Id == inIssue.IdComment).FirstOrDefault();
-
-            model.IssueInfo = dbRedmineIssue.Get(inIssue.Id);
-            model.IssueParentInfo = dbRedmineIssue.Get(model.IssueInfo.IdParent.GetValueOrDefault(-1));
-
-            model.Sync.Value(SyncTarget.View, "Comment");
-            model.Sync.Value(SyncTarget.View, "IssueInfo");
-            model.Sync.Value(SyncTarget.View, "IssueParentInfo");
         }
     }
 }

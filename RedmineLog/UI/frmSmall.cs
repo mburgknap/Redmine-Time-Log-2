@@ -67,6 +67,7 @@ namespace RedmineLog
             Form.lblTracker.Click += OnFormClick;
             Form.lbWorkTime.Click += OnFormClick;
             Form.lbIdleTime.Click += OnFormClick;
+            Form.lbComment.Click += OnFormClick;
             Form.flowLayoutPanel1.Click += OnFormClick;
             Form.lbIssue.Click += OnIssueClick;
 
@@ -82,6 +83,11 @@ namespace RedmineLog
         {
             SetText(Form.lbIdleTime, model.IdleTime.ToString());
         }
+        void OnCommentChange()
+        {
+            if (model.Comment != null)
+                SetText(Form.lbComment, "Comment : " + Environment.NewLine + " " + model.Comment.Text);
+        }
 
         void OnIssueParentInfoChange()
         {
@@ -95,6 +101,8 @@ namespace RedmineLog
         }
         void OnIssueInfoChange()
         {
+            Form.lbComment.Visible = model.IssueInfo.Id == 0;
+
             Form.lbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
 
             Form.lbProject.Text = model.IssueInfo.Project;

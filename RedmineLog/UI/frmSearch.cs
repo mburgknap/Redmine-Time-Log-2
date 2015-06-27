@@ -1,6 +1,7 @@
 ﻿using Appccelerate.EventBroker;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
@@ -105,10 +106,14 @@ namespace RedmineLog
 
         private void SelectIssue(WorkingIssue item)
         {
-            if (item != null)
-                SelectEvent.Fire(this, item);
+            new frmProcessing()
+                           .Show(Form, () =>
+                           {
+                               if (item != null)
+                                   SelectEvent.Fire(this, item);
 
-            Form.Close();
+                               Form.Close();
+                           });
         }
     }
 }

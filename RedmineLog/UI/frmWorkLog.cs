@@ -20,6 +20,7 @@ namespace RedmineLog
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
             this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            this.Focus();
         }
     }
 
@@ -57,8 +58,17 @@ namespace RedmineLog
             Form.blLoadMore.Click += OnLoadMore;
             Form.dataGridView1.KeyDown += OnGridViewKeyDown;
             Form.dataGridView1.CellClick += OnGridCellClick;
+            Form.Focus();
             Form.FormClosing += OnCloseForm;
+            Form.KeyDown += Form_KeyDown;
+
             LoadEvent.Fire(this);
+        }
+
+        void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Form.Close();
         }
 
         private void OnCloseForm(object sender, FormClosingEventArgs e)
@@ -113,17 +123,23 @@ namespace RedmineLog
 
         private void OnLoadMore(object sender, EventArgs e)
         {
-            LoadMoreEvent.Fire(this);
+            new frmProcessing()
+                           .Show(Form, () =>
+                           {
+                               LoadMoreEvent.Fire(this);
+                           });
         }
 
         private void OnWorkLogsChange()
         {
+
             Form.dataGridView1.Rows.Clear();
 
             int headrow = -1;
             int row = 0;
 
             var workTime = new TimeSpan();
+
 
             foreach (var item in model.WorkLogs)
             {
@@ -156,8 +172,10 @@ namespace RedmineLog
             UpdateWorkTime(headrow, workTime);
 
             Form.dataGridView1.FirstDisplayedScrollingRowIndex = headrow;
-
+            
             Form.dataGridView1.Focus();
+
+
         }
 
         private void UpdateWorkTime(int headrow, TimeSpan workTime)

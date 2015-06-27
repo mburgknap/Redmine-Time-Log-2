@@ -75,6 +75,12 @@
     <Compile Include="UI\frmEditTimeLog.Designer.cs">
       <DependentUpon>frmEditTimeLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\frmProcessing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmProcessing.Designer.cs">
+      <DependentUpon>frmProcessing.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmWorkLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,6 +121,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmProcessing.resx">
+      <DependentUpon>frmProcessing.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmWorkLog.resx">
       <DependentUpon>frmWorkLog.cs</DependentUpon>

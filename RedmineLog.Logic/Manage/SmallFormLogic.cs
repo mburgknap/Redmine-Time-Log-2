@@ -12,8 +12,8 @@ namespace RedmineLog.Logic
 {
     internal class SmallFormLogic : ILogic<Small.IView>
     {
-        private Small.IView view;
         private Small.IModel model;
+        private Small.IView view;
         [Inject]
         public SmallFormLogic(Small.IView inView, Small.IModel inModel, IEventBroker inEvents)
         {
@@ -28,6 +28,7 @@ namespace RedmineLog.Logic
         {
             model.Sync.Value(SyncTarget.View, "WorkTime");
             model.Sync.Value(SyncTarget.View, "IdleTime");
+            model.Sync.Value(SyncTarget.View, "Comment");
             model.Sync.Value(SyncTarget.View, "IssueInfo");
             model.Sync.Value(SyncTarget.View, "IssueParentInfo");
         }

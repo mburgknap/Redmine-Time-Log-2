@@ -95,13 +95,21 @@ namespace RedmineLog.UI
         {
             if (e.Control && e.KeyCode == Keys.S)
             {
-                SaveEvent.Fire(this);
+                new frmProcessing()
+                             .Show(Form, () =>
+                             {
+                                 SaveEvent.Fire(this);
+                             });
             }
         }
 
         private void OnSaveClick(object sender, EventArgs e)
         {
-            SaveEvent.Fire(this);
+            new frmProcessing()
+                              .Show(Form, () =>
+                              {
+                                  SaveEvent.Fire(this);
+                              });
         }
 
         private void OnActivityTypeChange(object sender, EventArgs e)
