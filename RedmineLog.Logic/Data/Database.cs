@@ -27,8 +27,11 @@ namespace RedmineLog.Logic
         {
             try
             {
-                if (database.Get<IssuesTable, int, DbCustomSerializer<IssueData>>(0, null).Get == null)
+                if (database.Get<IssuesTable, int, DbCustomSerializer<IssueData>>(0, null) == null)
                     database.Set<IssuesTable, int, DbCustomSerializer<IssueData>>(0, new IssueData() { Id = 0 });
+
+                if (database.Get<IssuesTable, int, DbCustomSerializer<IssueData>>(-1, null) == null)
+                    database.Set<IssuesTable, int, DbCustomSerializer<IssueData>>(-1, new IssueData() { Id = -1 });
             }
             catch (Exception ex)
             {
@@ -215,9 +218,6 @@ namespace RedmineLog.Logic
                         tran.Insert<string, bool>("DbSetting", "Init", true);
                         tran.Commit();
                     }
-
-                    tran.Insert<string, bool>("DbSetting", "Init", true);
-                    tran.Commit();
                 }
             }
             catch (Exception ex)

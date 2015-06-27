@@ -13,11 +13,10 @@ namespace RedmineLog.Logic
 {
     internal class SearchFormLogic : ILogic<Search.IView>
     {
-        private Search.IView view;
-        private Search.IModel model;
         private IDbIssue dbIssue;
         private IDbRedmineIssue dbRedmineIssue;
-
+        private Search.IModel model;
+        private Search.IView view;
         [Inject]
         public SearchFormLogic(Search.IView inView, Search.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IDbRedmineIssue inDbRedmineIssue)
         {
@@ -38,6 +37,9 @@ namespace RedmineLog.Logic
 
             foreach (var item in dbIssue.GetList())
             {
+                if (item.Id < 0)
+                    continue;
+
                 tmp = dbRedmineIssue.Get(item.Id);
 
                 if (tmp.IdParent.HasValue)

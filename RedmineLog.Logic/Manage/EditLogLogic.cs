@@ -13,10 +13,9 @@ namespace RedmineLog.Logic
 {
     internal class EditLogLogic : ILogic<EditLog.IView>
     {
-        private EditLog.IView view;
         private EditLog.IModel model;
         private IRedmineClient redmine;
-
+        private EditLog.IView view;
         [Inject]
         public EditLogLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient, IEventBroker inEvents)
         {

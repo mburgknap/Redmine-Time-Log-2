@@ -11,14 +11,11 @@ namespace RedmineLog.Logic
 {
     internal class SettingFormLogic : ILogic<Settings.IView>
     {
-        private Settings.IView View;
-
-        private Settings.IModel model;
-
-        private IRedmineClient redmine;
-        private IDbRedmine dbRedmine;
         private IDbConfig dbConfig;
-
+        private IDbRedmine dbRedmine;
+        private Settings.IModel model;
+        private IRedmineClient redmine;
+        private Settings.IView View;
         [Inject]
         public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig)
         {
@@ -30,6 +27,14 @@ namespace RedmineLog.Logic
             inEvents.Register(this);
         }
 
+        [EventSubscription(Settings.Events.Connect, typeof(Subscribe<Settings.IView>))]
+        public void OnConnectEvent(object sender, EventArgs arg)
+        {
+            dbRedmine.SetApiKey(model.ApiKey);
+            dbRedmine.SetUrl(model.Url);
+            dbConfig.SetIdUser(redmine.GetCurrentUser());
+        }
+
         [EventSubscription(Settings.Events.Load, typeof(Subscribe<Settings.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
@@ -39,14 +44,5 @@ namespace RedmineLog.Logic
             model.Sync.Value(SyncTarget.View, "ApiKey");
             model.Sync.Value(SyncTarget.View, "Url");
         }
-
-        [EventSubscription(Settings.Events.Connect, typeof(Subscribe<Settings.IView>))]
-        public void OnConnectEvent(object sender, EventArgs arg)
-        {
-            dbRedmine.SetApiKey(model.ApiKey);
-            dbRedmine.SetUrl(model.Url);
-            dbConfig.SetIdUser(redmine.GetCurrentUser());
-        }
-
     }
 }

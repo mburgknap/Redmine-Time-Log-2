@@ -38,6 +38,7 @@
             this.lbProject = new System.Windows.Forms.Label();
             this.lblTracker = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.lbComment = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,7 +68,7 @@
             // 
             this.lbParentIssue.AutoSize = true;
             this.lbParentIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbParentIssue.Location = new System.Drawing.Point(3, 16);
+            this.lbParentIssue.Location = new System.Drawing.Point(3, 29);
             this.lbParentIssue.Margin = new System.Windows.Forms.Padding(0);
             this.lbParentIssue.Name = "lbParentIssue";
             this.lbParentIssue.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
@@ -78,7 +79,7 @@
             // 
             this.lbIssue.AutoSize = true;
             this.lbIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbIssue.Location = new System.Drawing.Point(18, 47);
+            this.lbIssue.Location = new System.Drawing.Point(18, 60);
             this.lbIssue.Margin = new System.Windows.Forms.Padding(15, 2, 0, 0);
             this.lbIssue.Name = "lbIssue";
             this.lbIssue.Size = new System.Drawing.Size(0, 13);
@@ -86,6 +87,7 @@
             // 
             // flowLayoutPanel1
             // 
+            this.flowLayoutPanel1.Controls.Add(this.lbComment);
             this.flowLayoutPanel1.Controls.Add(this.lbProject);
             this.flowLayoutPanel1.Controls.Add(this.lbParentIssue);
             this.flowLayoutPanel1.Controls.Add(this.lblTracker);
@@ -102,7 +104,7 @@
             // 
             this.lbProject.AutoSize = true;
             this.lbProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbProject.Location = new System.Drawing.Point(3, 3);
+            this.lbProject.Location = new System.Drawing.Point(3, 16);
             this.lbProject.Margin = new System.Windows.Forms.Padding(0);
             this.lbProject.Name = "lbProject";
             this.lbProject.Size = new System.Drawing.Size(0, 13);
@@ -112,12 +114,23 @@
             // 
             this.lblTracker.AutoSize = true;
             this.lblTracker.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTracker.Location = new System.Drawing.Point(3, 32);
+            this.lblTracker.Location = new System.Drawing.Point(3, 45);
             this.lblTracker.Margin = new System.Windows.Forms.Padding(0);
             this.lblTracker.Name = "lblTracker";
             this.lblTracker.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.lblTracker.Size = new System.Drawing.Size(5, 13);
             this.lblTracker.TabIndex = 5;
+            // 
+            // lbComment
+            // 
+            this.lbComment.AutoSize = true;
+            this.lbComment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbComment.Location = new System.Drawing.Point(3, 3);
+            this.lbComment.Margin = new System.Windows.Forms.Padding(0);
+            this.lbComment.Name = "lbComment";
+            this.lbComment.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.lbComment.Size = new System.Drawing.Size(5, 13);
+            this.lbComment.TabIndex = 6;
             // 
             // frmSmall
             // 
@@ -154,5 +167,6 @@
         internal System.Windows.Forms.Label lbIdleTime;
         internal System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         internal System.Windows.Forms.ToolTip toolTip1;
+        internal System.Windows.Forms.Label lbComment;
     }
 }

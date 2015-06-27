@@ -12,11 +12,10 @@ namespace RedmineLog.Logic
 {
     internal class WorkLogFormLogic : ILogic<WorkLog.IView>
     {
-        private WorkLog.IView view;
+        private IDbConfig dbConfig;
         private WorkLog.IModel model;
         private IRedmineClient redmine;
-        private IDbConfig dbConfig;
-
+        private WorkLog.IView view;
         [Inject]
         public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbConfig inDbConfig, IEventBroker inEvents)
         {
