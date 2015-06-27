@@ -2,6 +2,7 @@
 using RedmineLog.Common;
 using System;
 using System.Runtime.InteropServices;
+using System.Timers;
 
 namespace RedmineLog.UI
 {
@@ -34,7 +35,6 @@ namespace RedmineLog.UI
         private static AppTimers instance = new AppTimers();
 
         private System.Timers.Timer workTimer;
-        private System.Timers.Timer idleTimer;
 
         [EventPublication(WorkUpdate)]
         public event EventHandler<Args<int>> WorkUpdateEvent;
@@ -67,6 +67,8 @@ namespace RedmineLog.UI
             {
                 uint nLastInputTick = liiInfo.dwTime;
                 nIdleTime = nEnvTicks - nLastInputTick;
+
+               // System.Diagnostics.Debug.WriteLine(" nIdleTime " + nIdleTime);
             }
             return ((nIdleTime > 0) ? (nIdleTime / 1000) : nIdleTime);
         }
@@ -75,7 +77,7 @@ namespace RedmineLog.UI
         {
             uint totalIdleTimeInSeconds = GetLastInputTime();
 
-            if (totalIdleTimeInSeconds > 120)
+            if (totalIdleTimeInSeconds > 1)//20)
                 IdleUpdateEvent.Fire(this, 1);
             else
                 WorkUpdateEvent.Fire(this, 1);

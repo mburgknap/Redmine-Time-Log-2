@@ -44,7 +44,15 @@ namespace RedmineLog.Logic
             dbRedmineIssue.Init();
 
             LoadIssue(dbIssue.Get(0));
+            LoadIdle();
 
+        }
+
+        private void LoadIdle()
+        {
+            var idleIssue = dbIssue.Get(-1);
+            model.IdleTime = idleIssue.GetWorkTime(new TimeSpan(0));
+            model.Sync.Value(SyncTarget.View, "IdleTime");
         }
 
         [EventSubscription(Main.Events.Link, typeof(Subscribe<Main.IView>))]
@@ -59,6 +67,10 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.Exit, typeof(Subscribe<Main.IView>))]
         public void OnExitEvent(object sender, EventArgs arg)
         {
+            var idleIssue = dbIssue.Get(-1);
+            idleIssue.SetWorkTime(model.IdleTime);
+            dbIssue.Update(idleIssue);
+
             model.Issue.SetWorkTime(model.WorkTime);
             dbIssue.Update(model.Issue);
         }
@@ -75,8 +87,13 @@ namespace RedmineLog.Logic
 
             model.Comment = comment;
             dbComment.Update(comment);
+
             model.Issue.Comments.Add(comment.Id);
+            if (model.Issue.Id > 0)
+                model.Issue.IdComment = comment.Id;
+
             dbIssue.Update(model.Issue);
+
             model.IssueComments.Add(comment);
             model.Sync.Value(SyncTarget.View, "Comment");
         }
@@ -87,7 +104,10 @@ namespace RedmineLog.Logic
             if (model.Comment != null)
             {
                 model.Comment.Text = arg.Data;
-                model.Issue.IdComment = model.Comment.Id;
+
+                if (model.Issue.Id > 0)
+                    model.Issue.IdComment = model.Comment.Id;
+
                 dbIssue.Update(model.Issue);
                 dbComment.Update(model.Comment);
             }
@@ -120,7 +140,11 @@ namespace RedmineLog.Logic
                 if (ReloadIssueData(idIssue)) return;
             }
             else
+            {
+                model.Comment = null;
+                model.Sync.Value(SyncTarget.View, "Comment");
                 LoadIssue(dbIssue.Get(0));
+            }
         }
 
         private bool ReloadIssueData(int idIssue)
@@ -204,8 +228,18 @@ namespace RedmineLog.Logic
             if (!redmine.AddWorkTime(workData))
             { model.Issue.SetWorkTime(workData.Time); }
 
-            dbIssue.Update(model.Issue);
-            LoadIssue(dbIssue.Get(0));
+            if (arg.Data == Main.Actions.Issue || arg.Data == Main.Actions.All)
+            {
+                dbIssue.Update(model.Issue);
+                LoadIssue(dbIssue.Get(0));
+            }
+
+            if (arg.Data == Main.Actions.Idle || arg.Data == Main.Actions.All)
+            {
+                var idleIssue = dbIssue.Get(-1);
+                idleIssue.SetWorkTime(new TimeSpan(0));
+                dbIssue.Update(idleIssue);
+            }
         }
 
         [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
@@ -245,6 +279,9 @@ namespace RedmineLog.Logic
             else
             {
                 issue.AddWorkTime(model.WorkTime);
+
+                model.Issue.SetWorkTime(new TimeSpan(0));
+                dbIssue.Update(model.Issue);
 
                 if (model.Comment != null
                     && model.Comment.IsGlobal)

@@ -38,6 +38,9 @@ namespace RedmineLog.Logic
 
             foreach (var item in dbIssue.GetList())
             {
+                if (item.Id < 0)
+                    continue;
+
                 tmp = dbRedmineIssue.Get(item.Id);
 
                 if (tmp.IdParent.HasValue)

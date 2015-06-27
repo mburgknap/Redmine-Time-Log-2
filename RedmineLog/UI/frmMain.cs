@@ -372,6 +372,8 @@ namespace RedmineLog
 
             Form.btnRemoveItem.Visible = model.IssueInfo.Id > 0;
             Form.lHide.Visible = model.IssueInfo.Id > 0;
+            Form.btnSubmit.Visible = model.IssueInfo.Id > 0;
+            Form.btnSubmitAll.Visible = model.IssueInfo.Id > 0;
         }
 
         public void Info(string inMessage)
