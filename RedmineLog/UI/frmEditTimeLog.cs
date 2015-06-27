@@ -64,9 +64,11 @@ namespace RedmineLog.UI
             Form.nMinute.ValueChanged += OnMinuteEdit;
             Form.tbMessage.TextChanged += OnMessageEdit;
             Form.calWorkDate.DateChanged += OnDateEdit;
+        }
+        public void Load()
+        {
             LoadEvent.Fire(this);
         }
-
         private void OnDateEdit(object sender, DateRangeEventArgs e)
         {
             model.EditItem.Date = e.Start;
@@ -95,21 +97,21 @@ namespace RedmineLog.UI
         {
             if (e.Control && e.KeyCode == Keys.S)
             {
-                new frmProcessing()
-                             .Show(Form, () =>
-                             {
-                                 SaveEvent.Fire(this);
-                             });
+                new frmProcessing().Show(Form,
+                    () =>
+                    {
+                        SaveEvent.Fire(this);
+                    });
             }
         }
 
         private void OnSaveClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                              .Show(Form, () =>
-                              {
-                                  SaveEvent.Fire(this);
-                              });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    SaveEvent.Fire(this);
+                });
         }
 
         private void OnActivityTypeChange(object sender, EventArgs e)

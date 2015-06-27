@@ -42,7 +42,10 @@ namespace RedmineLog
             Form = frmSettings;
 
             Form.btnConnect.Click += OnConnectClick;
+        }
 
+        public void Load()
+        {
             LoadEvent.Fire(this);
         }
 

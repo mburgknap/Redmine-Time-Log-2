@@ -71,9 +71,11 @@ namespace RedmineLog
             Form.flowLayoutPanel1.Click += OnFormClick;
             Form.lbIssue.Click += OnIssueClick;
 
+        }
+        public void Load()
+        {
             LoadEvent.Fire(this);
         }
-
         void OnWorkTimeChange()
         {
             SetText(Form.lbWorkTime, model.WorkTime.ToString());

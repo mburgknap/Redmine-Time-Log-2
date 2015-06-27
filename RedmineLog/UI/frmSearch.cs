@@ -20,7 +20,7 @@ namespace RedmineLog
 
         private void OnSearchMouseLeave(object sender, EventArgs e)
         {
-            this.Close();
+            //  this.Close();
         }
 
         private void OnSearchLoad(object sender, EventArgs e)
@@ -54,7 +54,17 @@ namespace RedmineLog
             Form = inView;
             Form.dataGridView1.KeyDown += OnKeyDown;
             Form.dataGridView1.CellClick += OnCellClick;
-            LoadEvent.Fire(this);
+
+            Load();
+        }
+
+        public void Load()
+        {
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    LoadEvent.Fire(this);
+                });
         }
 
         private void OnIssuesChange()
@@ -106,14 +116,14 @@ namespace RedmineLog
 
         private void SelectIssue(WorkingIssue item)
         {
-            new frmProcessing()
-                           .Show(Form, () =>
-                           {
-                               if (item != null)
-                                   SelectEvent.Fire(this, item);
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    if (item != null)
+                        SelectEvent.Fire(this, item);
 
-                               Form.Close();
-                           });
+                    Form.Close();
+                });
         }
     }
 }

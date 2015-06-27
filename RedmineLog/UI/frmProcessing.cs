@@ -12,38 +12,73 @@ namespace RedmineLog.UI
 {
     public partial class frmProcessing : Form
     {
+        private Action action;
+        private Form form;
         public frmProcessing()
         {
             InitializeComponent();
+            FormClosed += OnProcessingClosed;
+        }
+
+        void OnProcessingClosed(object sender, FormClosedEventArgs e)
+        {
         }
 
         public void Show(Form inForm, Action inAction)
         {
-            inForm.Load -= inForm_Load;
-            inForm.Load += inForm_Load;
-            inForm.FormClosed -= inForm_FormClosed;
-            inForm.FormClosed += inForm_FormClosed;
+            action = inAction;
+            form = inForm;
 
-            inForm_Load(inForm, EventArgs.Empty);
-            Show();
-            new Task(() =>
+            if (inForm.Visible)
             {
-                if (inAction != null) inAction();
-                this.Close();
-            }).Start();
+                SetupLocation(inForm);
+                ShowProgress();
+            }
+            else
+            {
+                inForm.Load -= inForm_Load;
+                inForm.Load += inForm_Load;
+            }
         }
 
-        void inForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void ShowProgress()
         {
-            if (!this.IsDisposed)
-                this.Close();
+            this.Load += (s, e) =>
+            {
+                new Task(() =>
+                {
+                    if (form.InvokeRequired)
+                    {
+                        form.Invoke(new MethodInvoker(DoWork));
+                        return;
+                    }
+
+                    DoWork();
+
+                }).Start();
+            };
+
+            Show();
+        }
+
+        void DoWork()
+        {
+            if (action != null) action();
+            this.Close();
         }
 
         void inForm_Load(object sender, EventArgs e)
         {
-            this.Width = ((Form)sender).Width;
-            this.Height = ((Form)sender).Height;
-            Location = new Point(((Form)sender).Location.X, ((Form)sender).Location.Y);
+            SetupLocation((Form)sender);
+            ShowProgress();
         }
+
+        private void SetupLocation(Form form)
+        {
+            this.Width = form.Width;
+            this.Height = form.Height;
+            Location = new Point(form.Location.X, form.Location.Y);
+        }
+
     }
 }
