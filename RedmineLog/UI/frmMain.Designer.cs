@@ -58,6 +58,7 @@
             this.btnResetIdle = new System.Windows.Forms.Button();
             this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lHide = new System.Windows.Forms.Label();
+            this.btnBugs = new System.Windows.Forms.Button();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -240,6 +241,7 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.btnBugs);
             this.pManage.Controls.Add(this.btnWorkTime);
             this.pManage.Controls.Add(this.btnSubmitAll);
             this.pManage.Controls.Add(this.btnComments);
@@ -261,9 +263,9 @@
             // 
             // btnWorkTime
             // 
-            this.btnWorkTime.Location = new System.Drawing.Point(104, 261);
+            this.btnWorkTime.Location = new System.Drawing.Point(165, 262);
             this.btnWorkTime.Name = "btnWorkTime";
-            this.btnWorkTime.Size = new System.Drawing.Size(125, 23);
+            this.btnWorkTime.Size = new System.Drawing.Size(65, 23);
             this.btnWorkTime.TabIndex = 46;
             this.btnWorkTime.Text = "Working";
             this.btnWorkTime.UseVisualStyleBackColor = true;
@@ -298,9 +300,9 @@
             // 
             // btnIssues
             // 
-            this.btnIssues.Location = new System.Drawing.Point(28, 261);
+            this.btnIssues.Location = new System.Drawing.Point(97, 262);
             this.btnIssues.Name = "btnIssues";
-            this.btnIssues.Size = new System.Drawing.Size(72, 23);
+            this.btnIssues.Size = new System.Drawing.Size(65, 23);
             this.btnIssues.TabIndex = 42;
             this.btnIssues.Text = "Issues";
             this.btnIssues.UseVisualStyleBackColor = true;
@@ -377,6 +379,16 @@
             this.lHide.TabIndex = 40;
             this.lHide.Text = "Hide";
             // 
+            // btnBugs
+            // 
+            this.btnBugs.Location = new System.Drawing.Point(28, 262);
+            this.btnBugs.Name = "btnBugs";
+            this.btnBugs.Size = new System.Drawing.Size(65, 23);
+            this.btnBugs.TabIndex = 47;
+            this.btnBugs.TabStop = false;
+            this.btnBugs.Text = "Bugs";
+            this.btnBugs.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -437,5 +449,6 @@
         internal System.Windows.Forms.Button btnWorkTime;
         internal System.Windows.Forms.Panel pManage;
         protected internal System.Windows.Forms.Label lblTracker;
+        internal System.Windows.Forms.Button btnBugs;
     }
 }

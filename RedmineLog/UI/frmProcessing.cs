@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +15,7 @@ namespace RedmineLog.UI
     {
         private Action action;
         private Form form;
+        private Action finish;
         public frmProcessing()
         {
             InitializeComponent();
@@ -24,9 +26,10 @@ namespace RedmineLog.UI
         {
         }
 
-        public void Show(Form inForm, Action inAction)
+        public void Show(Form inForm, Action inAction, Action inFinish = null)
         {
             action = inAction;
+            finish = inFinish;
             form = inForm;
 
             if (inForm.Visible)
@@ -36,8 +39,8 @@ namespace RedmineLog.UI
             }
             else
             {
-                inForm.Load -= inForm_Load;
-                inForm.Load += inForm_Load;
+                inForm.Shown -= inFormShown;
+                inForm.Shown += inFormShown;
             }
         }
 
@@ -58,10 +61,24 @@ namespace RedmineLog.UI
         void DoWork()
         {
             if (action != null) action();
-            this.Close();
+
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    this.Close();
+                    if (finish != null) finish();
+                }));
+            }
+            else
+            {
+                this.Close();
+                if (finish != null) finish();
+            }
+
         }
 
-        void inForm_Load(object sender, EventArgs e)
+        void inFormShown(object sender, EventArgs e)
         {
             SetupLocation((Form)sender);
             ShowProgress();

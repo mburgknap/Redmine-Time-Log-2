@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic.Model
 {
-    internal class SearchModel : Search.IModel
+    internal class IssueLogModel : IssueLog.IModel
     {
-        public SearchModel()
+        public IssueLogModel()
         {
             Issues = new WorkingIssueList();
-            Sync = new ModelSync<Search.IModel>();
+            Sync = new ModelSync<IssueLog.IModel>();
         }
         public IModelSync Sync { get; private set; }
 

@@ -69,6 +69,12 @@
   <ItemGroup>
     <Compile Include="UI\Common\FormExtensions.cs" />
     <Compile Include="UI\AppTimers.cs" />
+    <Compile Include="UI\frmBugLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmBugLog.Designer.cs">
+      <DependentUpon>frmBugLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmEditTimeLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,11 +102,11 @@
     <Compile Include="UI\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\frmSearch.cs">
+    <Compile Include="UI\frmIssueLog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\frmSearch.Designer.cs">
-      <DependentUpon>frmSearch.cs</DependentUpon>
+    <Compile Include="UI\frmIssueLog.Designer.cs">
+      <DependentUpon>frmIssueLog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\frmSettings.cs">
       <SubType>Form</SubType>
@@ -116,6 +122,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\frmBugLog.resx">
+      <DependentUpon>frmBugLog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmEditTimeLog.resx">
       <DependentUpon>frmEditTimeLog.cs</DependentUpon>
     </EmbeddedResource>
@@ -128,8 +137,8 @@
     <EmbeddedResource Include="UI\frmWorkLog.resx">
       <DependentUpon>frmWorkLog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSearch.resx">
-      <DependentUpon>frmSearch.cs</DependentUpon>
+    <EmbeddedResource Include="UI\frmIssueLog.resx">
+      <DependentUpon>frmIssueLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSettings.resx">
       <DependentUpon>frmSettings.cs</DependentUpon>

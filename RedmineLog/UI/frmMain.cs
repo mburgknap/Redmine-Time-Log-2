@@ -62,6 +62,7 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.Load, typeof(Publish<Main.IView>))]
         public event EventHandler LoadEvent;
+
         [EventPublication(Main.Events.Reset, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<Main.Actions>> ResetEvent;
 
@@ -70,6 +71,10 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.UpdateComment, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateCommentEvent;
+
+        [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<string>> UpdateIssueEvent;
+
         public void GoLink(Uri inUri)
         {
             try
@@ -91,7 +96,8 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
-            Form.tbIssue.KeyDown += AddIssue;
+            Form.btnBugs.Click += SearchBugClick;
+            Form.tbIssue.KeyDown += SaveIssue;
             Form.btnRemoveItem.Click += DelIssue;
             Form.btnComments.Click += LoadComment;
             Form.btnNewComment.Click += AddComment;
@@ -116,6 +122,35 @@ namespace RedmineLog
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
             Load();
+        }
+
+        private void SearchBugClick(object sender, EventArgs e)
+        {
+            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+            new frmBugLog().ShowDialog();
+        }
+
+        private void SaveIssue(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                new frmProcessing().Show(Form,
+                     () =>
+                     {
+                         UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                         AddIssueEvent.Fire(this, Form.tbIssue.Text);
+                     });
+            }
+
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                new frmProcessing().Show(Form,
+                       () =>
+                       {
+                           UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                           UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                       });
+            }
         }
 
         public void Load()
@@ -150,19 +185,6 @@ namespace RedmineLog
                 {
                     AddCommentEvent.Fire(this, string.Empty);
                 });
-        }
-
-        private void AddIssue(object sender, KeyEventArgs e)
-        {
-            if (e.KeyValue == 13)
-            {
-                new frmProcessing().Show(Form,
-                    () =>
-                    {
-                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                        AddIssueEvent.Fire(this, Form.tbIssue.Text);
-                    });
-            }
         }
 
         private void DelComment(object sender, EventArgs e)
@@ -239,15 +261,11 @@ namespace RedmineLog
 
         private void OnActivityTypeChange(object sender, EventArgs e)
         {
-            Form.cbActivity.Set(model,
-              (ui, data) =>
-              {
-                  if (data.WorkActivities.Count > ui.SelectedIndex)
-                  {
-                      data.Activity = data.WorkActivities[ui.SelectedIndex];
-                      data.Sync.Value(SyncTarget.Source, "Activity");
-                  }
-              });
+            if (model.WorkActivities.Count > Form.cbActivity.SelectedIndex)
+            {
+                model.Activity = model.WorkActivities[Form.cbActivity.SelectedIndex];
+                model.Sync.Value(SyncTarget.Source, "Activity");
+            }
         }
 
         private void OnCommentChange()
@@ -277,6 +295,8 @@ namespace RedmineLog
                 {
                     UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                     ExitEvent.Fire(this);
+                }, () =>
+                {
                     Form.Close();
                 });
         }
@@ -366,7 +386,7 @@ namespace RedmineLog
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
             UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-            new frmSearch().ShowDialog();
+            new frmIssueLog().ShowDialog();
         }
 
         private void OnSettingClick(object sender, EventArgs e)
@@ -406,7 +426,9 @@ namespace RedmineLog
 
                  if (ui.Items.Count > 0)
                  {
+                     ui.SelectedIndexChanged -= OnActivityTypeChange;
                      ui.SelectedItem = ui.Items[0];
+                     ui.SelectedIndexChanged += OnActivityTypeChange;
                      data.Activity = data.WorkActivities[0];
                  }
              });

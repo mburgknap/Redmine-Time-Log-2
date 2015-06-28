@@ -55,9 +55,10 @@ namespace RedmineLog
         {
             Form = inView;
             Form.blLoadMore.Click += OnLoadMore;
+            Form.blLoadMore.KeyDown += OnGridViewKeyDown;
+            Form.blLoadMore.Focus();
             Form.dataGridView1.KeyDown += OnGridViewKeyDown;
             Form.dataGridView1.CellClick += OnGridCellClick;
-            Form.Focus();
             Form.FormClosing += OnCloseForm;
             Form.KeyDown += Form_KeyDown;
             Load();
@@ -122,19 +123,15 @@ namespace RedmineLog
 
         private void SelectIssue(WorkLogItem item)
         {
-          //  new frmProcessing().Show(Form,
-            //   () =>
-            //   {
-                   if (item != null)
-                       SelectEvent.Fire(this, item);
-
-                   Form.Set(model,
-                    (ui, data) =>
-                    {
-                        ui.Close();
-                    });
-             //  });
-
+            new frmProcessing().Show(Form,
+              () =>
+              {
+                  if (item != null)
+                      SelectEvent.Fire(this, item);
+              }, () =>
+              {
+                  Form.Close();
+              });
         }
 
         private void OnLoadMore(object sender, EventArgs e)
@@ -179,10 +176,10 @@ namespace RedmineLog
                                    workTime = workTime.Add(time);
 
                                    row = ui.Rows.Add(new Object[] {
-                            item.IdIssue,
-                            time.ToString(@"hh\:mm"),
-                            item.ProjectName ,
-                            "(" + item.ActivityName + ")" + Environment.NewLine + item.Comment });
+                                                        item.IdIssue,
+                                                        time.ToString(@"hh\:mm"),
+                                                        item.ProjectName ,
+                                                        "(" + item.ActivityName + ")" + Environment.NewLine + item.Comment });
 
                                    ui.Rows[row].Tag = item;
                                }

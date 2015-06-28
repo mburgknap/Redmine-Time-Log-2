@@ -22,5 +22,7 @@ namespace RedmineLog.Common
         IEnumerable<WorkLogItem> GetWorkLogs(int idUser, DateTime workData);
 
         void UpdateLog(WorkLogItem workLogItem);
+
+        IEnumerable<BugLogItem> GetUserBugs(int idUser);
     }
 }

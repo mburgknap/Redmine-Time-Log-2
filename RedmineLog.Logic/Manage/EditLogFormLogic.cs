@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic
 {
-    internal class EditLogLogic : ILogic<EditLog.IView>
+    internal class EditLogFormLogic : ILogic<EditLog.IView>
     {
         private EditLog.IModel model;
         private IRedmineClient redmine;
         private EditLog.IView view;
         [Inject]
-        public EditLogLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient, IEventBroker inEvents)
+        public EditLogFormLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient, IEventBroker inEvents)
         {
             view = inView;
             model = inModel;

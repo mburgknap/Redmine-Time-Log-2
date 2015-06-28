@@ -10,46 +10,44 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmSearch : Form
+    public partial class frmIssueLog : Form
     {
-        public frmSearch()
+        public frmIssueLog()
         {
             InitializeComponent();
-            this.Initialize<Search.IView, frmSearch>();
-        }
-
-        private void OnSearchMouseLeave(object sender, EventArgs e)
-        {
-            //  this.Close();
+            this.Initialize<IssueLog.IView, frmIssueLog>();
         }
 
         private void OnSearchLoad(object sender, EventArgs e)
         {
             this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
+
+        private void OnSearchMouseLeave(object sender, EventArgs e)
+        {
+            //  this.Close();
+        }
     }
 
-    internal class SearchView : Search.IView, IView<frmSearch>
+    internal class IssueLogView : IssueLog.IView, IView<frmIssueLog>
     {
-        private Search.IModel model;
-
-        private frmSearch Form;
-
+        private frmIssueLog Form;
+        private IssueLog.IModel model;
         [Inject]
-        public SearchView(Search.IModel inModel, IEventBroker inGlobalEvent)
+        public IssueLogView(IssueLog.IModel inModel, IEventBroker inGlobalEvent)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
             inGlobalEvent.Register(this);
         }
 
-        [EventPublication(Search.Events.Load, typeof(Publish<Search.IView>))]
+        [EventPublication(IssueLog.Events.Load, typeof(Publish<IssueLog.IView>))]
         public event EventHandler LoadEvent;
 
-        [EventPublication(Search.Events.Select)]
+        [EventPublication(IssueLog.Events.Select)]
         public event EventHandler<Args<WorkingIssue>> SelectEvent;
 
-        public void Init(frmSearch inView)
+        public void Init(frmIssueLog inView)
         {
             Form = inView;
             Form.dataGridView1.KeyDown += OnKeyDown;
@@ -65,6 +63,12 @@ namespace RedmineLog
                 {
                     LoadEvent.Fire(this);
                 });
+        }
+
+        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > 0)
+                SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
         }
 
         private void OnIssuesChange()
@@ -85,12 +89,15 @@ namespace RedmineLog
                       if (item.Data.Id > 0)
                           row = ui.Rows.Add(new Object[] {
                         item.Data.Id,
+                        item.Data.GetWorkTime(new TimeSpan(0)).ToString(),
                         item.Issue.Project,
-                        String.Format("{0}{1}",  item.Parent != null ? item.Parent.Subject + Environment.NewLine + "   ":"" , item.Issue.Subject )});
+                        String.Format("{0}{1}",  
+                                        item.Parent != null ? item.Parent.Subject + Environment.NewLine :"" , 
+                                        "("+ item.Issue.Tracker +")" + Environment.NewLine + " " + item.Issue.Subject )});
                       else
                           row = ui.Rows.Add(new Object[] { "", "", "" });
 
-                      if (item.Data.Time.HasValue && item.Data.Time.Value > 0)
+                      if (item.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1)
                           ui.Rows[row].Cells[0].Style.BackColor = Color.Red;
                       else
                           ui.Rows[row].Cells[0].Style.BackColor = Color.White;
@@ -99,13 +106,6 @@ namespace RedmineLog
                   }
               });
         }
-
-        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > 0)
-                SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
-        }
-
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -126,11 +126,9 @@ namespace RedmineLog
                     if (item != null)
                         SelectEvent.Fire(this, item);
 
-                    Form.Set(model,
-                        (ui, data) =>
-                        {
-                            Form.Close();
-                        });
+                }, () =>
+                {
+                    Form.Close();
                 });
         }
     }

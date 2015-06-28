@@ -32,11 +32,11 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmWorkLog));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.blLoadMore = new System.Windows.Forms.Button();
             this.IssueId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Project = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Activity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.blLoadMore = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +53,8 @@
             this.Time,
             this.Project,
             this.Activity});
-            this.dataGridView1.Location = new System.Drawing.Point(2, 3);
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -62,8 +63,19 @@
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(343, 503);
+            this.dataGridView1.Size = new System.Drawing.Size(348, 509);
             this.dataGridView1.TabIndex = 2;
+            // 
+            // blLoadMore
+            // 
+            this.blLoadMore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.blLoadMore.AutoEllipsis = true;
+            this.blLoadMore.Location = new System.Drawing.Point(285, 483);
+            this.blLoadMore.Name = "blLoadMore";
+            this.blLoadMore.Size = new System.Drawing.Size(60, 23);
+            this.blLoadMore.TabIndex = 3;
+            this.blLoadMore.Text = "More ...";
+            this.blLoadMore.UseVisualStyleBackColor = true;
             // 
             // IssueId
             // 
@@ -112,15 +124,6 @@
             this.Activity.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Activity.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // blLoadMore
-            // 
-            this.blLoadMore.Location = new System.Drawing.Point(285, 483);
-            this.blLoadMore.Name = "blLoadMore";
-            this.blLoadMore.Size = new System.Drawing.Size(60, 23);
-            this.blLoadMore.TabIndex = 3;
-            this.blLoadMore.Text = "More ...";
-            this.blLoadMore.UseVisualStyleBackColor = true;
-            // 
             // frmWorkLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -143,11 +146,11 @@
 
         #endregion
 
+        internal System.Windows.Forms.Button blLoadMore;
+        internal System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn IssueId;
         private System.Windows.Forms.DataGridViewTextBoxColumn Time;
         private System.Windows.Forms.DataGridViewTextBoxColumn Project;
         private System.Windows.Forms.DataGridViewTextBoxColumn Activity;
-        internal System.Windows.Forms.Button blLoadMore;
-        internal System.Windows.Forms.DataGridView dataGridView1;
     }
 }

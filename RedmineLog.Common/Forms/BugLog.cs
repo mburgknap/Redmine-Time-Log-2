@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RedmineLog.Common
+namespace RedmineLog.Common.Forms
 {
-    public static class Search
+    public static class BugLog
     {
         public static class Events
         {
-            public const string Load = "topic://Search/Load";
-            public const string Select = "topic://Search/Select";
+            public const string Load = "topic://BugLog/Load";
+            public const string Select = "topic://BugLog/Select";
         }
 
         public interface IView
@@ -21,8 +21,7 @@ namespace RedmineLog.Common
         public interface IModel
         {
             IModelSync Sync { get; }
-
-            WorkingIssueList Issues { get; }
+            BugLogList Bugs { get; }
         }
     }
 }
