@@ -62,6 +62,7 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.Load, typeof(Publish<Main.IView>))]
         public event EventHandler LoadEvent;
+
         [EventPublication(Main.Events.Reset, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<Main.Actions>> ResetEvent;
 
@@ -70,6 +71,10 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.UpdateComment, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateCommentEvent;
+
+        [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<string>> UpdateIssueEvent;
+
         public void GoLink(Uri inUri)
         {
             try
@@ -91,7 +96,7 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
-            Form.tbIssue.KeyDown += AddIssue;
+            Form.tbIssue.KeyDown += SaveIssue;
             Form.btnRemoveItem.Click += DelIssue;
             Form.btnComments.Click += LoadComment;
             Form.btnNewComment.Click += AddComment;
@@ -116,6 +121,29 @@ namespace RedmineLog
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
             Load();
+        }
+
+        private void SaveIssue(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                new frmProcessing().Show(Form,
+                     () =>
+                     {
+                         UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                         AddIssueEvent.Fire(this, Form.tbIssue.Text);
+                     });
+            }
+
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                new frmProcessing().Show(Form,
+                       () =>
+                       {
+                           UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                           UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                       });
+            }
         }
 
         public void Load()
@@ -150,19 +178,6 @@ namespace RedmineLog
                 {
                     AddCommentEvent.Fire(this, string.Empty);
                 });
-        }
-
-        private void AddIssue(object sender, KeyEventArgs e)
-        {
-            if (e.KeyValue == 13)
-            {
-                new frmProcessing().Show(Form,
-                    () =>
-                    {
-                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                        AddIssueEvent.Fire(this, Form.tbIssue.Text);
-                    });
-            }
         }
 
         private void DelComment(object sender, EventArgs e)

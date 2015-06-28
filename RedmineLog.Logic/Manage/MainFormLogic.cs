@@ -62,7 +62,7 @@ namespace RedmineLog.Logic
 
             if (Int32.TryParse(arg.Data, out idIssue))
             {
-                if (ReloadIssueData(idIssue)) return;
+                ReloadIssueData(idIssue);
             }
             else
             {
@@ -243,6 +243,25 @@ namespace RedmineLog.Logic
 
                 dbIssue.Update(model.Issue);
                 dbComment.Update(model.Comment);
+            }
+        }
+
+        [EventSubscription(Main.Events.UpdateIssue, typeof(Subscribe<Main.IView>))]
+        public void OnUpdateIssueEvent(object sender, Args<string> arg)
+        {
+            int idIssue = -1;
+
+            if (Int32.TryParse(arg.Data, out idIssue))
+            {
+                if (model.Issue.Id == idIssue)
+                {
+                    model.Issue.SetWorkTime(model.WorkTime);
+                    dbIssue.Update(model.Issue);
+                }
+                else
+                {
+                    ReloadIssueData(idIssue);
+                }
             }
         }
 

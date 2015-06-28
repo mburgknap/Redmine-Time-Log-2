@@ -85,12 +85,13 @@ namespace RedmineLog
                       if (item.Data.Id > 0)
                           row = ui.Rows.Add(new Object[] {
                         item.Data.Id,
+                        item.Data.GetWorkTime(new TimeSpan(0)).ToString(),
                         item.Issue.Project,
                         String.Format("{0}{1}",  item.Parent != null ? item.Parent.Subject + Environment.NewLine + "   ":"" , item.Issue.Subject )});
                       else
                           row = ui.Rows.Add(new Object[] { "", "", "" });
 
-                      if (item.Data.Time.HasValue && item.Data.Time.Value > 0)
+                      if (item.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1)
                           ui.Rows[row].Cells[0].Style.BackColor = Color.Red;
                       else
                           ui.Rows[row].Cells[0].Style.BackColor = Color.White;
