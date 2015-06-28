@@ -2,6 +2,7 @@
 using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.Common.Forms;
 using RedmineLog.Logic.Common;
 using System;
 using System.Collections.Generic;
@@ -152,6 +153,22 @@ namespace RedmineLog.Logic
             }
         }
 
+        [EventSubscription(BugLog.Events.Select, typeof(OnPublisher))]
+        public void OnSelectEvent(object sender, Args<BugLogItem> arg)
+        {
+            var issue = dbIssue.Get(arg.Data.Id);
+
+            if (issue == null)
+            {
+                ReloadIssueData(arg.Data.Id);
+            }
+            else
+            {
+                SetupLastIssue(issue);
+                LoadIssue(issue);
+            }
+        }
+
         [EventSubscription(IssueLog.Events.Select, typeof(OnPublisher))]
         public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
         {
@@ -297,6 +314,7 @@ namespace RedmineLog.Logic
 
             model.IssueComments.Clear();
             model.IssueComments.AddRange(dbComment.GetList(inIssue));
+
             if (inIssue.Id > 0)
                 model.IssueComments.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
 
@@ -308,6 +326,7 @@ namespace RedmineLog.Logic
             model.Sync.Value(SyncTarget.View, "Comment");
             model.Sync.Value(SyncTarget.View, "IssueInfo");
             model.Sync.Value(SyncTarget.View, "IssueParentInfo");
+
         }
 
         private bool ReloadIssueData(int idIssue)

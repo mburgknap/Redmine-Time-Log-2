@@ -261,15 +261,11 @@ namespace RedmineLog
 
         private void OnActivityTypeChange(object sender, EventArgs e)
         {
-            Form.cbActivity.Set(model,
-              (ui, data) =>
-              {
-                  if (data.WorkActivities.Count > ui.SelectedIndex)
-                  {
-                      data.Activity = data.WorkActivities[ui.SelectedIndex];
-                      data.Sync.Value(SyncTarget.Source, "Activity");
-                  }
-              });
+            if (model.WorkActivities.Count > Form.cbActivity.SelectedIndex)
+            {
+                model.Activity = model.WorkActivities[Form.cbActivity.SelectedIndex];
+                model.Sync.Value(SyncTarget.Source, "Activity");
+            }
         }
 
         private void OnCommentChange()
@@ -299,6 +295,8 @@ namespace RedmineLog
                 {
                     UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                     ExitEvent.Fire(this);
+                }, () =>
+                {
                     Form.Close();
                 });
         }
@@ -428,7 +426,9 @@ namespace RedmineLog
 
                  if (ui.Items.Count > 0)
                  {
+                     ui.SelectedIndexChanged -= OnActivityTypeChange;
                      ui.SelectedItem = ui.Items[0];
+                     ui.SelectedIndexChanged += OnActivityTypeChange;
                      data.Activity = data.WorkActivities[0];
                  }
              });

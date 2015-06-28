@@ -180,6 +180,10 @@ namespace RedmineLog.Common
     {
         public int Id { get; set; }
         public string Subject { get; set; }
+
+        public string Project { get; set; }
+
+        public string Priority { get; set; }
     }
 
     public class BugLogList : List<BugLogItem>

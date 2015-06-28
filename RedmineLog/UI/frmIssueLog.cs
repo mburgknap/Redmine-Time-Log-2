@@ -18,23 +18,21 @@ namespace RedmineLog
             this.Initialize<IssueLog.IView, frmIssueLog>();
         }
 
-        private void OnSearchMouseLeave(object sender, EventArgs e)
-        {
-            //  this.Close();
-        }
-
         private void OnSearchLoad(object sender, EventArgs e)
         {
             this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+        }
+
+        private void OnSearchMouseLeave(object sender, EventArgs e)
+        {
+            //  this.Close();
         }
     }
 
     internal class IssueLogView : IssueLog.IView, IView<frmIssueLog>
     {
-        private IssueLog.IModel model;
-
         private frmIssueLog Form;
-
+        private IssueLog.IModel model;
         [Inject]
         public IssueLogView(IssueLog.IModel inModel, IEventBroker inGlobalEvent)
         {
@@ -67,6 +65,12 @@ namespace RedmineLog
                 });
         }
 
+        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > 0)
+                SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
+        }
+
         private void OnIssuesChange()
         {
             Form.dataGridView1.Set(model,
@@ -87,7 +91,9 @@ namespace RedmineLog
                         item.Data.Id,
                         item.Data.GetWorkTime(new TimeSpan(0)).ToString(),
                         item.Issue.Project,
-                        String.Format("{0}{1}",  item.Parent != null ? item.Parent.Subject + Environment.NewLine + "   ":"" , item.Issue.Subject )});
+                        String.Format("{0}{1}",  
+                                        item.Parent != null ? item.Parent.Subject + Environment.NewLine :"" , 
+                                        "("+ item.Issue.Tracker +")" + Environment.NewLine + " " + item.Issue.Subject )});
                       else
                           row = ui.Rows.Add(new Object[] { "", "", "" });
 
@@ -100,13 +106,6 @@ namespace RedmineLog
                   }
               });
         }
-
-        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > 0)
-                SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
-        }
-
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -127,11 +126,9 @@ namespace RedmineLog
                     if (item != null)
                         SelectEvent.Fire(this, item);
 
-                    Form.Set(model,
-                        (ui, data) =>
-                        {
-                            Form.Close();
-                        });
+                }, () =>
+                {
+                    Form.Close();
                 });
         }
     }

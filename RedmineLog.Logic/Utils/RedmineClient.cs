@@ -197,5 +197,80 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             { logger.Error("UpdateLog", ex); }
         }
+
+
+        public IEnumerable<BugLogItem> GetUserBugs(int idUser)
+        {
+            var result = new List<BugLogItem>();
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var parameters = new NameValueCollection { };
+
+                var header = new BugLogItem();
+                result.Add(header);
+
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("tracker_id", 1.ToString());
+                parameters.Add("priority_id", 5.ToString());
+
+                var responseList = manager.GetObjectList<Issue>(parameters);
+
+                result.AddRange(responseList.Select(x => ToBugItem(x)));
+                header.Subject = result.Last().Priority;
+
+                header = new BugLogItem();
+                result.Add(header);
+                parameters = new NameValueCollection { };
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("tracker_id", 1.ToString());
+                parameters.Add("priority_id", 4.ToString());
+
+                responseList = manager.GetObjectList<Issue>(parameters);
+
+                result.AddRange(responseList.Select(x => ToBugItem(x)));
+                header.Subject = result.Last().Priority;
+
+                header = new BugLogItem();
+                result.Add(header);
+                parameters = new NameValueCollection { };
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("tracker_id", 1.ToString());
+                parameters.Add("priority_id", 3.ToString());
+
+                responseList = manager.GetObjectList<Issue>(parameters);
+
+                result.AddRange(responseList.Select(x => ToBugItem(x)));
+                header.Subject = result.Last().Priority;
+
+                header = new BugLogItem();
+                result.Add(header);
+                parameters = new NameValueCollection { };
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("tracker_id", 1.ToString());
+                parameters.Add("priority_id", 2.ToString());
+
+                responseList = manager.GetObjectList<Issue>(parameters);
+
+                result.AddRange(responseList.Select(x => ToBugItem(x)));
+                header.Subject = result.Last().Priority;
+            }
+            catch (Exception ex)
+            { logger.Error("GetUserBugs", ex); }
+
+            return result;
+        }
+
+        private BugLogItem ToBugItem(Issue x)
+        {
+            return new BugLogItem()
+                 {
+                     Id = x.Id,
+                     Project = x.Project.Name,
+                     Subject = x.Subject,
+                     Priority = x.Priority.Name
+                 };
+        }
     }
 }

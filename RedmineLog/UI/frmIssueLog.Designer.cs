@@ -107,7 +107,7 @@
             this.cIssueDetail.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.cIssueDetail.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // frmSearch
+            // frmIssueLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -115,7 +115,7 @@
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmSearch";
+            this.Name = "frmIssueLog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "frmSearch";

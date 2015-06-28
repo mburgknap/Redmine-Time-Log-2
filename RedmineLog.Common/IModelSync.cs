@@ -23,19 +23,19 @@ namespace RedmineLog.Common
         public void Value(SyncTarget mode, string property)
         {
             if (mode == SyncTarget.View)
-                Invoke(viewSync, property);
+                Invoke(viewSync, property, mode);
 
             if (mode == SyncTarget.Source)
-                Invoke(sourceSync, property);
+                Invoke(sourceSync, property, mode);
 
             if (mode == SyncTarget.All)
             {
-                Invoke(viewSync, property);
-                Invoke(sourceSync, property);
+                Invoke(viewSync, property, mode);
+                Invoke(sourceSync, property, mode);
             }
         }
 
-        private void Invoke(Dictionary<string, Action> propSync, string property)
+        private void Invoke(Dictionary<string, Action> propSync, string property, SyncTarget mode)
         {
             Action action = null;
 
@@ -44,7 +44,7 @@ namespace RedmineLog.Common
             if (action != null)
                 action();
             else
-                Debug.WriteLine("Property " + property + " not defined");
+                Debug.WriteLine("Property: " + property + "fo Mode: " + mode + " is not defined");
         }
 
         public void Bind(SyncTarget mode, object inObject)

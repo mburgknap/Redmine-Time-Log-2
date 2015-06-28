@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
 using RedmineLog.UI.Common;
@@ -20,6 +21,7 @@ namespace RedmineLog.UI
         {
             InitializeComponent();
             this.Initialize<BugLog.IView, frmBugLog>();
+
         }
         private void OnBugLogLoad(object sender, EventArgs e)
         {
@@ -33,6 +35,14 @@ namespace RedmineLog.UI
 
         private frmBugLog Form;
 
+        [Inject]
+        public BugLogView(BugLog.IModel inModel, IEventBroker inGlobalEvent)
+        {
+            model = inModel;
+            model.Sync.Bind(SyncTarget.View, this);
+            inGlobalEvent.Register(this);
+        }
+
 
         [EventPublication(BugLog.Events.Load, typeof(Publish<BugLog.IView>))]
         public event EventHandler LoadEvent;
@@ -43,30 +53,37 @@ namespace RedmineLog.UI
         public void Init(frmBugLog inView)
         {
             Form = inView;
-            Form.dataGridView1.KeyDown += OnKeyDown;
-            Form.dataGridView1.CellClick += OnCellClick;
+            Form.dataGrid.KeyDown += OnKeyDown;
+            Form.dataGrid.CellClick += OnCellClick;
 
             Load();
         }
 
         private void OnBugsChange()
         {
-            Form.dataGridView1.Set(model,
+            Form.dataGrid.Set(model,
               (ui, data) =>
               {
                   int row;
-
                   ui.Rows.Clear();
-
                   foreach (var item in data.Bugs)
                   {
                       row = ui.Rows.Add(new Object[] {
-                        item.Id,
-                        //item.Project,
+                        item.Id > 0 ? item.Id.ToString() : "",
+                        item.Project,
                         item.Subject });
 
                       ui.Rows[row].Tag = item;
+
+                      if (item.Id == 0)
+                      {
+                          ui.Rows[row].Cells[0].Style.BackColor = Color.Azure;
+                          ui.Rows[row].Cells[1].Style.BackColor = Color.Azure;
+                          ui.Rows[row].Cells[2].Style.BackColor = Color.Azure;
+                      }
+
                   }
+
               });
         }
 
@@ -74,22 +91,22 @@ namespace RedmineLog.UI
         private void OnCellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > 0)
-                SelectBug(Form.dataGridView1.Rows[e.RowIndex].Tag as BugLogItem);
+                SelectBug(Form.dataGrid.Rows[e.RowIndex].Tag as BugLogItem);
         }
 
         private void SelectBug(BugLogItem item)
         {
+            if (item.Id == 0)
+                return;
+
             new frmProcessing().Show(Form,
                () =>
                {
                    if (item != null)
                        SelectEvent.Fire(this, item);
-
-                   Form.Set(model,
-                       (ui, data) =>
-                       {
-                           Form.Close();
-                       });
+               }, () =>
+               {
+                   Form.Close();
                });
         }
 
@@ -98,11 +115,11 @@ namespace RedmineLog.UI
             if (e.KeyCode == Keys.Escape)
                 Form.Close();
 
-            if (Form.dataGridView1.SelectedRows.Count == 0)
+            if (Form.dataGrid.SelectedRows.Count == 0)
                 return;
 
             if (e.KeyCode == Keys.Enter)
-                SelectBug(Form.dataGridView1.SelectedRows[0].Tag as BugLogItem);
+                SelectBug(Form.dataGrid.SelectedRows[0].Tag as BugLogItem);
         }
 
         public void Load()
