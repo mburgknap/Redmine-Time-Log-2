@@ -15,8 +15,6 @@ namespace RedmineLog.UI
     {
         public Action OnChange;
 
-        private TimeEntry timeEntry;
-
         public frmEditTimeLog()
         {
             InitializeComponent();
@@ -43,9 +41,6 @@ namespace RedmineLog.UI
             inGlobalEvent.Register(this);
         }
 
-        [EventPublication(EditLog.Events.Load, typeof(Publish<EditLog.IView>))]
-        public event EventHandler LoadEvent;
-
         [EventPublication(EditLog.Events.Save, typeof(Publish<EditLog.IView>))]
         public event EventHandler SaveEvent;
 
@@ -64,9 +59,17 @@ namespace RedmineLog.UI
             Form.nMinute.ValueChanged += OnMinuteEdit;
             Form.tbMessage.TextChanged += OnMessageEdit;
             Form.calWorkDate.DateChanged += OnDateEdit;
-            LoadEvent.Fire(this);
         }
-
+        public void Load()
+        {
+            new frmProcessing().Show(Form,
+                          () =>
+                          {
+                              OnWorkActivitiesChange();
+                              OnEditItemChange();
+                              OnTimeChange();
+                          });
+        }
         private void OnDateEdit(object sender, DateRangeEventArgs e)
         {
             model.EditItem.Date = e.Start;
@@ -95,27 +98,26 @@ namespace RedmineLog.UI
         {
             if (e.Control && e.KeyCode == Keys.S)
             {
-                new frmProcessing()
-                             .Show(Form, () =>
-                             {
-                                 SaveEvent.Fire(this);
-                             });
+                new frmProcessing().Show(Form,
+                    () =>
+                    {
+                        SaveEvent.Fire(this);
+                    });
             }
         }
 
         private void OnSaveClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                              .Show(Form, () =>
-                              {
-                                  SaveEvent.Fire(this);
-                              });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    SaveEvent.Fire(this);
+                });
         }
 
         private void OnActivityTypeChange(object sender, EventArgs e)
         {
-            if (model.WorkActivities.Count > Form.cbEventType.SelectedIndex
-                && Form.cbEventType.SelectedIndex >= 0)
+            if (model.WorkActivities.Count > Form.cbEventType.SelectedIndex && Form.cbEventType.SelectedIndex >= 0)
             {
                 model.Activity = model.WorkActivities[Form.cbEventType.SelectedIndex];
                 model.EditItem.IdActivity = model.Activity.Id;
@@ -126,30 +128,42 @@ namespace RedmineLog.UI
 
         private void OnWorkActivitiesChange()
         {
-            Form.cbEventType.DataSource = null;
-            Form.cbEventType.Items.Clear();
-            Form.cbEventType.DataSource = model.WorkActivities;
-            Form.cbEventType.DisplayMember = "Name";
-            Form.cbEventType.ValueMember = "Id";
+            Form.cbEventType.Set(model,
+               (ui, data) =>
+               {
+                   ui.DataSource = null;
+                   ui.Items.Clear();
+                   ui.DataSource = data.WorkActivities;
+                   ui.DisplayMember = "Name";
+                   ui.ValueMember = "Id";
 
-            if (Form.cbEventType.Items.Count > 0)
-            {
-                Form.cbEventType.SelectedItem = Form.cbEventType.Items[0];
-                model.Activity = model.WorkActivities[0];
-            }
+                   if (ui.Items.Count > 0)
+                   {
+                       ui.SelectedItem = ui.Items[0];
+                       data.Activity = data.WorkActivities[0];
+                   }
+               });
         }
 
         private void OnEditItemChange()
         {
-            Form.Text = "(" + model.EditItem.IdIssue.ToString() + ") " + model.EditItem.ProjectName;
-            Form.calWorkDate.SetDate(model.EditItem.Date);
-            Form.calWorkDate.AddMonthlyBoldedDate(model.EditItem.Date);
-            Form.tbMessage.Text = model.EditItem.Comment;
+            Form.Set(model,
+              (ui, data) =>
+              {
+                  ui.Text = "(" + data.EditItem.IdIssue.ToString() + ") " + data.EditItem.ProjectName;
+                  ui.calWorkDate.SetDate(data.EditItem.Date);
+                  ui.calWorkDate.AddMonthlyBoldedDate(data.EditItem.Date);
+                  ui.tbMessage.Text = data.EditItem.Comment;
+              });
         }
         private void OnTimeChange()
         {
-            Form.nHour.Value = model.Time.Hours;
-            Form.nMinute.Value = model.Time.Minutes;
+            Form.Set(model,
+              (ui, data) =>
+              {
+                  ui.nHour.Value = data.Time.Hours;
+                  ui.nMinute.Value = data.Time.Minutes;
+              });
         }
 
     }

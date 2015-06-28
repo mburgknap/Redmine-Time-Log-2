@@ -20,7 +20,6 @@ namespace RedmineLog
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
             this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
-            this.Focus();
         }
     }
 
@@ -61,8 +60,15 @@ namespace RedmineLog
             Form.Focus();
             Form.FormClosing += OnCloseForm;
             Form.KeyDown += Form_KeyDown;
-
-            LoadEvent.Fire(this);
+            Load();
+        }
+        public void Load()
+        {
+            new frmProcessing().Show(Form,
+               () =>
+               {
+                   LoadEvent.Fire(this);
+               });
         }
 
         void Form_KeyDown(object sender, KeyEventArgs e)
@@ -99,6 +105,7 @@ namespace RedmineLog
                         };
                         editform.Show();
                     }
+
                     EditEvent.Fire(this, timeEntry);
                 }
             }
@@ -115,77 +122,90 @@ namespace RedmineLog
 
         private void SelectIssue(WorkLogItem item)
         {
-            if (item != null)
-                SelectEvent.Fire(this, item);
+          //  new frmProcessing().Show(Form,
+            //   () =>
+            //   {
+                   if (item != null)
+                       SelectEvent.Fire(this, item);
 
-            Form.Close();
+                   Form.Set(model,
+                    (ui, data) =>
+                    {
+                        ui.Close();
+                    });
+             //  });
+
         }
 
         private void OnLoadMore(object sender, EventArgs e)
         {
-            new frmProcessing()
-                           .Show(Form, () =>
-                           {
-                               LoadMoreEvent.Fire(this);
-                           });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    LoadMoreEvent.Fire(this);
+                });
         }
+
 
         private void OnWorkLogsChange()
         {
+            Form.dataGridView1.Set(model,
+                       (ui, data) =>
+                       {
+                           ui.Rows.Clear();
 
-            Form.dataGridView1.Rows.Clear();
+                           int headrow = -1;
+                           int row = 0;
 
-            int headrow = -1;
-            int row = 0;
-
-            var workTime = new TimeSpan();
+                           var workTime = new TimeSpan();
 
 
-            foreach (var item in model.WorkLogs)
-            {
-                if (item.Id < 0)
-                {
-                    UpdateWorkTime(headrow, workTime);
+                           foreach (var item in data.WorkLogs)
+                           {
+                               if (item.Id < 0)
+                               {
+                                   UpdateWorkTime(ui, headrow, workTime);
 
-                    workTime = new TimeSpan();
-                    headrow = Form.dataGridView1.Rows.Add(new Object[] { ToDayInfo(item.Date), "", "", item.Date.ToShortDateString() });
-                    Form.dataGridView1.Rows[headrow].Cells[2].Style.BackColor = Color.LightBlue;
-                    Form.dataGridView1.Rows[headrow].Cells[0].Style.BackColor = Color.LightBlue;
-                    Form.dataGridView1.Rows[headrow].Cells[3].Style.BackColor = Color.LightBlue;
-                    Form.dataGridView1.Rows[headrow].Cells[1].Style.BackColor = Color.Yellow;
-                }
-                else
-                {
-                    var time = new TimeSpan(0, (int)(item.Hours * 60), 0);
-                    workTime = workTime.Add(time);
+                                   workTime = new TimeSpan();
+                                   headrow = ui.Rows.Add(new Object[] { ToDayInfo(item.Date), "", "", item.Date.ToShortDateString() });
+                                   ui.Rows[headrow].Cells[2].Style.BackColor = Color.LightBlue;
+                                   ui.Rows[headrow].Cells[0].Style.BackColor = Color.LightBlue;
+                                   ui.Rows[headrow].Cells[3].Style.BackColor = Color.LightBlue;
+                                   ui.Rows[headrow].Cells[1].Style.BackColor = Color.Yellow;
+                               }
+                               else
+                               {
+                                   var time = new TimeSpan(0, (int)(item.Hours * 60), 0);
+                                   workTime = workTime.Add(time);
 
-                    row = Form.dataGridView1.Rows.Add(new Object[] {
+                                   row = ui.Rows.Add(new Object[] {
                             item.IdIssue,
                             time.ToString(@"hh\:mm"),
                             item.ProjectName ,
                             "(" + item.ActivityName + ")" + Environment.NewLine + item.Comment });
 
-                    Form.dataGridView1.Rows[row].Tag = item;
-                }
-            }
+                                   ui.Rows[row].Tag = item;
+                               }
+                           }
 
-            UpdateWorkTime(headrow, workTime);
+                           UpdateWorkTime(ui, headrow, workTime);
 
-            Form.dataGridView1.FirstDisplayedScrollingRowIndex = headrow;
-            
-            Form.dataGridView1.Focus();
+                           ui.FirstDisplayedScrollingRowIndex = headrow;
 
+                           ui.Focus();
+
+                       });
 
         }
 
-        private void UpdateWorkTime(int headrow, TimeSpan workTime)
+        private void UpdateWorkTime(DataGridView ui, int headrow, TimeSpan workTime)
         {
             if (headrow >= 0)
             {
-                Form.dataGridView1.Rows[headrow].Cells[1].Value = workTime.ToString(@"hh\:mm");
+                ui.Rows[headrow].Cells[1].Value = workTime.ToString(@"hh\:mm");
 
                 if (workTime.TotalHours < 8)
-                    Form.dataGridView1.Rows[headrow].Cells[1].Style.BackColor = Color.Red;
+                    ui.Rows[headrow].Cells[1].Style.BackColor = Color.Red;
             }
         }
 

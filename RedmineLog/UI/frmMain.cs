@@ -112,14 +112,22 @@ namespace RedmineLog
             Form.lblIssue.Click += OnRedmineIssueLink;
             Form.tbComment.Click += OnCommentClick;
             Form.btnWorkTime.Click += OnWorkLogClick;
-
-            new frmProcessing()
-                         .Show(Form, () =>
-                         {
-                             OnWorkMode(this, EventArgs.Empty);
-                             LoadEvent.Fire(this);
-                         });
+            Form.btnRemoveItem.Visible = false;
+            Form.btnSubmit.Visible = false;
+            Form.btnSubmitAll.Visible = false;
+            Load();
         }
+
+        public void Load()
+        {
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    OnWorkMode(this, EventArgs.Empty);
+                    LoadEvent.Fire(this);
+                });
+        }
+
 
         [EventSubscription(AppTimers.IdleUpdate, typeof(OnPublisher))]
         public void OnIdleUpdateEvent(object sender, Args<int> arg)
@@ -134,31 +142,22 @@ namespace RedmineLog
             model.WorkTime = model.WorkTime.Add(new TimeSpan(0, 0, arg.Data));
             model.Sync.Value(SyncTarget.View, "WorkTime");
         }
-        public void SetText(Label inLabel, string inText)
-        {
-            if (inLabel.InvokeRequired)
-            {
-                inLabel.Invoke(new MethodInvoker(() => SetText(inLabel, inText)));
-                return;
-            }
-            inLabel.Text = inText;
-        }
 
         private void AddComment(object sender, EventArgs e)
         {
-            new frmProcessing()
-                  .Show(Form, () =>
-                  {
-                      AddCommentEvent.Fire(this, string.Empty);
-                  });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    AddCommentEvent.Fire(this, string.Empty);
+                });
         }
 
         private void AddIssue(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == 13)
             {
-                new frmProcessing()
-                    .Show(Form, () =>
+                new frmProcessing().Show(Form,
+                    () =>
                     {
                         UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                         AddIssueEvent.Fire(this, Form.tbIssue.Text);
@@ -168,25 +167,29 @@ namespace RedmineLog
 
         private void DelComment(object sender, EventArgs e)
         {
-            new frmProcessing()
-                    .Show(Form, () =>
-                    {
-                        DelCommentEvent.Fire(this);
-                    });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    DelCommentEvent.Fire(this);
+                });
         }
 
         private void DelIssue(object sender, EventArgs e)
         {
-            new frmProcessing()
-                  .Show(Form, () =>
-                  {
-                      DelIssueEvent.Fire(this);
-                  });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    DelIssueEvent.Fire(this);
+                });
         }
 
         private void EnableSmallMode()
         {
-            Form.lHide.Visible = model.IssueInfo.Id > 0 || model.Comment != null;
+            Form.lHide.Set(model,
+              (ui, data) =>
+              {
+                  ui.Visible = data.IssueInfo.Id > 0 || data.Comment != null;
+              });
         }
 
         private void LoadComment(object sender, EventArgs e)
@@ -236,17 +239,26 @@ namespace RedmineLog
 
         private void OnActivityTypeChange(object sender, EventArgs e)
         {
-            if (model.WorkActivities.Count > Form.cbActivity.SelectedIndex)
-            {
-                model.Activity = model.WorkActivities[Form.cbActivity.SelectedIndex];
-                model.Sync.Value(SyncTarget.Source, "Activity");
-            }
+            Form.cbActivity.Set(model,
+              (ui, data) =>
+              {
+                  if (data.WorkActivities.Count > ui.SelectedIndex)
+                  {
+                      data.Activity = data.WorkActivities[ui.SelectedIndex];
+                      data.Sync.Value(SyncTarget.Source, "Activity");
+                  }
+              });
         }
 
         private void OnCommentChange()
         {
-            Form.tbComment.Text = model.Comment != null ? model.Comment.Text : string.Empty;
-            Form.tbComment.ReadOnly = model.Comment == null;
+            Form.tbComment.Set(model.Comment,
+              (ui, data) =>
+              {
+                  ui.Text = data != null ? data.Text : string.Empty;
+                  ui.ReadOnly = data == null;
+              });
+
             EnableSmallMode();
         }
 
@@ -260,13 +272,13 @@ namespace RedmineLog
 
         private void OnExitClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                          .Show(Form, () =>
-                          {
-                              UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                              ExitEvent.Fire(this);
-                              Form.Close();
-                          });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                    ExitEvent.Fire(this);
+                    Form.Close();
+                });
         }
 
         private void OnHideClick(object sender, EventArgs e)
@@ -291,33 +303,45 @@ namespace RedmineLog
 
         private void OnIdleTimeChange()
         {
-            SetText(Form.lblClockIndle, model.IdleTime.ToString());
+            Form.lblClockIndle.Set(model.IdleTime,
+                (ui, data) =>
+                {
+                    ui.Text = data.ToString();
+                });
         }
 
         private void OnIssueInfoChange()
         {
-            Form.tbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
+            Form.Set(model,
+              (ui, data) =>
+              {
+                  ui.tbIssue.Text = data.IssueInfo.Id > 0 ? data.IssueInfo.Id.ToString() : "";
 
-            Form.lblProject.Text = model.IssueInfo.Project;
-            Form.lblTracker.Text = model.IssueInfo.Id > 0 ? "(" + model.IssueInfo.Tracker + ")" : "";
-            Form.lblIssue.Text = model.IssueInfo.Subject;
+                  ui.lblProject.Text = data.IssueInfo.Project;
+                  ui.lblTracker.Text = data.IssueInfo.Id > 0 ? "(" + data.IssueInfo.Tracker + ")" : "";
+                  ui.lblIssue.Text = data.IssueInfo.Subject;
+
+                  ui.btnRemoveItem.Visible = data.IssueInfo.Id > 0;
+                  ui.btnSubmit.Visible = data.IssueInfo.Id > 0;
+                  ui.btnSubmitAll.Visible = data.IssueInfo.Id > 0;
+              });
 
             EnableSmallMode();
-
-            Form.btnRemoveItem.Visible = model.IssueInfo.Id > 0;
-            Form.btnSubmit.Visible = model.IssueInfo.Id > 0;
-            Form.btnSubmitAll.Visible = model.IssueInfo.Id > 0;
         }
 
         private void OnIssueParentInfoChange()
         {
-            if (model.IssueParentInfo != null)
-            {
-                Form.lblParentIssue.Text = model.IssueParentInfo.Subject + " :";
-                Form.lblParentIssue.Visible = true;
-            }
-            else
-                Form.lblParentIssue.Visible = false;
+            Form.lblParentIssue.Set(model.IssueParentInfo,
+               (ui, data) =>
+               {
+                   if (data != null)
+                   {
+                       ui.Text = data.Subject + " :";
+                       ui.Visible = true;
+                   }
+                   else
+                       ui.Visible = false;
+               });
         }
 
         private void OnRedmineIssueLink(object sender, EventArgs e)
@@ -332,21 +356,17 @@ namespace RedmineLog
 
         private void OnResetClockClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                             .Show(Form, () =>
-                             {
-                                 ResetEvent.Fire(this, currentMode);
-                             });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    ResetEvent.Fire(this, currentMode);
+                });
         }
 
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                .Show(Form, () =>
-                {
-                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                    new frmSearch().ShowDialog();
-                });
+            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+            new frmSearch().ShowDialog();
         }
 
         private void OnSettingClick(object sender, EventArgs e)
@@ -356,57 +376,57 @@ namespace RedmineLog
 
         private void OnSubmitAllClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                         .Show(Form, () =>
-                         {
-                             UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                             SubmitEvent.Fire(this, Main.Actions.All);
-                         });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                    SubmitEvent.Fire(this, Main.Actions.All);
+                });
         }
 
         private void OnSubmitClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                       .Show(Form, () =>
-                       {
-                           UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                           SubmitEvent.Fire(this, currentMode);
-                       });
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                    SubmitEvent.Fire(this, currentMode);
+                });
         }
 
         private void OnWorkActivitiesChange()
         {
-            Form.cbActivity.Items.Clear();
-            Form.cbActivity.DataSource = model.WorkActivities;
-            Form.cbActivity.DisplayMember = "Name";
-            Form.cbActivity.ValueMember = "Id";
+            Form.cbActivity.Set(model,
+             (ui, data) =>
+             {
+                 ui.Items.Clear();
+                 ui.DataSource = data.WorkActivities;
+                 ui.DisplayMember = "Name";
+                 ui.ValueMember = "Id";
 
-            if (Form.cbActivity.Items.Count > 0)
-            {
-                Form.cbActivity.SelectedItem = Form.cbActivity.Items[0];
-                model.Activity = model.WorkActivities[0];
-            }
+                 if (ui.Items.Count > 0)
+                 {
+                     ui.SelectedItem = ui.Items[0];
+                     data.Activity = data.WorkActivities[0];
+                 }
+             });
         }
 
         private void OnWorkLogClick(object sender, EventArgs e)
         {
-            new frmProcessing()
-                        .Show(Form, () =>
-                        {
-                            var form = new frmWorkLog();
+            var form = new frmWorkLog();
 
-                            form.Load += (s, arg) =>
-                            {
-                                Form.WindowState = FormWindowState.Minimized;
-                            };
+            form.Load += (s, arg) =>
+            {
+                Form.WindowState = FormWindowState.Minimized;
+            };
 
-                            form.FormClosed += (s, arg) =>
-                            {
-                                Form.WindowState = FormWindowState.Normal;
-                            };
+            form.FormClosed += (s, arg) =>
+            {
+                Form.WindowState = FormWindowState.Normal;
+            };
 
-                            form.ShowDialog();
-                        });
+            form.ShowDialog();
         }
 
         private void OnWorkMode(object sender, EventArgs e)
@@ -417,14 +437,18 @@ namespace RedmineLog
 
         private void OnWorkTimeChange()
         {
-            SetText(Form.lblClockActive, model.WorkTime.ToString());
+            Form.lblClockActive.Set(model.WorkTime,
+                (ui, data) =>
+                {
+                    ui.Text = data.ToString();
+                });
         }
         private void SaveComment(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.S)
             {
-                new frmProcessing()
-                    .Show(Form, () =>
+                new frmProcessing().Show(Form,
+                    () =>
                     {
                         UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                     });
@@ -433,21 +457,21 @@ namespace RedmineLog
 
         private void SelectComment(object sender, ToolStripItemClickedEventArgs e)
         {
-            new frmProcessing()
-                          .Show(Form, () =>
-                          {
-                              var comment = e.ClickedItem.Tag as CommentData;
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    var comment = e.ClickedItem.Tag as CommentData;
 
-                              if (comment.IsGlobal && model.Issue.Id > 0)
-                                  AddCommentEvent.Fire(this, comment.Text);
-                              else
-                              {
-                                  UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                                  model.Comment = e.ClickedItem.Tag as CommentData;
-                                  model.Sync.Value(SyncTarget.View, "Comment");
-                                  UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                              }
-                          });
+                    if (comment.IsGlobal && model.Issue.Id > 0)
+                        AddCommentEvent.Fire(this, comment.Text);
+                    else
+                    {
+                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                        model.Comment = e.ClickedItem.Tag as CommentData;
+                        model.Sync.Value(SyncTarget.View, "Comment");
+                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                    }
+                });
         }
     }
 }
