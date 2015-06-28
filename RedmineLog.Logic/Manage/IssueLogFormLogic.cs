@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic
 {
-    internal class SearchFormLogic : ILogic<IssueLog.IView>
+    internal class IssueLogFormLogic : ILogic<IssueLog.IView>
     {
         private IDbIssue dbIssue;
         private IDbRedmineIssue dbRedmineIssue;
         private IssueLog.IModel model;
         private IssueLog.IView view;
         [Inject]
-        public SearchFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IDbRedmineIssue inDbRedmineIssue)
+        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IDbRedmineIssue inDbRedmineIssue)
         {
             view = inView;
             model = inModel;

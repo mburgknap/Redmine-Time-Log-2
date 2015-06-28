@@ -96,6 +96,7 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
+            Form.btnBugs.Click += SearchBugClick;
             Form.tbIssue.KeyDown += SaveIssue;
             Form.btnRemoveItem.Click += DelIssue;
             Form.btnComments.Click += LoadComment;
@@ -121,6 +122,12 @@ namespace RedmineLog
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
             Load();
+        }
+
+        private void SearchBugClick(object sender, EventArgs e)
+        {
+            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+            new frmBugLog().ShowDialog();
         }
 
         private void SaveIssue(object sender, KeyEventArgs e)

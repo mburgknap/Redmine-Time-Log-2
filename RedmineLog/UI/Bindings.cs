@@ -1,5 +1,6 @@
 ﻿using Ninject.Modules;
 using RedmineLog.Common;
+using RedmineLog.Common.Forms;
 
 namespace RedmineLog.UI
 {
@@ -18,6 +19,9 @@ namespace RedmineLog.UI
 
             Bind<IssueLog.IView>().To<IssueLogView>().InSingletonScope();
             Bind<IssueLogView>().ToSelf();
+
+            Bind<BugLog.IView>().To<BugLogView>().InSingletonScope();
+            Bind<BugLogView>().ToSelf();
 
             Bind<Small.IView>().To<SmallView>().InSingletonScope();
             Bind<SmallView>().ToSelf();

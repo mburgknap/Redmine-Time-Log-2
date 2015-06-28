@@ -176,6 +176,16 @@ namespace RedmineLog.Common
     }
 
 
+    public class BugLogItem
+    {
+        public int Id { get; set; }
+        public string Subject { get; set; }
+    }
+
+    public class BugLogList : List<BugLogItem>
+    {
+    }
+
     public class WorkLogItem
     {
         public DateTime Date { get; set; }

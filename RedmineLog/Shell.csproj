@@ -69,6 +69,12 @@
   <ItemGroup>
     <Compile Include="UI\Common\FormExtensions.cs" />
     <Compile Include="UI\AppTimers.cs" />
+    <Compile Include="UI\frmBugLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmBugLog.Designer.cs">
+      <DependentUpon>frmBugLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmEditTimeLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +122,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\frmBugLog.resx">
+      <DependentUpon>frmBugLog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmEditTimeLog.resx">
       <DependentUpon>frmEditTimeLog.cs</DependentUpon>
     </EmbeddedResource>
