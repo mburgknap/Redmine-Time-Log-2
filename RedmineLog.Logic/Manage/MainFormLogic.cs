@@ -152,7 +152,7 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
+        [EventSubscription(IssueLog.Events.Select, typeof(OnPublisher))]
         public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
         {
             SetupLastIssue(arg.Data.Data);

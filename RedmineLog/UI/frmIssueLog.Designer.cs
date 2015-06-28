@@ -1,6 +1,6 @@
 ﻿namespace RedmineLog
 {
-    partial class frmSearch
+    partial class frmIssueLog
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSearch));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmIssueLog));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.cIssueId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cTime = new System.Windows.Forms.DataGridViewTextBoxColumn();

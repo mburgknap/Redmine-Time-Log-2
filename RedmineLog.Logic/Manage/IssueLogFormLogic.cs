@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic
 {
-    internal class SearchFormLogic : ILogic<Search.IView>
+    internal class SearchFormLogic : ILogic<IssueLog.IView>
     {
         private IDbIssue dbIssue;
         private IDbRedmineIssue dbRedmineIssue;
-        private Search.IModel model;
-        private Search.IView view;
+        private IssueLog.IModel model;
+        private IssueLog.IView view;
         [Inject]
-        public SearchFormLogic(Search.IView inView, Search.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IDbRedmineIssue inDbRedmineIssue)
+        public SearchFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IDbRedmineIssue inDbRedmineIssue)
         {
             view = inView;
             model = inModel;
@@ -28,7 +28,7 @@ namespace RedmineLog.Logic
             inEvents.Register(this);
         }
 
-        [EventSubscription(Search.Events.Load, typeof(Subscribe<Search.IView>))]
+        [EventSubscription(IssueLog.Events.Load, typeof(Subscribe<IssueLog.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             RedmineIssueData tmp = null;
@@ -51,7 +51,7 @@ namespace RedmineLog.Logic
             model.Sync.Value(SyncTarget.View, "Issues");
         }
 
-        [EventSubscription(Search.Events.Select, typeof(OnPublisher))]
+        [EventSubscription(IssueLog.Events.Select, typeof(OnPublisher))]
         public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
         {
         }

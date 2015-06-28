@@ -53,7 +53,8 @@
             this.Time,
             this.Project,
             this.Activity});
-            this.dataGridView1.Location = new System.Drawing.Point(2, 3);
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -62,7 +63,7 @@
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(343, 503);
+            this.dataGridView1.Size = new System.Drawing.Size(348, 509);
             this.dataGridView1.TabIndex = 2;
             // 
             // IssueId
@@ -114,6 +115,8 @@
             // 
             // blLoadMore
             // 
+            this.blLoadMore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.blLoadMore.AutoEllipsis = true;
             this.blLoadMore.Location = new System.Drawing.Point(285, 483);
             this.blLoadMore.Name = "blLoadMore";
             this.blLoadMore.Size = new System.Drawing.Size(60, 23);

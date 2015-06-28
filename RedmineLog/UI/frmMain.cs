@@ -381,7 +381,7 @@ namespace RedmineLog
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
             UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-            new frmSearch().ShowDialog();
+            new frmIssueLog().ShowDialog();
         }
 
         private void OnSettingClick(object sender, EventArgs e)

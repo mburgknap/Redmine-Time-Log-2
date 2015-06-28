@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
-    public static class Search
+    public static class IssueLog
     {
         public static class Events
         {

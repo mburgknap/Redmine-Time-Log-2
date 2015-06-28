@@ -10,12 +10,12 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmSearch : Form
+    public partial class frmIssueLog : Form
     {
-        public frmSearch()
+        public frmIssueLog()
         {
             InitializeComponent();
-            this.Initialize<Search.IView, frmSearch>();
+            this.Initialize<IssueLog.IView, frmIssueLog>();
         }
 
         private void OnSearchMouseLeave(object sender, EventArgs e)
@@ -29,27 +29,27 @@ namespace RedmineLog
         }
     }
 
-    internal class SearchView : Search.IView, IView<frmSearch>
+    internal class IssueLogView : IssueLog.IView, IView<frmIssueLog>
     {
-        private Search.IModel model;
+        private IssueLog.IModel model;
 
-        private frmSearch Form;
+        private frmIssueLog Form;
 
         [Inject]
-        public SearchView(Search.IModel inModel, IEventBroker inGlobalEvent)
+        public IssueLogView(IssueLog.IModel inModel, IEventBroker inGlobalEvent)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
             inGlobalEvent.Register(this);
         }
 
-        [EventPublication(Search.Events.Load, typeof(Publish<Search.IView>))]
+        [EventPublication(IssueLog.Events.Load, typeof(Publish<IssueLog.IView>))]
         public event EventHandler LoadEvent;
 
-        [EventPublication(Search.Events.Select)]
+        [EventPublication(IssueLog.Events.Select)]
         public event EventHandler<Args<WorkingIssue>> SelectEvent;
 
-        public void Init(frmSearch inView)
+        public void Init(frmIssueLog inView)
         {
             Form = inView;
             Form.dataGridView1.KeyDown += OnKeyDown;

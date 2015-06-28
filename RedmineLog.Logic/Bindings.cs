@@ -20,7 +20,7 @@ namespace RedmineLog.Logic
             Bind<ILogic<Small.IView>>().To<SmallFormLogic>().InSingletonScope();
             Bind<SmallFormLogic>().ToSelf();
 
-            Bind<ILogic<Search.IView>>().To<SearchFormLogic>().InSingletonScope();
+            Bind<ILogic<IssueLog.IView>>().To<SearchFormLogic>().InSingletonScope();
             Bind<SearchFormLogic>().ToSelf();
 
             Bind<ILogic<WorkLog.IView>>().To<WorkLogFormLogic>().InSingletonScope();
