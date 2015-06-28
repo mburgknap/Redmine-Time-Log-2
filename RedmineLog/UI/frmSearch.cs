@@ -69,31 +69,35 @@ namespace RedmineLog
 
         private void OnIssuesChange()
         {
-            int row;
+            Form.dataGridView1.Set(model,
+              (ui, data) =>
+              {
+                  int row;
 
-            Form.dataGridView1.Rows.Clear();
+                  ui.Rows.Clear();
 
-            foreach (var item in model.Issues.OrderByDescending(x =>
-            {
-                if (x.Issue.Id == 0) return int.MaxValue;
-                return x.Data.UsedCount;
-            }))
-            {
-                if (item.Data.Id > 0)
-                    row = Form.dataGridView1.Rows.Add(new Object[] {
+                  foreach (var item in data.Issues.OrderByDescending(x =>
+                  {
+                      if (x.Issue.Id == 0) return int.MaxValue;
+                      return x.Data.UsedCount;
+                  }))
+                  {
+                      if (item.Data.Id > 0)
+                          row = ui.Rows.Add(new Object[] {
                         item.Data.Id,
                         item.Issue.Project,
                         String.Format("{0}{1}",  item.Parent != null ? item.Parent.Subject + Environment.NewLine + "   ":"" , item.Issue.Subject )});
-                else
-                    row = Form.dataGridView1.Rows.Add(new Object[] { "", "", "" });
+                      else
+                          row = ui.Rows.Add(new Object[] { "", "", "" });
 
-                if (item.Data.Time.HasValue && item.Data.Time.Value > 0)
-                    Form.dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.Red;
-                else
-                    Form.dataGridView1.Rows[row].Cells[0].Style.BackColor = Color.White;
+                      if (item.Data.Time.HasValue && item.Data.Time.Value > 0)
+                          ui.Rows[row].Cells[0].Style.BackColor = Color.Red;
+                      else
+                          ui.Rows[row].Cells[0].Style.BackColor = Color.White;
 
-                Form.dataGridView1.Rows[row].Tag = item;
-            }
+                      ui.Rows[row].Tag = item;
+                  }
+              });
         }
 
         private void OnCellClick(object sender, DataGridViewCellEventArgs e)
@@ -122,7 +126,11 @@ namespace RedmineLog
                     if (item != null)
                         SelectEvent.Fire(this, item);
 
-                    Form.Close();
+                    Form.Set(model,
+                        (ui, data) =>
+                        {
+                            Form.Close();
+                        });
                 });
         }
     }

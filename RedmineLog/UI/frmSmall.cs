@@ -70,47 +70,71 @@ namespace RedmineLog
             Form.lbComment.Click += OnFormClick;
             Form.flowLayoutPanel1.Click += OnFormClick;
             Form.lbIssue.Click += OnIssueClick;
+            Load();
 
         }
         public void Load()
         {
-            LoadEvent.Fire(this);
+            new frmProcessing().Show(Form,
+              () =>
+              {
+                  LoadEvent.Fire(this);
+              });
         }
         void OnWorkTimeChange()
         {
-            SetText(Form.lbWorkTime, model.WorkTime.ToString());
+            Form.lbWorkTime.Set(model.WorkTime, (ui, data) =>
+            {
+                ui.Text = data.ToString();
+            });
         }
 
         void OnIdleTimeChange()
         {
-            SetText(Form.lbIdleTime, model.IdleTime.ToString());
+            Form.lbIdleTime.Set(model.IdleTime,
+                (ui, data) =>
+                {
+                    ui.Text = data.ToString();
+                });
         }
         void OnCommentChange()
         {
-            if (model.Comment != null)
-                SetText(Form.lbComment, "Comment : " + Environment.NewLine + " " + model.Comment.Text);
+            Form.lbComment.Set(model,
+                (ui, data) =>
+                {
+                    if (model.Comment != null)
+                        ui.Text = "Comment : " + Environment.NewLine + " " + data.Comment.Text;
+                });
         }
 
         void OnIssueParentInfoChange()
         {
-            if (model.IssueParentInfo != null)
-            {
-                Form.lbParentIssue.Text = model.IssueParentInfo.Subject + " :";
-                Form.lbParentIssue.Visible = true;
-            }
-            else
-                Form.lbParentIssue.Visible = false;
+            Form.lbParentIssue.Set(model.IssueParentInfo,
+               (ui, data) =>
+               {
+                   if (data != null)
+                   {
+                       ui.Text = data.Subject + " :";
+                       ui.Visible = true;
+                   }
+                   else
+                       ui.Visible = false;
+               });
+
         }
         void OnIssueInfoChange()
         {
-            Form.lbComment.Visible = model.IssueInfo.Id == 0;
+            Form.Set(model,
+              (ui, data) =>
+              {
+                  ui.lbComment.Visible = data.IssueInfo.Id == 0;
 
-            Form.lbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
+                  ui.lbIssue.Text = data.IssueInfo.Id > 0 ? data.IssueInfo.Id.ToString() : "";
 
-            Form.lbProject.Text = model.IssueInfo.Project;
-            Form.lblTracker.Text = model.IssueInfo.Id > 0 ? "(" + model.IssueInfo.Tracker + ")" : "";
-            Form.lbIssue.Text = model.IssueInfo.Subject;
-
+                  ui.lbProject.Text = data.IssueInfo.Project;
+                  ui.lblTracker.Text = data.IssueInfo.Id > 0 ? "(" + data.IssueInfo.Tracker + ")" : "";
+                  ui.lbIssue.Text = data.IssueInfo.Subject;
+              });
         }
 
         private void OnIssueClick(object sender, EventArgs e)
@@ -121,16 +145,6 @@ namespace RedmineLog
         private void OnFormClick(object sender, EventArgs e)
         {
             Form.Close();
-        }
-
-        public void SetText(Label inLabel, string inText)
-        {
-            if (inLabel.InvokeRequired)
-            {
-                inLabel.Invoke(new MethodInvoker(() => SetText(inLabel, inText)));
-                return;
-            }
-            inLabel.Text = inText;
         }
     }
 }

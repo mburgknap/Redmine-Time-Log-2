@@ -47,12 +47,6 @@ namespace RedmineLog.UI
             {
                 new Task(() =>
                 {
-                    if (form.InvokeRequired)
-                    {
-                        form.Invoke(new MethodInvoker(DoWork));
-                        return;
-                    }
-
                     DoWork();
 
                 }).Start();

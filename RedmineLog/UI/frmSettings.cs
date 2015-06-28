@@ -1,6 +1,7 @@
 ﻿using Appccelerate.EventBroker;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
 using System.Windows.Forms;
@@ -42,11 +43,17 @@ namespace RedmineLog
             Form = frmSettings;
 
             Form.btnConnect.Click += OnConnectClick;
+
+            Load();
         }
 
         public void Load()
         {
-            LoadEvent.Fire(this);
+            new frmProcessing().Show(Form,
+               () =>
+               {
+                   LoadEvent.Fire(this);
+               });
         }
 
         private void OnConnectClick(System.Object sender, System.EventArgs e)
@@ -54,19 +61,35 @@ namespace RedmineLog
             model.Url = Form.tbRedmineURL.Text;
             model.ApiKey = Form.tbApiKey.Text;
 
-            ConnectEvent.Fire(this);
+            new frmProcessing().Show(Form,
+              () =>
+              {
+                  ConnectEvent.Fire(this);
 
-            Form.DialogResult = System.Windows.Forms.DialogResult.OK;
+                  Form.Set(model,
+                     (ui, data) =>
+                     {
+                         ui.DialogResult = System.Windows.Forms.DialogResult.OK;
+                     });
+              });
         }
 
         private void OnUrlChange()
         {
-            Form.tbRedmineURL.Text = model.Url;
+            Form.tbRedmineURL.Set(model.Url,
+                       (ui, data) =>
+                       {
+                           ui.Text = data;
+                       });
         }
 
         private void OnApiKeyChange()
         {
-            Form.tbApiKey.Text = model.ApiKey;
+            Form.tbApiKey.Set(model.ApiKey,
+                      (ui, data) =>
+                      {
+                          ui.Text = data;
+                      });
         }
     }
 }

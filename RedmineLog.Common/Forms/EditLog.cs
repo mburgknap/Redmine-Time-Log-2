@@ -10,12 +10,12 @@ namespace RedmineLog.Common
     {
         public static class Events
         {
-            public const string Load = "topic://EditLogTime/Load";
             public const string Save = "topic://EditLogTime/Save";
         }
 
         public interface IView
         {
+            void Load();
         }
 
         public interface IModel

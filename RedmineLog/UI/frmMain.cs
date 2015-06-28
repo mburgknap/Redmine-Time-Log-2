@@ -112,7 +112,9 @@ namespace RedmineLog
             Form.lblIssue.Click += OnRedmineIssueLink;
             Form.tbComment.Click += OnCommentClick;
             Form.btnWorkTime.Click += OnWorkLogClick;
-
+            Form.btnRemoveItem.Visible = false;
+            Form.btnSubmit.Visible = false;
+            Form.btnSubmitAll.Visible = false;
             Load();
         }
 
@@ -139,15 +141,6 @@ namespace RedmineLog
         {
             model.WorkTime = model.WorkTime.Add(new TimeSpan(0, 0, arg.Data));
             model.Sync.Value(SyncTarget.View, "WorkTime");
-        }
-        public void SetText(Label inLabel, string inText)
-        {
-            if (inLabel.InvokeRequired)
-            {
-                inLabel.Invoke(new MethodInvoker(() => SetText(inLabel, inText)));
-                return;
-            }
-            inLabel.Text = inText;
         }
 
         private void AddComment(object sender, EventArgs e)
@@ -192,7 +185,11 @@ namespace RedmineLog
 
         private void EnableSmallMode()
         {
-            Form.lHide.Visible = model.IssueInfo.Id > 0 || model.Comment != null;
+            Form.lHide.Set(model,
+              (ui, data) =>
+              {
+                  ui.Visible = data.IssueInfo.Id > 0 || data.Comment != null;
+              });
         }
 
         private void LoadComment(object sender, EventArgs e)
@@ -242,17 +239,26 @@ namespace RedmineLog
 
         private void OnActivityTypeChange(object sender, EventArgs e)
         {
-            if (model.WorkActivities.Count > Form.cbActivity.SelectedIndex)
-            {
-                model.Activity = model.WorkActivities[Form.cbActivity.SelectedIndex];
-                model.Sync.Value(SyncTarget.Source, "Activity");
-            }
+            Form.cbActivity.Set(model,
+              (ui, data) =>
+              {
+                  if (data.WorkActivities.Count > ui.SelectedIndex)
+                  {
+                      data.Activity = data.WorkActivities[ui.SelectedIndex];
+                      data.Sync.Value(SyncTarget.Source, "Activity");
+                  }
+              });
         }
 
         private void OnCommentChange()
         {
-            Form.tbComment.Text = model.Comment != null ? model.Comment.Text : string.Empty;
-            Form.tbComment.ReadOnly = model.Comment == null;
+            Form.tbComment.Set(model.Comment,
+              (ui, data) =>
+              {
+                  ui.Text = data != null ? data.Text : string.Empty;
+                  ui.ReadOnly = data == null;
+              });
+
             EnableSmallMode();
         }
 
@@ -297,33 +303,45 @@ namespace RedmineLog
 
         private void OnIdleTimeChange()
         {
-            SetText(Form.lblClockIndle, model.IdleTime.ToString());
+            Form.lblClockIndle.Set(model.IdleTime,
+                (ui, data) =>
+                {
+                    ui.Text = data.ToString();
+                });
         }
 
         private void OnIssueInfoChange()
         {
-            Form.tbIssue.Text = model.IssueInfo.Id > 0 ? model.IssueInfo.Id.ToString() : "";
+            Form.Set(model,
+              (ui, data) =>
+              {
+                  ui.tbIssue.Text = data.IssueInfo.Id > 0 ? data.IssueInfo.Id.ToString() : "";
 
-            Form.lblProject.Text = model.IssueInfo.Project;
-            Form.lblTracker.Text = model.IssueInfo.Id > 0 ? "(" + model.IssueInfo.Tracker + ")" : "";
-            Form.lblIssue.Text = model.IssueInfo.Subject;
+                  ui.lblProject.Text = data.IssueInfo.Project;
+                  ui.lblTracker.Text = data.IssueInfo.Id > 0 ? "(" + data.IssueInfo.Tracker + ")" : "";
+                  ui.lblIssue.Text = data.IssueInfo.Subject;
+
+                  ui.btnRemoveItem.Visible = data.IssueInfo.Id > 0;
+                  ui.btnSubmit.Visible = data.IssueInfo.Id > 0;
+                  ui.btnSubmitAll.Visible = data.IssueInfo.Id > 0;
+              });
 
             EnableSmallMode();
-
-            Form.btnRemoveItem.Visible = model.IssueInfo.Id > 0;
-            Form.btnSubmit.Visible = model.IssueInfo.Id > 0;
-            Form.btnSubmitAll.Visible = model.IssueInfo.Id > 0;
         }
 
         private void OnIssueParentInfoChange()
         {
-            if (model.IssueParentInfo != null)
-            {
-                Form.lblParentIssue.Text = model.IssueParentInfo.Subject + " :";
-                Form.lblParentIssue.Visible = true;
-            }
-            else
-                Form.lblParentIssue.Visible = false;
+            Form.lblParentIssue.Set(model.IssueParentInfo,
+               (ui, data) =>
+               {
+                   if (data != null)
+                   {
+                       ui.Text = data.Subject + " :";
+                       ui.Visible = true;
+                   }
+                   else
+                       ui.Visible = false;
+               });
         }
 
         private void OnRedmineIssueLink(object sender, EventArgs e)
@@ -378,16 +396,20 @@ namespace RedmineLog
 
         private void OnWorkActivitiesChange()
         {
-            Form.cbActivity.Items.Clear();
-            Form.cbActivity.DataSource = model.WorkActivities;
-            Form.cbActivity.DisplayMember = "Name";
-            Form.cbActivity.ValueMember = "Id";
+            Form.cbActivity.Set(model,
+             (ui, data) =>
+             {
+                 ui.Items.Clear();
+                 ui.DataSource = data.WorkActivities;
+                 ui.DisplayMember = "Name";
+                 ui.ValueMember = "Id";
 
-            if (Form.cbActivity.Items.Count > 0)
-            {
-                Form.cbActivity.SelectedItem = Form.cbActivity.Items[0];
-                model.Activity = model.WorkActivities[0];
-            }
+                 if (ui.Items.Count > 0)
+                 {
+                     ui.SelectedItem = ui.Items[0];
+                     data.Activity = data.WorkActivities[0];
+                 }
+             });
         }
 
         private void OnWorkLogClick(object sender, EventArgs e)
@@ -415,7 +437,11 @@ namespace RedmineLog
 
         private void OnWorkTimeChange()
         {
-            SetText(Form.lblClockActive, model.WorkTime.ToString());
+            Form.lblClockActive.Set(model.WorkTime,
+                (ui, data) =>
+                {
+                    ui.Text = data.ToString();
+                });
         }
         private void SaveComment(object sender, KeyEventArgs e)
         {

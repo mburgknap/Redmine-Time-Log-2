@@ -26,11 +26,6 @@ namespace RedmineLog.Logic
         }
 
 
-        [EventSubscription(EditLog.Events.Load, typeof(Subscribe<EditLog.IView>))]
-        public void OnLoadEvent(object sender, EventArgs arg)
-        {
-        }
-
         [EventSubscription(EditLog.Events.Save, typeof(Subscribe<EditLog.IView>))]
         public void OnSaveEvent(object sender, EventArgs arg)
         {
@@ -51,11 +46,8 @@ namespace RedmineLog.Logic
 
             model.WorkActivities.Clear();
             model.WorkActivities.AddRange(redmine.GetWorkActivityTypes());
-            model.Sync.Value(SyncTarget.View, "WorkActivities");
-            model.Sync.Value(SyncTarget.View, "EditItem");
-            model.Sync.Value(SyncTarget.View, "Time");
 
-
+            view.Load();
         }
     }
 }
