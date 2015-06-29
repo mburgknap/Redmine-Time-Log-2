@@ -46,6 +46,7 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.btnBugs = new System.Windows.Forms.Button();
             this.btnWorkTime = new System.Windows.Forms.Button();
             this.btnSubmitAll = new System.Windows.Forms.Button();
             this.btnComments = new System.Windows.Forms.Button();
@@ -58,7 +59,6 @@
             this.btnResetIdle = new System.Windows.Forms.Button();
             this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lHide = new System.Windows.Forms.Label();
-            this.btnBugs = new System.Windows.Forms.Button();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -261,6 +261,16 @@
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
             // 
+            // btnBugs
+            // 
+            this.btnBugs.Location = new System.Drawing.Point(28, 262);
+            this.btnBugs.Name = "btnBugs";
+            this.btnBugs.Size = new System.Drawing.Size(65, 23);
+            this.btnBugs.TabIndex = 47;
+            this.btnBugs.TabStop = false;
+            this.btnBugs.Text = "Bugs";
+            this.btnBugs.UseVisualStyleBackColor = true;
+            // 
             // btnWorkTime
             // 
             this.btnWorkTime.Location = new System.Drawing.Point(165, 262);
@@ -378,16 +388,6 @@
             this.lHide.Size = new System.Drawing.Size(37, 17);
             this.lHide.TabIndex = 40;
             this.lHide.Text = "Hide";
-            // 
-            // btnBugs
-            // 
-            this.btnBugs.Location = new System.Drawing.Point(28, 262);
-            this.btnBugs.Name = "btnBugs";
-            this.btnBugs.Size = new System.Drawing.Size(65, 23);
-            this.btnBugs.TabIndex = 47;
-            this.btnBugs.TabStop = false;
-            this.btnBugs.Text = "Bugs";
-            this.btnBugs.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
