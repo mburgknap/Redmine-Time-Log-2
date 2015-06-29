@@ -77,7 +77,7 @@ namespace RedmineLog.UI
         {
             uint totalIdleTimeInSeconds = GetLastInputTime();
 
-            if (totalIdleTimeInSeconds > 1)//20)
+            if (totalIdleTimeInSeconds > 120)
                 IdleUpdateEvent.Fire(this, 1);
             else
                 WorkUpdateEvent.Fire(this, 1);
