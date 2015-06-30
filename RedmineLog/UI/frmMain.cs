@@ -123,6 +123,7 @@ namespace RedmineLog
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
             Form.Resize += OnResize;
+            AppTimers.Start();
             Load();
         }
 
