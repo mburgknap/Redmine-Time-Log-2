@@ -68,7 +68,6 @@ namespace RedmineLog.UI
                 uint nLastInputTick = liiInfo.dwTime;
                 nIdleTime = nEnvTicks - nLastInputTick;
 
-               // System.Diagnostics.Debug.WriteLine(" nIdleTime " + nIdleTime);
             }
             return ((nIdleTime > 0) ? (nIdleTime / 1000) : nIdleTime);
         }
@@ -77,7 +76,7 @@ namespace RedmineLog.UI
         {
             uint totalIdleTimeInSeconds = GetLastInputTime();
 
-            if (totalIdleTimeInSeconds > 1)//20)
+            if (totalIdleTimeInSeconds > 120)
                 IdleUpdateEvent.Fire(this, 1);
             else
                 WorkUpdateEvent.Fire(this, 1);
@@ -86,8 +85,13 @@ namespace RedmineLog.UI
         internal static void Init(IEventBroker inGlobalEvent)
         {
             instance.WorkTimer = new System.Timers.Timer(1000);
-            instance.WorkTimer.Start();
             inGlobalEvent.Register(instance);
+        }
+
+        internal static void Start()
+        {
+            if (!instance.workTimer.Enabled)
+                instance.WorkTimer.Start();
         }
     }
 }

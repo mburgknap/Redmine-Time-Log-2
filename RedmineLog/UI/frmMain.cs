@@ -74,6 +74,7 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateIssueEvent;
+        private frmSmall smallForm;
 
         public void GoLink(Uri inUri)
         {
@@ -121,8 +122,37 @@ namespace RedmineLog
             Form.btnRemoveItem.Visible = false;
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
+            Form.Resize += OnResize;
+            AppTimers.Start();
             Load();
         }
+
+        private void OnResize(object sender, EventArgs e)
+        {
+            if (Form.WindowState == FormWindowState.Minimized)
+            {
+                smallForm = new frmSmall();
+
+                smallForm.FormClosed += (s, arg) =>
+                {
+                    Form.WindowState = FormWindowState.Normal;
+                };
+
+                smallForm.ShowDialog();
+            }
+            else
+            {
+                Form.WindowState = FormWindowState.Normal;
+
+                if (smallForm != null)
+                {
+                    smallForm.Close();
+                    smallForm = null;
+                }
+            }
+        }
+
+
 
         private void SearchBugClick(object sender, EventArgs e)
         {
@@ -303,16 +333,15 @@ namespace RedmineLog
 
         private void OnHideClick(object sender, EventArgs e)
         {
-            Form.WindowState = FormWindowState.Minimized;
-
-            var form = new frmSmall();
-
-            form.FormClosed += (s, arg) =>
-            {
-                Form.WindowState = FormWindowState.Normal;
-            };
-
-            form.ShowDialog();
+            new frmProcessing().Show(Form,
+                       () =>
+                       {
+                           UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                           UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                       }, () =>
+                       {
+                           Form.WindowState = FormWindowState.Minimized;
+                       });
         }
 
         private void OnIdleMode(object sender, EventArgs e)
@@ -438,16 +467,6 @@ namespace RedmineLog
         {
             var form = new frmWorkLog();
 
-            form.Load += (s, arg) =>
-            {
-                Form.WindowState = FormWindowState.Minimized;
-            };
-
-            form.FormClosed += (s, arg) =>
-            {
-                Form.WindowState = FormWindowState.Normal;
-            };
-
             form.ShowDialog();
         }
 
@@ -483,15 +502,18 @@ namespace RedmineLog
                 () =>
                 {
                     var comment = e.ClickedItem.Tag as CommentData;
-
-                    if (comment.IsGlobal && model.Issue.Id > 0)
-                        AddCommentEvent.Fire(this, comment.Text);
-                    else
+                    if (comment != null)
                     {
-                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                        model.Comment = e.ClickedItem.Tag as CommentData;
-                        model.Sync.Value(SyncTarget.View, "Comment");
-                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+
+                        if (comment.IsGlobal && model.Issue.Id > 0)
+                            AddCommentEvent.Fire(this, comment.Text);
+                        else
+                        {
+                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                            model.Comment = e.ClickedItem.Tag as CommentData;
+                            model.Sync.Value(SyncTarget.View, "Comment");
+                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                        }
                     }
                 });
         }

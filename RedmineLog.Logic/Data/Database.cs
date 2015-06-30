@@ -1,11 +1,13 @@
 ﻿using DBreeze;
 using DBreeze.DataTypes;
+using DBreeze.Storage;
 using Newtonsoft.Json;
 using Ninject;
 using NLog;
 using RedmineLog.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -207,7 +209,17 @@ namespace RedmineLog.Logic
                 DBreeze.Utils.CustomSerializator.Serializator = JsonConvert.SerializeObject;
                 DBreeze.Utils.CustomSerializator.Deserializator = JsonConvert.DeserializeObject;
 
-                engine = new DBreezeEngine(new Uri("Database", UriKind.Relative).ToString());
+                var di = new DirectoryInfo(new Uri("App", UriKind.Relative).ToString());
+
+                engine = new DBreezeEngine(new DBreezeConfiguration()
+                {
+                    DBreezeDataFolderName = Path.Combine(di.Parent.FullName, "Database"),
+                    Storage = DBreezeConfiguration.eStorage.DISK,
+                    Backup = new DBreeze.Storage.Backup()
+                    {
+                        BackupFolderName = Path.Combine(di.Parent.FullName, "Backup")
+                    }
+                });
 
                 using (var tran = engine.GetTransaction())
                 {
