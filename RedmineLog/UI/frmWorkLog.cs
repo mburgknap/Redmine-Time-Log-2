@@ -19,7 +19,10 @@ namespace RedmineLog
 
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
     }
 

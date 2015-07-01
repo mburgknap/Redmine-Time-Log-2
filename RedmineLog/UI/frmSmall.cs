@@ -22,7 +22,10 @@ namespace RedmineLog
 
         private void OnFormLoad(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
         }
     }
 
