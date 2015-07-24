@@ -143,8 +143,6 @@
             this.hideBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.hideBtn.TabIndex = 5;
             this.hideBtn.TabStop = false;
-            this.hideBtn.Click += new System.EventHandler(this.hideBtn_Click);
-            this.hideBtn.MouseMove += hideBtn_MouseMove;
             // 
             // frmSmall
             // 
@@ -170,7 +168,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.hideBtn)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-            this.MouseLeave += frmSmall_MouseLeave;
 
         }
 
@@ -185,6 +182,6 @@
         internal System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         internal System.Windows.Forms.ToolTip toolTip1;
         internal System.Windows.Forms.Label lbComment;
-        private System.Windows.Forms.PictureBox hideBtn;
+        internal System.Windows.Forms.PictureBox hideBtn;
     }
 }

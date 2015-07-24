@@ -18,82 +18,21 @@ namespace RedmineLog
         public frmSmall()
         {
             InitializeComponent();
-            ManyScreenReversed = false;
-            OriginalSize = this.Size;
+            MultipleScreenReversed = SystemInformation.VirtualScreen.Location.X < 0;
             this.Initialize<Small.IView, frmSmall>();
         }
 
         private void OnFormLoad(object sender, EventArgs e)
         {
-            if (SystemInformation.VirtualScreen.Location.X < 0)
+            if (MultipleScreenReversed)
             {
                 this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
-                ManyScreenReversed = true;
             }
             else
                 this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
-
-            HideForm();
         }
 
-        private void hideBtn_Click(object sender, EventArgs e)
-        {
-            if (Hidden)
-                ResetForm(true);
-            else
-                HideForm();
-        }
-
-        private void hideBtn_MouseMove(object sender, EventArgs e)
-        {
-            if (Hidden)
-                ResetForm(false);
-
-        }
-        private void frmSmall_MouseLeave(object sender, System.EventArgs e)
-        {
-            if (Hidden)
-                HideForm();
-        }
-
-        private void HideForm()
-        {
-            this.Size = new Size(hideBtn.Width, hideBtn.Height);
-
-            if (ManyScreenReversed)
-                this.Location = new Point(0 - hideBtn.Width, SystemInformation.VirtualScreen.Height - OriginalSize.Height - 150);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - hideBtn.Width, SystemInformation.VirtualScreen.Height - OriginalSize.Height - 150);
-
-            hideBtn.Image = Properties.Resources.resetBtn;
-            Hidden = true;
-        }
-
-        public void ResetForm(bool isClicked)
-        {
-            this.Size = new Size(OriginalSize.Width, OriginalSize.Height);
-
-            if (ManyScreenReversed)
-            {
-                if (SystemInformation.VirtualScreen.Location.X < 0)
-                    this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
-                else
-                    this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
-            }
-
-            hideBtn.Image = Properties.Resources.hideBtn;
-
-            if (isClicked)
-                Hidden = false;
-            else
-                Hidden = true;
-        }
-        public bool Hidden { get; set; }
-
-        public bool ManyScreenReversed { get; set; }
-
-        public Size OriginalSize { get; set; }
-
+        public bool MultipleScreenReversed { get; protected set; }
     }
 
     internal class SmallView : Small.IView, IView<frmSmall>
@@ -130,7 +69,8 @@ namespace RedmineLog
         public void Init(frmSmall inView)
         {
             Form = inView;
-
+            OriginalSize = Form.Size;
+            Form.MouseLeave += OnFormMouseLeave;
             Form.Click += OnFormClick;
             Form.lbProject.Click += OnFormClick;
             Form.lbParentIssue.Click += OnFormClick;
@@ -140,7 +80,13 @@ namespace RedmineLog
             Form.lbComment.Click += OnFormClick;
             Form.flowLayoutPanel1.Click += OnFormClick;
             Form.lbIssue.Click += OnIssueClick;
+
+            Form.hideBtn.Click += OnButtonClick;
+            Form.hideBtn.MouseMove += OnButtonMouseMove;
+            
             Load();
+            
+            
 
         }
         public void Load()
@@ -149,6 +95,7 @@ namespace RedmineLog
               () =>
               {
                   LoadEvent.Fire(this);
+                  HideForm();
               });
         }
         void OnWorkTimeChange()
@@ -214,10 +161,67 @@ namespace RedmineLog
 
         private void OnFormClick(object sender, EventArgs e)
         {
-            if (!Form.Hidden)
+            if (!Hidden)
                 Form.Close();
             else
-                Form.ResetForm(true);
+                ResetForm(true);
         }
+
+        private void OnButtonClick(object sender, EventArgs e)
+        {
+            if (Hidden)
+                ResetForm(true);
+            else
+                HideForm();
+        }
+
+        private void OnButtonMouseMove(object sender, EventArgs e)
+        {
+            if (Hidden)
+                ResetForm(false);
+
+        }
+        private void OnFormMouseLeave(object sender, System.EventArgs e)
+        {
+            if (Hidden)
+                HideForm();
+        }
+
+        private void HideForm()
+        {
+            Form.Size = new Size(Form.hideBtn.Width, Form.hideBtn.Height);
+
+            if (Form.MultipleScreenReversed)
+                Form.Location = new Point(0 - Form.hideBtn.Width, SystemInformation.VirtualScreen.Height - OriginalSize.Height - 150);
+            else
+                Form.Location = new Point(SystemInformation.VirtualScreen.Width - Form.hideBtn.Width, SystemInformation.VirtualScreen.Height - OriginalSize.Height - 150);
+
+            Form.hideBtn.Image = Properties.Resources.resetBtn;
+            Hidden = true;
+        }
+
+        private void ResetForm(bool isClicked)
+        {
+            Form.Size = new Size(OriginalSize.Width, OriginalSize.Height);
+
+            if (Form.MultipleScreenReversed)
+            {
+                if (SystemInformation.VirtualScreen.Location.X < 0)
+                    Form.Location = new Point(0 - Form.Width, SystemInformation.VirtualScreen.Height - Form.Height - 150);
+                else
+                    Form.Location = new Point(SystemInformation.VirtualScreen.Width - Form.Width, SystemInformation.VirtualScreen.Height - Form.Height - 150);
+            }
+
+            Form.hideBtn.Image = Properties.Resources.hideBtn;
+
+            if (isClicked)
+                Hidden = false;
+            else
+                Hidden = true;
+        }
+        public bool Hidden { get; set; }
+
+        public Size OriginalSize { get; set; }
+
     }
 }
