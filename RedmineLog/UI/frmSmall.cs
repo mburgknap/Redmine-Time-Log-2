@@ -83,11 +83,8 @@ namespace RedmineLog
 
             Form.hideBtn.Click += OnButtonClick;
             Form.hideBtn.MouseMove += OnButtonMouseMove;
-            
-            Load();
-            
-            
 
+            Load();
         }
         public void Load()
         {
@@ -205,12 +202,10 @@ namespace RedmineLog
             Form.Size = new Size(OriginalSize.Width, OriginalSize.Height);
 
             if (Form.MultipleScreenReversed)
-            {
-                if (SystemInformation.VirtualScreen.Location.X < 0)
-                    Form.Location = new Point(0 - Form.Width, SystemInformation.VirtualScreen.Height - Form.Height - 150);
-                else
-                    Form.Location = new Point(SystemInformation.VirtualScreen.Width - Form.Width, SystemInformation.VirtualScreen.Height - Form.Height - 150);
-            }
+                Form.Location = new Point(0 - Form.Width, SystemInformation.VirtualScreen.Height - Form.Height - 150);
+            else
+                Form.Location = new Point(SystemInformation.VirtualScreen.Width - Form.Width, SystemInformation.VirtualScreen.Height - Form.Height - 150);
+
 
             Form.hideBtn.Image = Properties.Resources.hideBtn;
 
