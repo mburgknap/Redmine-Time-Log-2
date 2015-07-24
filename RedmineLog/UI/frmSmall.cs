@@ -14,19 +14,86 @@ namespace RedmineLog
 {
     public partial class frmSmall : Form
     {
+
         public frmSmall()
         {
             InitializeComponent();
+            ManyScreenReversed = false;
+            OriginalSize = this.Size;
             this.Initialize<Small.IView, frmSmall>();
         }
 
         private void OnFormLoad(object sender, EventArgs e)
         {
             if (SystemInformation.VirtualScreen.Location.X < 0)
+            {
                 this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+                ManyScreenReversed = true;
+            }
             else
                 this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+
+            HideForm();
         }
+
+        private void hideBtn_Click(object sender, EventArgs e)
+        {
+            if (Hidden)
+                ResetForm(true);
+            else
+                HideForm();
+        }
+
+        private void hideBtn_MouseMove(object sender, EventArgs e)
+        {
+            if (Hidden)
+                ResetForm(false);
+
+        }
+        private void frmSmall_MouseLeave(object sender, System.EventArgs e)
+        {
+            if (Hidden)
+                HideForm();
+        }
+
+        private void HideForm()
+        {
+            this.Size = new Size(hideBtn.Width, hideBtn.Height);
+
+            if (ManyScreenReversed)
+                this.Location = new Point(0 - hideBtn.Width, SystemInformation.VirtualScreen.Height - OriginalSize.Height - 150);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - hideBtn.Width, SystemInformation.VirtualScreen.Height - OriginalSize.Height - 150);
+
+            hideBtn.Image = Properties.Resources.resetBtn;
+            Hidden = true;
+        }
+
+        public void ResetForm(bool isClicked)
+        {
+            this.Size = new Size(OriginalSize.Width, OriginalSize.Height);
+
+            if (ManyScreenReversed)
+            {
+                if (SystemInformation.VirtualScreen.Location.X < 0)
+                    this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+                else
+                    this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            }
+
+            hideBtn.Image = Properties.Resources.hideBtn;
+
+            if (isClicked)
+                Hidden = false;
+            else
+                Hidden = true;
+        }
+        public bool Hidden { get; set; }
+
+        public bool ManyScreenReversed { get; set; }
+
+        public Size OriginalSize { get; set; }
+
     }
 
     internal class SmallView : Small.IView, IView<frmSmall>
@@ -147,7 +214,10 @@ namespace RedmineLog
 
         private void OnFormClick(object sender, EventArgs e)
         {
-            Form.Close();
+            if (!Form.Hidden)
+                Form.Close();
+            else
+                Form.ResetForm(true);
         }
     }
 }

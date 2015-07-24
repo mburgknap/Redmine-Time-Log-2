@@ -35,11 +35,13 @@
             this.lbParentIssue = new System.Windows.Forms.Label();
             this.lbIssue = new System.Windows.Forms.LinkLabel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lbComment = new System.Windows.Forms.Label();
             this.lbProject = new System.Windows.Forms.Label();
             this.lblTracker = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.lbComment = new System.Windows.Forms.Label();
+            this.hideBtn = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.hideBtn)).BeginInit();
             this.SuspendLayout();
             // 
             // lbWorkTime
@@ -47,7 +49,7 @@
             this.lbWorkTime.AutoSize = true;
             this.lbWorkTime.Font = new System.Drawing.Font("Segoe UI", 11.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbWorkTime.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbWorkTime.Location = new System.Drawing.Point(5, 94);
+            this.lbWorkTime.Location = new System.Drawing.Point(17, 94);
             this.lbWorkTime.Name = "lbWorkTime";
             this.lbWorkTime.Size = new System.Drawing.Size(72, 21);
             this.lbWorkTime.TabIndex = 0;
@@ -58,7 +60,7 @@
             this.lbIdleTime.AutoSize = true;
             this.lbIdleTime.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbIdleTime.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lbIdleTime.Location = new System.Drawing.Point(78, 106);
+            this.lbIdleTime.Location = new System.Drawing.Point(90, 100);
             this.lbIdleTime.Name = "lbIdleTime";
             this.lbIdleTime.Size = new System.Drawing.Size(55, 15);
             this.lbIdleTime.TabIndex = 1;
@@ -93,12 +95,23 @@
             this.flowLayoutPanel1.Controls.Add(this.lblTracker);
             this.flowLayoutPanel1.Controls.Add(this.lbIssue);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 2);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(15, 2);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3, 3, 0, 0);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(130, 92);
             this.flowLayoutPanel1.TabIndex = 4;
+            // 
+            // lbComment
+            // 
+            this.lbComment.AutoSize = true;
+            this.lbComment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbComment.Location = new System.Drawing.Point(3, 3);
+            this.lbComment.Margin = new System.Windows.Forms.Padding(0);
+            this.lbComment.Name = "lbComment";
+            this.lbComment.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.lbComment.Size = new System.Drawing.Size(5, 13);
+            this.lbComment.TabIndex = 6;
             // 
             // lbProject
             // 
@@ -121,25 +134,27 @@
             this.lblTracker.Size = new System.Drawing.Size(5, 13);
             this.lblTracker.TabIndex = 5;
             // 
-            // lbComment
+            // hideBtn
             // 
-            this.lbComment.AutoSize = true;
-            this.lbComment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbComment.Location = new System.Drawing.Point(3, 3);
-            this.lbComment.Margin = new System.Windows.Forms.Padding(0);
-            this.lbComment.Name = "lbComment";
-            this.lbComment.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.lbComment.Size = new System.Drawing.Size(5, 13);
-            this.lbComment.TabIndex = 6;
+            this.hideBtn.Image = global::RedmineLog.Properties.Resources.hideBtn;
+            this.hideBtn.Location = new System.Drawing.Point(0, 5);
+            this.hideBtn.Name = "hideBtn";
+            this.hideBtn.Size = new System.Drawing.Size(16, 113);
+            this.hideBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.hideBtn.TabIndex = 5;
+            this.hideBtn.TabStop = false;
+            this.hideBtn.Click += new System.EventHandler(this.hideBtn_Click);
+            this.hideBtn.MouseMove += hideBtn_MouseMove;
             // 
             // frmSmall
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(136, 124);
+            this.ClientSize = new System.Drawing.Size(154, 124);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.lbIdleTime);
             this.Controls.Add(this.lbWorkTime);
+            this.Controls.Add(this.hideBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -152,8 +167,10 @@
             this.Load += new System.EventHandler(this.OnFormLoad);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.hideBtn)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.MouseLeave += frmSmall_MouseLeave;
 
         }
 
@@ -168,5 +185,6 @@
         internal System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         internal System.Windows.Forms.ToolTip toolTip1;
         internal System.Windows.Forms.Label lbComment;
+        private System.Windows.Forms.PictureBox hideBtn;
     }
 }
