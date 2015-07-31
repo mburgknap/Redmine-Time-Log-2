@@ -175,8 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RedmineTimeLog.ico" />
-    <None Include="Resources\resetBtn.png" />
-    <None Include="Resources\hideBtn.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RedmineLog.Common\Shell.Common.csproj">
