@@ -42,6 +42,7 @@ namespace RedmineLog.Common
         public interface IModel
         {
             IModelSync Sync { get; }
+            bool Resolve { get; set; }
             TimeSpan WorkTime { get; set; }
             TimeSpan IdleTime { get; set; }
             WorkActivityList WorkActivities { get; }

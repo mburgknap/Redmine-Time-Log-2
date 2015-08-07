@@ -198,18 +198,18 @@ namespace RedmineLog.Logic
             { logger.Error("UpdateLog", ex); }
         }
 
-        public void Resolve(WorkingIssue issueData)
+        public void Resolve(WorkingIssue workingIssue)
         {
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
-                var issue = manager.GetObject<Issue>(issueData.Data.Id.ToString(), null);
+                var issue = manager.GetObject<Issue>(workingIssue.Data.Id.ToString(), null);
 
                 issue.Status = new IdentifiableName() { Id = 3 };
                 issue.DoneRatio = 100;
 
-                manager.UpdateObject<Issue>(issueData.Data.Id.ToString(), issue);
+                manager.UpdateObject<Issue>(workingIssue.Data.Id.ToString(), issue);
             }
             catch (Exception ex)
             { logger.Error("Resolve IssueData", ex); }
@@ -230,6 +230,22 @@ namespace RedmineLog.Logic
             }
             catch (Exception ex)
             { logger.Error("Resolve BugLogItem", ex); }
+        }
+        public void Resolve(IssueData issueData)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(issueData.Id.ToString(), null);
+
+                issue.Status = new IdentifiableName() { Id = 3 };
+                issue.DoneRatio = 100;
+
+                manager.UpdateObject<Issue>(issueData.Id.ToString(), issue);
+            }
+            catch (Exception ex)
+            { logger.Error("Resolve IssueData", ex); }
         }
 
 

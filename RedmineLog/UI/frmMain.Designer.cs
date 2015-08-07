@@ -46,12 +46,11 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
-            this.btnBugs = new System.Windows.Forms.Button();
-            this.btnWorkTime = new System.Windows.Forms.Button();
+            this.cbResolveIssue = new System.Windows.Forms.CheckBox();
+            this.btnIssueMode = new System.Windows.Forms.Button();
             this.btnSubmitAll = new System.Windows.Forms.Button();
             this.btnComments = new System.Windows.Forms.Button();
             this.tbIssue = new System.Windows.Forms.TextBox();
-            this.btnIssues = new System.Windows.Forms.Button();
             this.pComments = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnRemoveComment = new System.Windows.Forms.Button();
@@ -59,10 +58,15 @@
             this.btnResetIdle = new System.Windows.Forms.Button();
             this.cmComments = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lHide = new System.Windows.Forms.Label();
+            this.cmIssuesKind = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmMyBugs = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmMyIssues = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmMyWork = new System.Windows.Forms.ToolStripMenuItem();
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.cmIssuesKind.SuspendLayout();
             this.SuspendLayout();
             // 
             // lnkExit
@@ -95,7 +99,7 @@
             this.lnkIssues.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkIssues.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkIssues.ForeColor = System.Drawing.Color.Blue;
-            this.lnkIssues.Location = new System.Drawing.Point(132, 116);
+            this.lnkIssues.Location = new System.Drawing.Point(138, 435);
             this.lnkIssues.Name = "lnkIssues";
             this.lnkIssues.Size = new System.Drawing.Size(103, 17);
             this.lnkIssues.TabIndex = 24;
@@ -104,7 +108,7 @@
             // btnSubmit
             // 
             this.btnSubmit.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSubmit.Location = new System.Drawing.Point(133, 288);
+            this.btnSubmit.Location = new System.Drawing.Point(141, 229);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(61, 32);
             this.btnSubmit.TabIndex = 22;
@@ -119,7 +123,7 @@
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
             this.tbComment.ReadOnly = true;
-            this.tbComment.Size = new System.Drawing.Size(177, 114);
+            this.tbComment.Size = new System.Drawing.Size(183, 92);
             this.tbComment.TabIndex = 21;
             // 
             // lblClockActive
@@ -137,11 +141,11 @@
             // 
             this.cbActivity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbActivity.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbActivity.FormattingEnabled = true;
-            this.cbActivity.Location = new System.Drawing.Point(32, 72);
+            this.cbActivity.Location = new System.Drawing.Point(111, 72);
             this.cbActivity.Name = "cbActivity";
-            this.cbActivity.Size = new System.Drawing.Size(203, 28);
+            this.cbActivity.Size = new System.Drawing.Size(124, 25);
             this.cbActivity.TabIndex = 17;
             // 
             // lblParentIssue
@@ -174,9 +178,9 @@
             this.issueInfoPanel.Controls.Add(this.lblTracker);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.issueInfoPanel.Location = new System.Drawing.Point(28, 330);
+            this.issueInfoPanel.Location = new System.Drawing.Point(26, 267);
             this.issueInfoPanel.Name = "issueInfoPanel";
-            this.issueInfoPanel.Size = new System.Drawing.Size(200, 131);
+            this.issueInfoPanel.Size = new System.Drawing.Size(209, 153);
             this.issueInfoPanel.TabIndex = 35;
             // 
             // lblProject
@@ -209,7 +213,7 @@
             this.btnRemoveItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnRemoveItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveItem.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveItem.Location = new System.Drawing.Point(104, 288);
+            this.btnRemoveItem.Location = new System.Drawing.Point(111, 229);
             this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(125, 0, 0, 0);
             this.btnRemoveItem.Name = "btnRemoveItem";
             this.btnRemoveItem.Size = new System.Drawing.Size(27, 32);
@@ -232,7 +236,7 @@
             this.lblClockIndle.BackColor = System.Drawing.Color.Transparent;
             this.lblClockIndle.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblClockIndle.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lblClockIndle.Location = new System.Drawing.Point(109, 47);
+            this.lblClockIndle.Location = new System.Drawing.Point(107, 47);
             this.lblClockIndle.Name = "lblClockIndle";
             this.lblClockIndle.Size = new System.Drawing.Size(65, 19);
             this.lblClockIndle.TabIndex = 38;
@@ -241,12 +245,11 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
-            this.pManage.Controls.Add(this.btnBugs);
-            this.pManage.Controls.Add(this.btnWorkTime);
+            this.pManage.Controls.Add(this.cbResolveIssue);
+            this.pManage.Controls.Add(this.btnIssueMode);
             this.pManage.Controls.Add(this.btnSubmitAll);
             this.pManage.Controls.Add(this.btnComments);
             this.pManage.Controls.Add(this.tbIssue);
-            this.pManage.Controls.Add(this.btnIssues);
             this.pManage.Controls.Add(this.pComments);
             this.pManage.Controls.Add(this.btnResetIdle);
             this.pManage.Controls.Add(this.lblClockIndle);
@@ -261,29 +264,31 @@
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
             // 
-            // btnBugs
+            // cbResolveIssue
             // 
-            this.btnBugs.Location = new System.Drawing.Point(28, 262);
-            this.btnBugs.Name = "btnBugs";
-            this.btnBugs.Size = new System.Drawing.Size(65, 23);
-            this.btnBugs.TabIndex = 47;
-            this.btnBugs.TabStop = false;
-            this.btnBugs.Text = "Bugs";
-            this.btnBugs.UseVisualStyleBackColor = true;
+            this.cbResolveIssue.AutoSize = true;
+            this.cbResolveIssue.Location = new System.Drawing.Point(141, 205);
+            this.cbResolveIssue.Name = "cbResolveIssue";
+            this.cbResolveIssue.Size = new System.Drawing.Size(92, 17);
+            this.cbResolveIssue.TabIndex = 48;
+            this.cbResolveIssue.Text = "Resolve issue";
+            this.cbResolveIssue.UseVisualStyleBackColor = true;
             // 
-            // btnWorkTime
+            // btnIssueMode
             // 
-            this.btnWorkTime.Location = new System.Drawing.Point(165, 262);
-            this.btnWorkTime.Name = "btnWorkTime";
-            this.btnWorkTime.Size = new System.Drawing.Size(65, 23);
-            this.btnWorkTime.TabIndex = 46;
-            this.btnWorkTime.Text = "Working";
-            this.btnWorkTime.UseVisualStyleBackColor = true;
+            this.btnIssueMode.Location = new System.Drawing.Point(26, 201);
+            this.btnIssueMode.Name = "btnIssueMode";
+            this.btnIssueMode.Size = new System.Drawing.Size(79, 23);
+            this.btnIssueMode.TabIndex = 47;
+            this.btnIssueMode.TabStop = false;
+            this.btnIssueMode.Text = "Issues";
+            this.btnIssueMode.UseVisualStyleBackColor = true;
+            this.btnIssueMode.Click += new System.EventHandler(this.btnBugs_Click);
             // 
             // btnSubmitAll
             // 
             this.btnSubmitAll.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSubmitAll.Location = new System.Drawing.Point(196, 288);
+            this.btnSubmitAll.Location = new System.Drawing.Point(203, 229);
             this.btnSubmitAll.Name = "btnSubmitAll";
             this.btnSubmitAll.Size = new System.Drawing.Size(32, 32);
             this.btnSubmitAll.TabIndex = 45;
@@ -292,9 +297,9 @@
             // 
             // btnComments
             // 
-            this.btnComments.Location = new System.Drawing.Point(30, 113);
+            this.btnComments.Location = new System.Drawing.Point(26, 72);
             this.btnComments.Name = "btnComments";
-            this.btnComments.Size = new System.Drawing.Size(75, 22);
+            this.btnComments.Size = new System.Drawing.Size(75, 25);
             this.btnComments.TabIndex = 44;
             this.btnComments.Text = "Comments";
             this.btnComments.UseVisualStyleBackColor = true;
@@ -302,28 +307,19 @@
             // tbIssue
             // 
             this.tbIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbIssue.Location = new System.Drawing.Point(28, 288);
+            this.tbIssue.Location = new System.Drawing.Point(26, 229);
             this.tbIssue.Name = "tbIssue";
-            this.tbIssue.Size = new System.Drawing.Size(72, 32);
+            this.tbIssue.Size = new System.Drawing.Size(79, 32);
             this.tbIssue.TabIndex = 43;
             this.tbIssue.WordWrap = false;
-            // 
-            // btnIssues
-            // 
-            this.btnIssues.Location = new System.Drawing.Point(97, 262);
-            this.btnIssues.Name = "btnIssues";
-            this.btnIssues.Size = new System.Drawing.Size(65, 23);
-            this.btnIssues.TabIndex = 42;
-            this.btnIssues.Text = "Issues";
-            this.btnIssues.UseVisualStyleBackColor = true;
             // 
             // pComments
             // 
             this.pComments.Controls.Add(this.panel1);
             this.pComments.Controls.Add(this.tbComment);
-            this.pComments.Location = new System.Drawing.Point(28, 141);
+            this.pComments.Location = new System.Drawing.Point(26, 103);
             this.pComments.Name = "pComments";
-            this.pComments.Size = new System.Drawing.Size(202, 114);
+            this.pComments.Size = new System.Drawing.Size(209, 92);
             this.pComments.TabIndex = 40;
             // 
             // panel1
@@ -331,9 +327,9 @@
             this.panel1.Controls.Add(this.btnRemoveComment);
             this.panel1.Controls.Add(this.btnNewComment);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(177, 0);
+            this.panel1.Location = new System.Drawing.Point(184, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(25, 114);
+            this.panel1.Size = new System.Drawing.Size(25, 92);
             this.panel1.TabIndex = 22;
             // 
             // btnRemoveComment
@@ -341,7 +337,7 @@
             this.btnRemoveComment.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnRemoveComment.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveComment.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveComment.Location = new System.Drawing.Point(0, 79);
+            this.btnRemoveComment.Location = new System.Drawing.Point(0, 57);
             this.btnRemoveComment.Name = "btnRemoveComment";
             this.btnRemoveComment.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
             this.btnRemoveComment.Size = new System.Drawing.Size(25, 35);
@@ -389,6 +385,33 @@
             this.lHide.TabIndex = 40;
             this.lHide.Text = "Hide";
             // 
+            // cmIssuesKind
+            // 
+            this.cmIssuesKind.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmMyBugs,
+            this.tsmMyIssues,
+            this.tsmMyWork});
+            this.cmIssuesKind.Name = "cmIssuesKind";
+            this.cmIssuesKind.Size = new System.Drawing.Size(126, 70);
+            // 
+            // tsmMyBugs
+            // 
+            this.tsmMyBugs.Name = "tsmMyBugs";
+            this.tsmMyBugs.Size = new System.Drawing.Size(125, 22);
+            this.tsmMyBugs.Text = "My bugs";
+            // 
+            // tsmMyIssues
+            // 
+            this.tsmMyIssues.Name = "tsmMyIssues";
+            this.tsmMyIssues.Size = new System.Drawing.Size(125, 22);
+            this.tsmMyIssues.Text = "My issues";
+            // 
+            // tsmMyWork
+            // 
+            this.tsmMyWork.Name = "tsmMyWork";
+            this.tsmMyWork.Size = new System.Drawing.Size(125, 22);
+            this.tsmMyWork.Text = "My work";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -414,6 +437,7 @@
             this.pComments.ResumeLayout(false);
             this.pComments.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.cmIssuesKind.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -444,11 +468,14 @@
         internal System.Windows.Forms.ContextMenuStrip cmComments;
         internal System.Windows.Forms.Button btnRemoveComment;
         internal System.Windows.Forms.Button btnNewComment;
-        internal System.Windows.Forms.Button btnIssues;
         internal System.Windows.Forms.Label lblClockIndle;
-        internal System.Windows.Forms.Button btnWorkTime;
         internal System.Windows.Forms.Panel pManage;
         protected internal System.Windows.Forms.Label lblTracker;
-        internal System.Windows.Forms.Button btnBugs;
+        private System.Windows.Forms.ContextMenuStrip cmIssuesKind;
+        internal System.Windows.Forms.ToolStripMenuItem tsmMyBugs;
+        internal System.Windows.Forms.ToolStripMenuItem tsmMyIssues;
+        internal System.Windows.Forms.ToolStripMenuItem tsmMyWork;
+        private System.Windows.Forms.Button btnIssueMode;
+        internal System.Windows.Forms.CheckBox cbResolveIssue;
     }
 }

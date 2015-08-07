@@ -27,8 +27,14 @@ namespace RedmineLog
             if (SystemInformation.VirtualScreen.Location.X < 0)
                 this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
             else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);          
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
+
+        private void btnBugs_Click(object sender, EventArgs e)
+        {
+            cmIssuesKind.Show(btnIssueMode, new Point(0, 0));
+        }
+
     }
 
     internal class MainView : Main.IView, IView<frmMain>
@@ -100,7 +106,7 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
-            Form.btnBugs.Click += SearchBugClick;
+            Form.tsmMyBugs.Click += SearchBugClick;
             Form.tbIssue.KeyDown += SaveIssue;
             Form.btnRemoveItem.Click += DelIssue;
             Form.btnComments.Click += LoadComment;
@@ -108,7 +114,7 @@ namespace RedmineLog
             Form.btnRemoveComment.Click += DelComment;
             Form.tbComment.KeyDown += SaveComment;
             Form.cmComments.ItemClicked += SelectComment;
-            Form.btnIssues.Click += OnSearchIssueClick;
+            Form.tsmMyIssues.Click += OnSearchIssueClick;
             Form.btnSubmit.Click += OnSubmitClick;
             Form.btnSubmitAll.Click += OnSubmitAllClick;
             Form.btnResetIdle.Click += OnResetClockClick;
@@ -117,17 +123,23 @@ namespace RedmineLog
             Form.lblClockActive.Click += OnWorkMode;
             Form.lblClockIndle.Click += OnIdleMode;
             Form.cbActivity.SelectedIndexChanged += OnActivityTypeChange;
+            Form.cbResolveIssue.CheckedChanged += OnResolveIssueChange;
             Form.lnkSettings.Click += OnSettingClick;
             Form.lnkIssues.Click += OnRedmineIssuesLink;
             Form.lblIssue.Click += OnRedmineIssueLink;
             Form.tbComment.Click += OnCommentClick;
-            Form.btnWorkTime.Click += OnWorkLogClick;
+            Form.tsmMyWork.Click += OnWorkLogClick;
             Form.btnRemoveItem.Visible = false;
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
             Form.Resize += OnResize;
             AppTimers.Start();
             Load();
+        }
+
+        private void OnResolveIssueChange(object sender, EventArgs e)
+        {
+            model.Resolve = Form.cbResolveIssue.Checked;
         }
 
         private void OnResize(object sender, EventArgs e)
@@ -487,6 +499,16 @@ namespace RedmineLog
                     ui.Text = data.ToString();
                 });
         }
+
+        private void OnResolveChange()
+        {
+            Form.cbResolveIssue.Set(model.Resolve,
+                (ui, data) =>
+                {
+                    ui.Checked = data;
+                });
+        }
+
         private void SaveComment(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.S)

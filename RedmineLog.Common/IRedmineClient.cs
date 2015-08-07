@@ -19,7 +19,9 @@ namespace RedmineLog.Common
 
         Uri IssueUrl(IssueData issueData);
 
-        void Resolve(WorkingIssue issueData);
+        void Resolve(IssueData issueData);
+
+        void Resolve(WorkingIssue workingIssue);
 
         void Resolve(BugLogItem bugLogItem);
 
