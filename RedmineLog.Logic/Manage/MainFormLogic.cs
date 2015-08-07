@@ -176,6 +176,25 @@ namespace RedmineLog.Logic
             LoadIssue(arg.Data.Data);
         }
 
+        [EventSubscription(IssueLog.Events.Delete, typeof(OnPublisher))]
+        public void OnDeleteEvent(object sender, Args<WorkingIssue> arg)
+        {
+            if (arg.Data.Data.Id > 0)
+            {
+                if (model.Issue.Id == arg.Data.Data.Id)
+                    LoadIssue(dbIssue.Get(0));
+
+                dbIssue.Delete(arg.Data.Data);
+            }
+        }
+
+        [EventSubscription(IssueLog.Events.Resolve, typeof(OnPublisher))]
+        public void OnResolveEvent(object sender, Args<WorkingIssue> arg)
+        {
+
+        }
+
+
         [EventSubscription(WorkLog.Events.Select, typeof(OnPublisher))]
         public void OnSelectEvent(object sender, Args<WorkLogItem> arg)
         {
