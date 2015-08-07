@@ -191,7 +191,23 @@ namespace RedmineLog.Logic
         [EventSubscription(IssueLog.Events.Resolve, typeof(OnPublisher))]
         public void OnResolveEvent(object sender, Args<WorkingIssue> arg)
         {
+            redmine.Resolve(arg.Data);
 
+            if (model.Issue.Id == arg.Data.Data.Id)
+                LoadIssue(dbIssue.Get(0));
+
+            dbIssue.Delete(arg.Data.Data);
+        }
+
+        [EventSubscription(BugLog.Events.Resolve, typeof(OnPublisher))]
+        public void OnResolveEvent(object sender, Args<BugLogItem> arg)
+        {
+            redmine.Resolve(arg.Data);
+
+            if (model.Issue.Id == arg.Data.Id)
+                LoadIssue(dbIssue.Get(0));
+
+            dbIssue.Delete(arg.Data);
         }
 
 

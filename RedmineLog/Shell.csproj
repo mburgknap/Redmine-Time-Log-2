@@ -129,17 +129,29 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Items\IssueLogGroupItem.cs">
+    <Compile Include="UI\Items\BugLogGroupItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Items\IssueLogGroupItem.Designer.cs">
-      <DependentUpon>IssueLogGroupItem.cs</DependentUpon>
+    <Compile Include="UI\Items\BugLogGroupItemView.Designer.cs">
+      <DependentUpon>BugLogGroupItemView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Items\IssueLogItem.cs">
+    <Compile Include="UI\Items\IssueLogGroupItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Items\IssueLogItem.Designer.cs">
-      <DependentUpon>IssueLogItem.cs</DependentUpon>
+    <Compile Include="UI\Items\IssueLogGroupItemView.Designer.cs">
+      <DependentUpon>IssueLogGroupItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Items\BugLogItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Items\BugLogItemView.Designer.cs">
+      <DependentUpon>BugLogItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Items\IssueLogItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Items\IssueLogItemView.Designer.cs">
+      <DependentUpon>IssueLogItemView.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="UI\frmBugLog.resx">
       <DependentUpon>frmBugLog.cs</DependentUpon>
@@ -175,11 +187,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UI\Items\IssueLogGroupItem.resx">
-      <DependentUpon>IssueLogGroupItem.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Items\BugLogGroupItemView.resx">
+      <DependentUpon>BugLogGroupItemView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Items\IssueLogItem.resx">
-      <DependentUpon>IssueLogItem.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Items\IssueLogGroupItemView.resx">
+      <DependentUpon>IssueLogGroupItemView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Items\BugLogItemView.resx">
+      <DependentUpon>BugLogItemView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Items\IssueLogItemView.resx">
+      <DependentUpon>IssueLogItemView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -10,16 +10,16 @@ using System.Windows.Forms;
 
 namespace RedmineLog.UI.Items
 {
-    public partial class IssueLogGroupItem : UserControl
+    public partial class BugLogGroupItemView : UserControl
     {
-        public IssueLogGroupItem()
+        public BugLogGroupItemView()
         {
             InitializeComponent();
         }
 
         internal Control Set(string project)
         {
-            label1.Text = !string.IsNullOrWhiteSpace(project) ? project : " Global issue ";
+            label1.Text = !string.IsNullOrWhiteSpace(project) ? project : " Global bug ";
             return this;
         }
     }

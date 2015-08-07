@@ -57,10 +57,14 @@ namespace RedmineLog.Logic
             database.Set<IssuesTable, int, DbCustomSerializer<IssueData>>(issueData.Id, issueData);
         }
 
-
         public void Delete(IssueData issueData)
         {
             database.Delete<IssuesTable, int>(issueData.Id);
+        }
+
+        public void Delete(BugLogItem bugData)
+        {
+            database.Delete<IssuesTable, int>(bugData.Id);
         }
 
 

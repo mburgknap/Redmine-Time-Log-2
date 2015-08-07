@@ -19,6 +19,10 @@ namespace RedmineLog.Common
 
         Uri IssueUrl(IssueData issueData);
 
+        void Resolve(WorkingIssue issueData);
+
+        void Resolve(BugLogItem bugLogItem);
+
         IEnumerable<WorkLogItem> GetWorkLogs(int idUser, DateTime workData);
 
         void UpdateLog(WorkLogItem workLogItem);

@@ -13,10 +13,7 @@ using RedmineLog.Properties;
 
 namespace RedmineLog.UI.Items
 {
-
-
-
-    public partial class IssueLogItem : UserControl, ICustomItem, ISpecialAction
+    public partial class BugLogItemView : UserControl, ICustomItem, ISpecialAction
     {
 
         class ExContextMenu : ContextMenuStrip
@@ -27,7 +24,6 @@ namespace RedmineLog.UI.Items
             {
                 Items.Add(new ToolStripMenuItem("Select", Resources.Goto.ToBitmap(), (s, e) => { data("Select", item); }));
                 Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve.ToBitmap(), (s, e) => { data("Resolve", item); }));
-                Items.Add(new ToolStripMenuItem("Delete", Resources.Delete.ToBitmap(), (s, e) => { data("Delete", item); }));
             }
 
             public void Set(ICustomItem inItem, Action<string, object> inData)
@@ -39,7 +35,7 @@ namespace RedmineLog.UI.Items
 
         static ExContextMenu menu = new ExContextMenu();
 
-        public IssueLogItem()
+        public BugLogItemView()
         {
             InitializeComponent();
         }
@@ -48,9 +44,7 @@ namespace RedmineLog.UI.Items
         {
             lblIdIssue.Text = "#ID";
             lblIssue.Text = "Issue Subject";
-            lblParentIssue.Text = "Main Subject";
-            lblTime.Text = "Time";
-            lblActivityType.Text = "Activity type";
+            lblPriority.Text = "Priority";
         }
 
         private void lblIssue_DragEnter(object sender, DragEventArgs e)
@@ -63,15 +57,13 @@ namespace RedmineLog.UI.Items
             this.BackColor = Color.Wheat;
         }
 
-        internal Control Set(WorkingIssue issue)
+        internal Control Set(BugLogItem bug)
         {
-            Data = issue;
+            Data = bug;
 
-            lblIdIssue.Text = issue.Issue.Id > 0 ? issue.Issue.Id.ToString() : "";
-            lblIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : " Blank issue ";
-            lblParentIssue.Text = issue.Parent != null ? issue.Parent.Subject : "None";
-            lblTime.Text = issue.Data.GetWorkTime(new TimeSpan(0)).ToString();
-            lblActivityType.Text = issue.Issue.Tracker;
+            lblIdIssue.Text = bug.Id > 0 ? bug.Id.ToString() : "";
+            lblIssue.Text = !string.IsNullOrWhiteSpace(bug.Subject) ? bug.Subject : " Blank issue ";
+            lblPriority.Text = bug.Priority;
 
             return this;
         }
@@ -81,7 +73,8 @@ namespace RedmineLog.UI.Items
         public void Show(Action<string, object> inData)
         {
             menu.Set(this, inData);
-            menu.Show(lblParentIssue, new Point(0, 0));
+            menu.Show(lblIssue, new Point(0, 0));
         }
+
     }
 }

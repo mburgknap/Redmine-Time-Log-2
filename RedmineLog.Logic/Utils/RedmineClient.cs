@@ -198,6 +198,40 @@ namespace RedmineLog.Logic
             { logger.Error("UpdateLog", ex); }
         }
 
+        public void Resolve(WorkingIssue issueData)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(issueData.Data.Id.ToString(), null);
+
+                issue.Status = new IdentifiableName() { Id = 3 };
+                issue.DoneRatio = 100;
+
+                manager.UpdateObject<Issue>(issueData.Data.Id.ToString(), issue);
+            }
+            catch (Exception ex)
+            { logger.Error("Resolve IssueData", ex); }
+        }
+
+        public void Resolve(BugLogItem bugLogItem)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(bugLogItem.Id.ToString(), null);
+
+                issue.Status = new IdentifiableName() { Id = 3 };
+                issue.DoneRatio = 100;
+
+                manager.UpdateObject<Issue>(bugLogItem.Id.ToString(), issue);
+            }
+            catch (Exception ex)
+            { logger.Error("Resolve BugLogItem", ex); }
+        }
+
 
         public IEnumerable<BugLogItem> GetUserBugs(int idUser)
         {
@@ -206,55 +240,22 @@ namespace RedmineLog.Logic
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
-                var parameters = new NameValueCollection { };
+                foreach (var priority in new int[] { 5, 4, 3, 2, 1 })
+                {
+                    foreach (var status in new int[] { 2, 1 })
+                    {
+                        var parameters = new NameValueCollection { };
 
-                var header = new BugLogItem();
-                result.Add(header);
+                        parameters.Add("assigned_to_id", idUser.ToString());
+                        parameters.Add("tracker_id", "1");
+                        parameters.Add("priority_id", priority.ToString());
+                        parameters.Add("status_id", status.ToString());
 
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 5.ToString());
+                        result.AddRange(manager.GetObjectList<Issue>(parameters).Select(x => ToBugItem(x)));
+                    }
+                }
 
-                var responseList = manager.GetObjectList<Issue>(parameters);
 
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
-
-                header = new BugLogItem();
-                result.Add(header);
-                parameters = new NameValueCollection { };
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 4.ToString());
-
-                responseList = manager.GetObjectList<Issue>(parameters);
-
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
-
-                header = new BugLogItem();
-                result.Add(header);
-                parameters = new NameValueCollection { };
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 3.ToString());
-
-                responseList = manager.GetObjectList<Issue>(parameters);
-
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
-
-                header = new BugLogItem();
-                result.Add(header);
-                parameters = new NameValueCollection { };
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 2.ToString());
-
-                responseList = manager.GetObjectList<Issue>(parameters);
-
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
             }
             catch (Exception ex)
             { logger.Error("GetUserBugs", ex); }

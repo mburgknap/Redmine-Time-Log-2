@@ -14,6 +14,7 @@ namespace RedmineLog.UI.Common
         public ExFlowLayoutPanel()
         {
             InitializeComponent();
+            AutoScroll = true;
         }
 
         public ExFlowLayoutPanel(IContainer container)

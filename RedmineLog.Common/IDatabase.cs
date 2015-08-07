@@ -16,6 +16,9 @@ namespace RedmineLog.Common
 
         void Delete(IssueData issueData);
 
+        void Delete(BugLogItem bugData);
+
+
         IEnumerable<IssueData> GetList();
     }
     public interface IDbComment

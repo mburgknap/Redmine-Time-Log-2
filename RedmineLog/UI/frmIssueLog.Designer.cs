@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmIssueLog));
             this.fpLogItemList = new RedmineLog.UI.Common.ExFlowLayoutPanel();
-            this.cHeader = new RedmineLog.UI.Items.IssueLogItem();
+            this.cHeader = new RedmineLog.UI.Items.IssueLogItemView();
             this.SuspendLayout();
             // 
             // fpLogItemList
@@ -71,7 +71,7 @@
 
         #endregion
 
-        private UI.Items.IssueLogItem cHeader;
+        private UI.Items.IssueLogItemView cHeader;
         internal RedmineLog.UI.Common.ExFlowLayoutPanel fpLogItemList;
     }
 }

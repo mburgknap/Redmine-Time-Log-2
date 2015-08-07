@@ -1,6 +1,6 @@
 ﻿namespace RedmineLog.UI.Items
 {
-    partial class IssueLogGroupItem
+    partial class BugLogGroupItemView
     {
         /// <summary> 
         /// Required designer variable.

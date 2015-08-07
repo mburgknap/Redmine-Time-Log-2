@@ -20,7 +20,6 @@ namespace RedmineLog
             this.Initialize<IssueLog.IView, frmIssueLog>();
 
             cHeader.SetDescription();
-            fpLogItemList.AutoScroll = true;
         }
 
         private void OnSearchLoad(object sender, EventArgs e)
@@ -118,12 +117,12 @@ namespace RedmineLog
                                   group p by p.Issue.Project into g
                                   select new { Project = g.Key, Issues = g.ToList() }))
             {
-                list.Add(new IssueLogGroupItem().Set(item.Project));
+                list.Add(new IssueLogGroupItemView().Set(item.Project));
                 KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
 
                 foreach (var issue in item.Issues)
                 {
-                    list.Add(new IssueLogItem().Set(issue));
+                    list.Add(new IssueLogItemView().Set(issue));
                     KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
                     KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
                     KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
