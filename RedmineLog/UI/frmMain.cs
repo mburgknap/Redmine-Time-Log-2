@@ -5,13 +5,18 @@ using RedmineLog.Common;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
+    //https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1
     public partial class frmMain : Form
     {
         public frmMain()
@@ -20,6 +25,37 @@ namespace RedmineLog
             this.Initialize<Main.IView, frmMain>();
             CheckForIllegalCrossThreadCalls = false;
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
+
+            new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+
+                    var filename = "Version.cfg";
+
+                    using (var client = new WebClient())
+                    {
+                        File.Delete(filename);
+                        client.DownloadFile("https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1", filename);
+
+                        var version = File.ReadAllText(filename);
+
+                        if (!Assembly.GetExecutingAssembly().GetName().Version.Equals(new Version(version.Split(';')[0])))
+                        {
+                            if (MessageBox.Show("New version availible " + version.Split(';')[0]
+                                                + Environment.NewLine
+                                                + "Do you want download it ? ", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                System.Diagnostics.Process.Start(version.Split(';')[1]);
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            })).Start();
+
         }
 
         private void OnMainLoad(object sender, EventArgs e)
