@@ -63,7 +63,8 @@ namespace RedmineLog.Logic
 
             if (Int32.TryParse(arg.Data, out idIssue))
             {
-                ReloadIssueData(idIssue);
+                if (!ReloadIssueData(idIssue))
+                    LoadIssue(dbIssue.Get(0));
             }
             else
             {
@@ -225,6 +226,13 @@ namespace RedmineLog.Logic
                 SetupLastIssue(issue);
                 LoadIssue(issue);
             }
+        }
+
+        [EventSubscription(Main.Events.AddSubIssue, typeof(Subscribe<Main.IView>))]
+        public void OnAddSubIssueEvent(object sender, Args<RedmineIssueData> arg)
+        {
+            int newIssueId = redmine.AddSubIssue(arg.Data);
+            OnAddIssueEvent(view, new Args<string>(newIssueId.ToString()));
         }
 
         [EventSubscription(Main.Events.Submit, typeof(Subscribe<Main.IView>))]

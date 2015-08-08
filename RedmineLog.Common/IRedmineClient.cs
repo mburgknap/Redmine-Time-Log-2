@@ -30,5 +30,7 @@ namespace RedmineLog.Common
         void UpdateLog(WorkLogItem workLogItem);
 
         IEnumerable<BugLogItem> GetUserBugs(int idUser);
+
+        int AddSubIssue(RedmineIssueData inIssueData);
     }
 }

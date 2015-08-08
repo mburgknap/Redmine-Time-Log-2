@@ -13,7 +13,7 @@ using RedmineLog.Properties;
 
 namespace RedmineLog.UI.Items
 {
-    public partial class BugLogItemView : UserControl, ICustomItem, ISpecialAction
+    public partial class WorkLogItemView : UserControl, ICustomItem, ISpecialAction
     {
 
         class ExContextMenu : ContextMenuStrip
@@ -23,7 +23,8 @@ namespace RedmineLog.UI.Items
             public ExContextMenu()
             {
                 Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
-                Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve, (s, e) => { data("Resolve", item); }));
+                Items.Add(new ToolStripMenuItem("Edit", Resources.Edit, (s, e) => { data("Edit", item); }));
+                Items.Add(new ToolStripMenuItem("Add Issue", Resources.Add, (s, e) => { data("AddIssue", item); }));
             }
 
             public void Set(ICustomItem inItem, Action<string, object> inData)
@@ -35,7 +36,7 @@ namespace RedmineLog.UI.Items
 
         static ExContextMenu menu = new ExContextMenu();
 
-        public BugLogItemView()
+        public WorkLogItemView()
         {
             InitializeComponent();
         }
@@ -43,29 +44,9 @@ namespace RedmineLog.UI.Items
         internal void SetDescription()
         {
             lblIdIssue.Text = "#ID";
-            lblIssue.Text = "Issue Subject";
-            lblPriority.Text = "Priority";
-        }
-
-        private void lblIssue_DragEnter(object sender, DragEventArgs e)
-        {
-            this.BackColor = Color.Azure;
-        }
-
-        private void lblIssue_DragLeave(object sender, EventArgs e)
-        {
-            this.BackColor = Color.Wheat;
-        }
-
-        internal Control Set(BugLogItem bug)
-        {
-            Data = bug;
-
-            lblIdIssue.Text = bug.Id > 0 ? bug.Id.ToString() : "";
-            lblIssue.Text = !string.IsNullOrWhiteSpace(bug.Subject) ? bug.Subject : " Blank issue ";
-            lblPriority.Text = bug.Priority;
-
-            return this;
+            lblComment.Text = "Issue Comment";
+            lblTime.Text = "Time";
+            lblActivityType.Text = "Activity type";
         }
 
         public object Data { get; set; }
@@ -73,8 +54,22 @@ namespace RedmineLog.UI.Items
         public void Show(Action<string, object> inData)
         {
             menu.Set(this, inData);
-            menu.Show(lblIssue, new Point(0, 0));
+            menu.Show(lblComment, new Point(0, 0));
         }
 
+        internal Control Set(WorkLogItem item)
+        {
+            Data = item;
+
+            lblIdIssue.Text = item.Id.ToString();
+            lblComment.Text = item.Comment;
+            lblActivityType.Text = item.ActivityName;
+
+            var time = new TimeSpan(0, (int)(item.Hours * 60), 0);
+
+            lblTime.Text = time.ToString(@"hh\:mm");
+
+            return this;
+        }
     }
 }

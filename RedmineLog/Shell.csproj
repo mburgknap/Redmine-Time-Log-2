@@ -94,12 +94,6 @@
     <Compile Include="UI\frmProcessing.Designer.cs">
       <DependentUpon>frmProcessing.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\frmUpdate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmUpdate.Designer.cs">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\frmWorkLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +135,12 @@
     <Compile Include="UI\Items\BugLogGroupItemView.Designer.cs">
       <DependentUpon>BugLogGroupItemView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Items\WorkLogGroupItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Items\WorkLogGroupItemView.Designer.cs">
+      <DependentUpon>WorkLogGroupItemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Items\IssueLogGroupItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,6 +152,12 @@
     </Compile>
     <Compile Include="UI\Items\BugLogItemView.Designer.cs">
       <DependentUpon>BugLogItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Items\WorkLogItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Items\WorkLogItemView.Designer.cs">
+      <DependentUpon>WorkLogItemView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Items\IssueLogItemView.cs">
       <SubType>UserControl</SubType>
@@ -170,9 +176,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmProcessing.resx">
       <DependentUpon>frmProcessing.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmUpdate.resx">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmWorkLog.resx">
       <DependentUpon>frmWorkLog.cs</DependentUpon>
@@ -199,11 +202,17 @@
     <EmbeddedResource Include="UI\Items\BugLogGroupItemView.resx">
       <DependentUpon>BugLogGroupItemView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Items\WorkLogGroupItemView.resx">
+      <DependentUpon>WorkLogGroupItemView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Items\IssueLogGroupItemView.resx">
       <DependentUpon>IssueLogGroupItemView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Items\BugLogItemView.resx">
       <DependentUpon>BugLogItemView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Items\WorkLogItemView.resx">
+      <DependentUpon>WorkLogItemView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Items\IssueLogItemView.resx">
       <DependentUpon>IssueLogItemView.cs</DependentUpon>
@@ -228,6 +237,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RedmineTimeLog.ico" />
+    <None Include="Resources\XMLIntelliSenseElement-HighConfidence_10468.png" />
+    <None Include="Resources\checkbox_16xLG.png" />
+    <None Include="Resources\Clearallrequests_8816.png" />
+    <None Include="Resources\NewApplicationManifest_6526.png" />
+    <None Include="Resources\Editdatasetwithdesigner_8449.png" />
     <None Include="Resources\GotoNextRow_289.ico" />
     <None Include="Resources\Clearallrequests_8816.ico" />
     <None Include="Resources\filedownload.ico" />

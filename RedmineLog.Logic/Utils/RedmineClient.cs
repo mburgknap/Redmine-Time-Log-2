@@ -147,13 +147,6 @@ namespace RedmineLog.Logic
                                      group p by p.SpentOn.Value.Date into g
                                      select new { Date = g.Key, Entities = g.ToList() })
                 {
-
-                    list.Add(new WorkLogItem()
-                    {
-                        Date = item.Date,
-                        Id = -1
-                    });
-
                     foreach (var item2 in item.Entities)
                     {
                         list.Add(new WorkLogItem()
@@ -288,6 +281,43 @@ namespace RedmineLog.Logic
                      Subject = x.Subject,
                      Priority = x.Priority.Name
                  };
+        }
+
+
+        public int AddSubIssue(RedmineIssueData inIssueData)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(inIssueData.Id.ToString(), null);
+
+                issue.SpentHours = 0;
+                issue.EstimatedHours = 0;
+                issue.DoneRatio = 0;
+
+                if (issue.Children != null)
+                    issue.Children.Clear();
+                if (issue.Attachments != null)
+                    issue.Attachments.Clear();
+                if (issue.Journals != null)
+                    issue.Journals.Clear();
+                if (issue.Relations != null)
+                    issue.Relations.Clear();
+                if (issue.Watchers != null)
+                    issue.Watchers.Clear();
+
+                issue.Status = new IdentifiableName() { Id = 1 };
+                issue.ParentIssue = new IdentifiableName() { Id = inIssueData.Id };
+
+                var newIssue = manager.CreateObject<Issue>(issue);
+
+                return newIssue.Id;
+            }
+            catch (Exception ex)
+            { logger.Error("AddSubIssue ", ex); }
+
+            return 0;
         }
     }
 }

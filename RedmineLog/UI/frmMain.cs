@@ -2,6 +2,7 @@
 using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.Properties;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
@@ -26,11 +27,17 @@ namespace RedmineLog
             CheckForIllegalCrossThreadCalls = false;
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
+            CheckVersion();
+
+
+        }
+
+        private void CheckVersion()
+        {
             new Thread(new ThreadStart(() =>
             {
                 try
                 {
-
                     var filename = "Version.cfg";
 
                     using (var client = new WebClient())
@@ -55,7 +62,6 @@ namespace RedmineLog
                 {
                 }
             })).Start();
-
         }
 
         private void OnMainLoad(object sender, EventArgs e)
@@ -75,6 +81,25 @@ namespace RedmineLog
 
     internal class MainView : Main.IView, IView<frmMain>
     {
+
+        class ExContextMenu : ContextMenuStrip
+        {
+            private RedmineIssueData item;
+            private Action<string, RedmineIssueData> data;
+            public ExContextMenu()
+            {
+                Items.Add(new ToolStripMenuItem("Add Sub Issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
+            }
+
+            public void Set(RedmineIssueData inItem, Action<string, object> inData)
+            {
+                item = inItem;
+                data = inData;
+            }
+        }
+
+        static ExContextMenu menu = new ExContextMenu();
+
         private Main.Actions currentMode;
         private frmMain Form;
         private Main.IModel model;
@@ -119,6 +144,10 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateIssueEvent;
+
+        [EventPublication(Main.Events.AddSubIssue, typeof(Publish<Main.IView>))]
+        public event EventHandler<Args<RedmineIssueData>> AddSubIssueEvent;
+
         private frmSmall smallForm;
 
         public void GoLink(Uri inUri)
@@ -162,7 +191,7 @@ namespace RedmineLog
             Form.cbResolveIssue.CheckedChanged += OnResolveIssueChange;
             Form.lnkSettings.Click += OnSettingClick;
             Form.lnkIssues.Click += OnRedmineIssuesLink;
-            Form.lblIssue.Click += OnRedmineIssueLink;
+            Form.lblIssue.MouseClick += OnRedmineIssueLink;
             Form.tbComment.Click += OnCommentClick;
             Form.tsmMyWork.Click += OnWorkLogClick;
             Form.btnRemoveItem.Visible = false;
@@ -170,7 +199,40 @@ namespace RedmineLog
             Form.btnSubmitAll.Visible = false;
             Form.Resize += OnResize;
             AppTimers.Start();
+            Form.lblParentIssue.MouseClick += OnParentIssueMouseClick;
+            Form.lblIssue.MouseClick += OnIssueMouseClick;
             Load();
+        }
+
+        void OnIssueMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                menu.Set(model.IssueInfo, OnSpecialClick);
+                menu.Show(Form.lblIssue, new Point(0, 0));
+            }
+        }
+
+        void OnParentIssueMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                menu.Set(model.IssueParentInfo, OnSpecialClick);
+                menu.Show(Form.lblParentIssue, new Point(0, 0));
+            }
+        }
+        private void OnSpecialClick(string action, object data)
+        {
+            if (action == "AddSubIssue" && data is RedmineIssueData)
+            {
+                new frmProcessing().Show(Form,
+                        () =>
+                        {
+                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                            UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                            AddSubIssueEvent.Fire(this, (RedmineIssueData)data);
+                        });
+            }
         }
 
         private void OnResolveIssueChange(object sender, EventArgs e)
@@ -444,9 +506,10 @@ namespace RedmineLog
                });
         }
 
-        private void OnRedmineIssueLink(object sender, EventArgs e)
+        private void OnRedmineIssueLink(object sender, MouseEventArgs e)
         {
-            GoLinkEvent.Fire(this, "Issue");
+            if (e.Button == MouseButtons.Left)
+                GoLinkEvent.Fire(this, "Issue");
         }
 
         private void OnRedmineIssuesLink(object sender, EventArgs e)

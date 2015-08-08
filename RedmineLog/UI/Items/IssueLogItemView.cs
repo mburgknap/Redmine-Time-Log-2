@@ -25,9 +25,9 @@ namespace RedmineLog.UI.Items
             private Action<string, object> data;
             public ExContextMenu()
             {
-                Items.Add(new ToolStripMenuItem("Select", Resources.Goto.ToBitmap(), (s, e) => { data("Select", item); }));
-                Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve.ToBitmap(), (s, e) => { data("Resolve", item); }));
-                Items.Add(new ToolStripMenuItem("Delete", Resources.Delete.ToBitmap(), (s, e) => { data("Delete", item); }));
+                Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
+                Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve, (s, e) => { data("Resolve", item); }));
+                Items.Add(new ToolStripMenuItem("Delete", Resources.Remove, (s, e) => { data("Delete", item); }));
             }
 
             public void Set(ICustomItem inItem, Action<string, object> inData)
