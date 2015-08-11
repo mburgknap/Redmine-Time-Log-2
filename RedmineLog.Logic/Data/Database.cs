@@ -114,6 +114,47 @@ namespace RedmineLog.Logic
         }
     }
 
+    internal class CacheTable : IDbCache
+    {
+        private IDatabase database;
+
+        [Inject]
+        public CacheTable(IDatabase inDatabase)
+        {
+            database = inDatabase;
+        }
+
+        public void Init()
+        {
+        }
+
+
+        public bool HasWorkActivities
+        {
+            get
+            {
+                var result = database.Get<CacheTable, int, DbCustomSerializer<List<WorkActivityType>>>(1, null);
+
+                return result != null;
+            }
+        }
+
+        public IEnumerable<WorkActivityType> GetWorkActivityTypes()
+        {
+            var result = database.Get<CacheTable, int, DbCustomSerializer<List<WorkActivityType>>>(1, null);
+
+            if (result != null)
+                return result.Get;
+
+            return new List<WorkActivityType>();
+        }
+
+        public void InitWorkActivities(IEnumerable<WorkActivityType> inWorkActivities)
+        {
+            database.Set<CacheTable, int, DbCustomSerializer<List<WorkActivityType>>>(1, new List<WorkActivityType>(inWorkActivities));
+        }
+    }
+
     internal class RedmineIssuesTable : IDbRedmineIssue
     {
         private IDatabase database;

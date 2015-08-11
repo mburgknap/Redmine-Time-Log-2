@@ -38,13 +38,29 @@ namespace RedmineLog
         [EventPublication(Settings.Events.Load, typeof(Publish<Settings.IView>))]
         public event EventHandler LoadEvent;
 
+        [EventPublication(Settings.Events.ReloadCache, typeof(Publish<Settings.IView>))]
+        public event EventHandler ReloadCacheEvent;
+
         public void Init(frmSettings frmSettings)
         {
             Form = frmSettings;
 
             Form.btnConnect.Click += OnConnectClick;
+            Form.btnReloadCache.Click += OnReloadCacheClick;
 
             Load();
+        }
+
+        private void OnReloadCacheClick(object sender, EventArgs e)
+        {
+            new frmProcessing().Show(Form,
+                 () =>
+                 {
+                     ReloadCacheEvent.Fire(this);
+                 }, () =>
+                 {
+                     MessageBox.Show("Cache reloaded");
+                 });
         }
 
         public void Load()

@@ -32,6 +32,19 @@ namespace RedmineLog.Common
 
         void Delete(CommentData comment);
     }
+
+    public interface IDbCache
+    {
+        void Init();
+
+        bool HasWorkActivities { get; }
+
+        IEnumerable<WorkActivityType> GetWorkActivityTypes();
+
+        void InitWorkActivities(IEnumerable<WorkActivityType> inWorkActivities);
+    }
+
+
     public interface IDbRedmineIssue
     {
 

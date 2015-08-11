@@ -76,6 +76,12 @@
     <Compile Include="UI\Common\FormExtensions.cs" />
     <Compile Include="UI\AppTimers.cs" />
     <Compile Include="UI\Common\KeyHelpers.cs" />
+    <Compile Include="UI\frmAddSubIssue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmAddSubIssue.Designer.cs">
+      <DependentUpon>frmAddSubIssue.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\frmBugLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +171,12 @@
     <Compile Include="UI\Items\IssueLogItemView.Designer.cs">
       <DependentUpon>IssueLogItemView.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\Common\ExFlowLayoutPanel.resx">
+      <DependentUpon>ExFlowLayoutPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmAddSubIssue.resx">
+      <DependentUpon>frmAddSubIssue.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmBugLog.resx">
       <DependentUpon>frmBugLog.cs</DependentUpon>
     </EmbeddedResource>

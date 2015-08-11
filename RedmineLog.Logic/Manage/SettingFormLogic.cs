@@ -13,17 +13,20 @@ namespace RedmineLog.Logic
     {
         private IDbConfig dbConfig;
         private IDbRedmine dbRedmine;
+        private IDbCache dbCache;
         private Settings.IModel model;
         private IRedmineClient redmine;
         private Settings.IView View;
+
         [Inject]
-        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig)
+        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig, IDbCache inDbCache)
         {
             View = inView;
             model = inModel;
             redmine = inClient;
             dbRedmine = inDbRedmine;
             dbConfig = inDbConfig;
+            dbCache = inDbCache;
             inEvents.Register(this);
         }
 
@@ -43,6 +46,12 @@ namespace RedmineLog.Logic
 
             model.Sync.Value(SyncTarget.View, "ApiKey");
             model.Sync.Value(SyncTarget.View, "Url");
+        }
+
+        [EventSubscription(Settings.Events.ReloadCache, typeof(Subscribe<Settings.IView>))]
+        public void OnReloadCacheEvent(object sender, EventArgs arg)
+        {
+            dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
         }
     }
 }

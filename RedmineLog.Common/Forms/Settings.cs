@@ -5,8 +5,8 @@
         public static class Events
         {
             public const string Load = "topic://Settings/Load";
-
             public const string Connect = "topic://Settings/Connect";
+            public const string ReloadCache = "topic://Settings/ReloadCache";
         }
 
         public interface IView

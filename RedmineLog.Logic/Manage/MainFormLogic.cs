@@ -17,11 +17,12 @@ namespace RedmineLog.Logic
         private IDbComment dbComment;
         private IDbIssue dbIssue;
         private IDbRedmineIssue dbRedmineIssue;
+        private IDbCache dbCache;
         private Main.IModel model;
         private IRedmineClient redmine;
         private Main.IView view;
         [Inject]
-        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue)
+        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache)
         {
             view = inView;
             model = inModel;
@@ -29,6 +30,7 @@ namespace RedmineLog.Logic
             redmine = inClient;
             dbIssue = inDbIssue;
             dbComment = inDbComment;
+            dbCache = inDbCache;
             dbRedmineIssue = inDbRedmineIssue;
             inEvents.Register(this);
         }
@@ -124,7 +126,17 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            model.WorkActivities.AddRange(redmine.GetWorkActivityTypes());
+
+            if (dbCache.HasWorkActivities)
+            {
+                model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+            }
+            else
+            {
+                dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
+                model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+            }
+
             model.Sync.Value(SyncTarget.View, "WorkActivities");
 
             dbIssue.Init();

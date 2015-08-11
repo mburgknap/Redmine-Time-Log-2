@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmIssueLog));
-            this.fpLogItemList = new RedmineLog.UI.Common.ExFlowLayoutPanel();
+            this.fpLogItemList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
             this.cHeader = new RedmineLog.UI.Items.IssueLogItemView();
             this.SuspendLayout();
             // 
             // fpLogItemList
             // 
+            this.fpLogItemList.AutoScroll = true;
             this.fpLogItemList.Dock = System.Windows.Forms.DockStyle.Top;
             this.fpLogItemList.Location = new System.Drawing.Point(0, 49);
             this.fpLogItemList.Name = "fpLogItemList";
@@ -44,6 +46,7 @@
             // cHeader
             // 
             this.cHeader.BackColor = System.Drawing.Color.Wheat;
+            this.cHeader.Data = null;
             this.cHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.cHeader.Location = new System.Drawing.Point(0, 0);
             this.cHeader.Name = "cHeader";
