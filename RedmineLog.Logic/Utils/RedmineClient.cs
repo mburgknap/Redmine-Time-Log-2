@@ -42,27 +42,7 @@ namespace RedmineLog.Logic
         }
 
 
-        public IEnumerable<WorkActivityType> GetWorkActivityTypes()
-        {
-            try
-            {
-                var parameters = new NameValueCollection { };
 
-                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
-
-                var responseList = manager.GetObjectList<TimeEntryActivity>(parameters);
-
-                return responseList.Select(x => new WorkActivityType()
-                                    {
-                                        Id = x.Id,
-                                        Name = x.Name
-                                    });
-            }
-            catch (Exception ex)
-            { logger.Error("GetWorkActivityTypes", ex); }
-
-            return new List<WorkActivityType>(); ;
-        }
 
 
 
@@ -147,13 +127,6 @@ namespace RedmineLog.Logic
                                      group p by p.SpentOn.Value.Date into g
                                      select new { Date = g.Key, Entities = g.ToList() })
                 {
-
-                    list.Add(new WorkLogItem()
-                    {
-                        Date = item.Date,
-                        Id = -1
-                    });
-
                     foreach (var item2 in item.Entities)
                     {
                         list.Add(new WorkLogItem()
@@ -198,6 +171,56 @@ namespace RedmineLog.Logic
             { logger.Error("UpdateLog", ex); }
         }
 
+        public void Resolve(WorkingIssue workingIssue)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(workingIssue.Data.Id.ToString(), null);
+
+                issue.Status = new IdentifiableName() { Id = 3 };
+                issue.DoneRatio = 100;
+
+                manager.UpdateObject<Issue>(workingIssue.Data.Id.ToString(), issue);
+            }
+            catch (Exception ex)
+            { logger.Error("Resolve IssueData", ex); }
+        }
+
+        public void Resolve(BugLogItem bugLogItem)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(bugLogItem.Id.ToString(), null);
+
+                issue.Status = new IdentifiableName() { Id = 3 };
+                issue.DoneRatio = 100;
+
+                manager.UpdateObject<Issue>(bugLogItem.Id.ToString(), issue);
+            }
+            catch (Exception ex)
+            { logger.Error("Resolve BugLogItem", ex); }
+        }
+        public void Resolve(IssueData issueData)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(issueData.Id.ToString(), null);
+
+                issue.Status = new IdentifiableName() { Id = 3 };
+                issue.DoneRatio = 100;
+
+                manager.UpdateObject<Issue>(issueData.Id.ToString(), issue);
+            }
+            catch (Exception ex)
+            { logger.Error("Resolve IssueData", ex); }
+        }
+
 
         public IEnumerable<BugLogItem> GetUserBugs(int idUser)
         {
@@ -206,55 +229,22 @@ namespace RedmineLog.Logic
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
-                var parameters = new NameValueCollection { };
+                foreach (var priority in new int[] { 5, 4, 3, 2, 1 })
+                {
+                    foreach (var status in new int[] { 2, 1 })
+                    {
+                        var parameters = new NameValueCollection { };
 
-                var header = new BugLogItem();
-                result.Add(header);
+                        parameters.Add("assigned_to_id", idUser.ToString());
+                        parameters.Add("tracker_id", "1");
+                        parameters.Add("priority_id", priority.ToString());
+                        parameters.Add("status_id", status.ToString());
 
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 5.ToString());
+                        result.AddRange(manager.GetObjectList<Issue>(parameters).Select(x => ToBugItem(x)));
+                    }
+                }
 
-                var responseList = manager.GetObjectList<Issue>(parameters);
 
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
-
-                header = new BugLogItem();
-                result.Add(header);
-                parameters = new NameValueCollection { };
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 4.ToString());
-
-                responseList = manager.GetObjectList<Issue>(parameters);
-
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
-
-                header = new BugLogItem();
-                result.Add(header);
-                parameters = new NameValueCollection { };
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 3.ToString());
-
-                responseList = manager.GetObjectList<Issue>(parameters);
-
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
-
-                header = new BugLogItem();
-                result.Add(header);
-                parameters = new NameValueCollection { };
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("tracker_id", 1.ToString());
-                parameters.Add("priority_id", 2.ToString());
-
-                responseList = manager.GetObjectList<Issue>(parameters);
-
-                result.AddRange(responseList.Select(x => ToBugItem(x)));
-                header.Subject = result.Last().Priority;
             }
             catch (Exception ex)
             { logger.Error("GetUserBugs", ex); }
@@ -271,6 +261,136 @@ namespace RedmineLog.Logic
                      Subject = x.Subject,
                      Priority = x.Priority.Name
                  };
+        }
+
+
+        public int AddSubIssue(SubIssueData inIssueData)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var issue = manager.GetObject<Issue>(inIssueData.ParentId.ToString(), null);
+
+                issue.SpentHours = 0;
+                issue.EstimatedHours = 0;
+                issue.DoneRatio = 0;
+
+                if (issue.Children != null)
+                    issue.Children.Clear();
+                if (issue.Attachments != null)
+                    issue.Attachments.Clear();
+                if (issue.Journals != null)
+                    issue.Journals.Clear();
+                if (issue.Relations != null)
+                    issue.Relations.Clear();
+                if (issue.Watchers != null)
+                    issue.Watchers.Clear();
+
+                issue.Subject = inIssueData.Subject;
+                issue.Description = inIssueData.Description;
+                issue.Status = new IdentifiableName() { Id = 1 };
+                issue.ParentIssue = new IdentifiableName() { Id = inIssueData.ParentId };
+                issue.Tracker = new IdentifiableName() { Id = inIssueData.Tracker.Id };
+                issue.Priority = new IdentifiableName() { Id = inIssueData.Priority.Id };
+                issue.AssignedTo = new IdentifiableName() { Id = inIssueData.User.Id };
+
+                var newIssue = manager.CreateObject<Issue>(issue);
+
+                return newIssue.Id;
+            }
+            catch (Exception ex)
+            { logger.Error("AddSubIssue ", ex); }
+
+            return 0;
+        }
+        public IEnumerable<WorkActivityType> GetWorkActivityTypes()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<TimeEntryActivity>(parameters);
+
+                return responseList.Select(x => new WorkActivityType()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetWorkActivityTypes", ex); }
+
+            return new List<WorkActivityType>(); ;
+        }
+
+        public IEnumerable<UserData> GetUsers()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<Redmine.Net.Api.Types.User>(parameters);
+
+                return responseList.Select(x => new UserData()
+                {
+                    Id = x.Id,
+                    Name = x.FirstName + " " + x.LastName
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetUsers", ex); }
+
+            return new List<UserData>(); ;
+        }
+
+        public IEnumerable<TrackerData> GetTrackers()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<Tracker>(parameters);
+
+                return responseList.Select(x => new TrackerData()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetTrackers", ex); }
+
+            return new List<TrackerData>(); ;
+        }
+
+        public IEnumerable<PriorityData> GetPriorites()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<IssuePriority>(parameters);
+
+                return responseList.Select(x => new PriorityData()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsDefault = x.IsDefault
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetPriorites", ex); }
+
+            return new List<PriorityData>(); ;
         }
     }
 }

@@ -30,6 +30,8 @@ namespace RedmineLog.Common
             public const string AddComment = "topic://Main/AddComment";
             public const string UpdateComment = "topic://Main/UpdateComment";
             public const string DelComment = "topic://Main/DelComment";
+            public const string AddSubIssue = "topic://Main/AddSubIssue";
+            public const string IssueResolve = "topic://Main/IssueResolve";
         }
 
         public interface IView
@@ -42,6 +44,7 @@ namespace RedmineLog.Common
         public interface IModel
         {
             IModelSync Sync { get; }
+            bool Resolve { get; set; }
             TimeSpan WorkTime { get; set; }
             TimeSpan IdleTime { get; set; }
             WorkActivityList WorkActivities { get; }

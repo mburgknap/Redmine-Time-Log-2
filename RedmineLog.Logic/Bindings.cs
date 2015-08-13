@@ -13,6 +13,9 @@ namespace RedmineLog.Logic
 
             Bind<IRedmineClient>().To<RedmineClient>().InSingletonScope();
 
+            Bind<ILogic<SubIssue.IView>>().To<SubIssueFormLogic>().InSingletonScope();
+            Bind<SubIssueFormLogic>().ToSelf();
+
             Bind<ILogic<Settings.IView>>().To<SettingFormLogic>().InSingletonScope();
             Bind<SettingFormLogic>().ToSelf();
 

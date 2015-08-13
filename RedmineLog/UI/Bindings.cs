@@ -8,6 +8,9 @@ namespace RedmineLog.UI
     {
         public override void Load()
         {
+            Bind<SubIssue.IView>().To<SubIssueView>().InSingletonScope();
+            Bind<SubIssueView>().ToSelf();
+
             Bind<Settings.IView>().To<SettingsView>().InSingletonScope();
             Bind<SettingsView>().ToSelf();
 

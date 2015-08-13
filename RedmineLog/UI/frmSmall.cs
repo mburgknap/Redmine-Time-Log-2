@@ -14,15 +14,74 @@ namespace RedmineLog
 {
     public partial class frmSmall : Form
     {
+        private bool isHide;
         public frmSmall()
         {
             InitializeComponent();
             this.Initialize<Small.IView, frmSmall>();
+            isHide = false;
+            cbAutoHide.Checked = true;
+            Load += frmSmall_Load;
         }
 
-        private void OnFormLoad(object sender, EventArgs e)
+        void frmSmall_Load(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            UnwarpForm();
+            Load -= frmSmall_Load;
+        }
+
+
+        private void btnHide_Click(object sender, EventArgs e)
+        {
+            if (!isHide)
+            {
+                WrapForm();
+            }
+            else
+            {
+                UnwarpForm();
+            }
+        }
+        private void UnwarpForm()
+        {
+            isHide = false;
+            btnHide.Text = ">";
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+
+        }
+
+        private void WrapForm()
+        {
+            isHide = true;
+            this.Location = new Point(this.Location.X + flowLayoutPanel1.Width, this.Location.Y);
+            btnHide.Text = "<";
+        }
+
+        private void frmSmall_MouseEnter(object sender, EventArgs e)
+        {
+            if (isHide)
+            {
+                UnwarpForm();
+            }
+        }
+
+        private void btnHide_MouseEnter(object sender, EventArgs e)
+        {
+            if (isHide)
+            {
+                UnwarpForm();
+            }
+        }
+
+        private void frmSmall_Deactivate(object sender, EventArgs e)
+        {
+            if (cbAutoHide.Checked && !isHide)
+            {
+                WrapForm();
+            }
         }
     }
 

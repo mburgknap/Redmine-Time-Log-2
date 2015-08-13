@@ -17,6 +17,8 @@ namespace RedmineLog.Logic.Model
             Sync = new ModelSync<Main.IModel>();
         }
 
+        public bool Resolve { get; set; }
+
         public TimeSpan WorkTime { get; set; }
 
         public TimeSpan IdleTime { get; set; }

@@ -212,4 +212,68 @@ namespace RedmineLog.Common
     public class WorkLogList : List<WorkLogItem>
     {
     }
+
+    public class UserData
+    {
+
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public bool IsDefault { get; set; }
+    }
+
+    public class UserDataList : List<UserData>
+    {
+        public void Add(int inId, string inName)
+        {
+            Add(new UserData() { Id = inId, Name = inName });
+        }
+    }
+
+    public class TrackerData
+    {
+
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public bool IsDefault { get; set; }
+    }
+
+    public class TrackerDataList : List<TrackerData>
+    {
+        public void Add(int inId, string inName)
+        {
+            Add(new TrackerData() { Id = inId, Name = inName });
+        }
+    }
+
+    public class PriorityData
+    {
+
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public bool IsDefault { get; set; }
+    }
+
+    public class PriorityDataList : List<PriorityData>
+    {
+        public void Add(int inId, string inName)
+        {
+            Add(new PriorityData() { Id = inId, Name = inName });
+        }
+    }
+
+    public class SubIssueData
+    {
+        public int ParentId { get; set; }
+        public String Subject { get; set; }
+        public String Description { get; set; }
+        public UserData User { get; set; }
+        public TrackerData Tracker { get; set; }
+        public PriorityData Priority { get; set; }
+    }
 }

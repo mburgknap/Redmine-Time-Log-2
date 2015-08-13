@@ -17,11 +17,12 @@ namespace RedmineLog.Logic
         private IDbComment dbComment;
         private IDbIssue dbIssue;
         private IDbRedmineIssue dbRedmineIssue;
+        private IDbCache dbCache;
         private Main.IModel model;
         private IRedmineClient redmine;
         private Main.IView view;
         [Inject]
-        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue)
+        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache)
         {
             view = inView;
             model = inModel;
@@ -29,6 +30,7 @@ namespace RedmineLog.Logic
             redmine = inClient;
             dbIssue = inDbIssue;
             dbComment = inDbComment;
+            dbCache = inDbCache;
             dbRedmineIssue = inDbRedmineIssue;
             inEvents.Register(this);
         }
@@ -63,7 +65,8 @@ namespace RedmineLog.Logic
 
             if (Int32.TryParse(arg.Data, out idIssue))
             {
-                ReloadIssueData(idIssue);
+                if (!ReloadIssueData(idIssue))
+                    LoadIssue(dbIssue.Get(0));
             }
             else
             {
@@ -123,7 +126,18 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            model.WorkActivities.AddRange(redmine.GetWorkActivityTypes());
+
+            if (!dbCache.HasWorkActivities)
+                dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
+
+            model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+
+
+            if (!dbCache.HasWorkActivities)
+                dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
+
+            model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+
             model.Sync.Value(SyncTarget.View, "WorkActivities");
 
             dbIssue.Init();
@@ -176,6 +190,41 @@ namespace RedmineLog.Logic
             LoadIssue(arg.Data.Data);
         }
 
+        [EventSubscription(IssueLog.Events.Delete, typeof(OnPublisher))]
+        public void OnDeleteEvent(object sender, Args<WorkingIssue> arg)
+        {
+            if (arg.Data.Data.Id > 0)
+            {
+                if (model.Issue.Id == arg.Data.Data.Id)
+                    LoadIssue(dbIssue.Get(0));
+
+                dbIssue.Delete(arg.Data.Data);
+            }
+        }
+
+        [EventSubscription(Main.Events.IssueResolve, typeof(OnPublisher))]
+        public void OnResolveEvent(object sender, Args<WorkingIssue> arg)
+        {
+            redmine.Resolve(arg.Data);
+
+            if (model.Issue.Id == arg.Data.Data.Id)
+                LoadIssue(dbIssue.Get(0));
+
+            dbIssue.Delete(arg.Data.Data);
+        }
+
+        [EventSubscription(BugLog.Events.Resolve, typeof(OnPublisher))]
+        public void OnResolveEvent(object sender, Args<BugLogItem> arg)
+        {
+            redmine.Resolve(arg.Data);
+
+            if (model.Issue.Id == arg.Data.Id)
+                LoadIssue(dbIssue.Get(0));
+
+            dbIssue.Delete(arg.Data);
+        }
+
+
         [EventSubscription(WorkLog.Events.Select, typeof(OnPublisher))]
         public void OnSelectEvent(object sender, Args<WorkLogItem> arg)
         {
@@ -190,6 +239,13 @@ namespace RedmineLog.Logic
                 SetupLastIssue(issue);
                 LoadIssue(issue);
             }
+        }
+
+        [EventSubscription(Main.Events.AddSubIssue, typeof(OnPublisher))]
+        public void OnAddSubIssueEvent(object sender, Args<SubIssueData> arg)
+        {
+            int newIssueId = redmine.AddSubIssue(arg.Data);
+            OnAddIssueEvent(view, new Args<string>(newIssueId.ToString()));
         }
 
         [EventSubscription(Main.Events.Submit, typeof(Subscribe<Main.IView>))]
@@ -234,17 +290,29 @@ namespace RedmineLog.Logic
             if (!redmine.AddWorkTime(workData))
             { model.Issue.SetWorkTime(workData.Time); }
 
-            if (arg.Data == Main.Actions.Issue || arg.Data == Main.Actions.All)
+            if (model.Resolve)
             {
-                dbIssue.Update(model.Issue);
+                redmine.Resolve(model.Issue);
+                dbIssue.Delete(model.Issue);
                 LoadIssue(dbIssue.Get(0));
+                model.Resolve = false;
+                model.Sync.Value(SyncTarget.View, "Resolve");
             }
-
-            if (arg.Data == Main.Actions.Idle || arg.Data == Main.Actions.All)
+            else
             {
-                var idleIssue = dbIssue.Get(-1);
-                idleIssue.SetWorkTime(new TimeSpan(0));
-                dbIssue.Update(idleIssue);
+
+                if (arg.Data == Main.Actions.Issue || arg.Data == Main.Actions.All)
+                {
+                    dbIssue.Update(model.Issue);
+                    LoadIssue(dbIssue.Get(0));
+                }
+
+                if (arg.Data == Main.Actions.Idle || arg.Data == Main.Actions.All)
+                {
+                    var idleIssue = dbIssue.Get(-1);
+                    idleIssue.SetWorkTime(new TimeSpan(0));
+                    dbIssue.Update(idleIssue);
+                }
             }
         }
 
@@ -285,19 +353,24 @@ namespace RedmineLog.Logic
         private void DownloadIssue(int idIssue)
         {
             var issue = redmine.GetIssue(idIssue);
-            dbRedmineIssue.Update(issue);
 
-            if (issue.IdParent.HasValue)
+            if (issue != null)
             {
-                var idParent = issue.IdParent.Value;
-                issue = dbRedmineIssue.Get(idParent);
+                dbRedmineIssue.Update(issue);
 
-                if (issue == null)
+                if (issue.IdParent.HasValue)
                 {
-                    issue = redmine.GetIssue(idParent);
-                    dbRedmineIssue.Update(issue);
+                    var idParent = issue.IdParent.Value;
+                    issue = dbRedmineIssue.Get(idParent);
+
+                    if (issue == null)
+                    {
+                        issue = redmine.GetIssue(idParent);
+                        dbRedmineIssue.Update(issue);
+                    }
                 }
             }
+
         }
 
         private void LoadIdle()

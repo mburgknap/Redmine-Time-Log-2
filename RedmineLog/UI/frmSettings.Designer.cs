@@ -34,6 +34,7 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.Label1 = new System.Windows.Forms.Label();
             this.tbRedmineURL = new System.Windows.Forms.TextBox();
+            this.btnReloadCache = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Label2
@@ -77,11 +78,21 @@
             this.tbRedmineURL.Size = new System.Drawing.Size(325, 20);
             this.tbRedmineURL.TabIndex = 6;
             // 
+            // btnReloadCache
+            // 
+            this.btnReloadCache.Location = new System.Drawing.Point(16, 134);
+            this.btnReloadCache.Name = "btnReloadCache";
+            this.btnReloadCache.Size = new System.Drawing.Size(106, 23);
+            this.btnReloadCache.TabIndex = 12;
+            this.btnReloadCache.Text = "Reload cache";
+            this.btnReloadCache.UseVisualStyleBackColor = true;
+            // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 137);
+            this.ClientSize = new System.Drawing.Size(357, 169);
+            this.Controls.Add(this.btnReloadCache);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.tbApiKey);
             this.Controls.Add(this.btnConnect);
@@ -107,5 +118,6 @@
         internal System.Windows.Forms.Button btnConnect;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.TextBox tbRedmineURL;
+        internal System.Windows.Forms.Button btnReloadCache;
     }
 }

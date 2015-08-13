@@ -2,16 +2,23 @@
 using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.Common.Forms;
+using RedmineLog.Properties;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace RedmineLog
 {
+    //https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1
     public partial class frmMain : Form
     {
         public frmMain()
@@ -20,16 +27,80 @@ namespace RedmineLog
             this.Initialize<Main.IView, frmMain>();
             CheckForIllegalCrossThreadCalls = false;
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
+
+            CheckVersion();
+
+
+        }
+
+        private void CheckVersion()
+        {
+            new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    var filename = "Version.cfg";
+
+                    using (var client = new WebClient())
+                    {
+                        File.Delete(filename);
+                        client.DownloadFile("https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1", filename);
+
+                        var version = File.ReadAllText(filename);
+
+                        if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(new Version(version.Split(';')[0])) == -1)
+                        {
+                            if (MessageBox.Show("New version availible " + version.Split(';')[0]
+                                                + Environment.NewLine
+                                                + "Do you want download it ? ", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                System.Diagnostics.Process.Start(version.Split(';')[1]);
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            })).Start();
         }
 
         private void OnMainLoad(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
+
+        private void btnBugs_Click(object sender, EventArgs e)
+        {
+            cmIssuesKind.Show(btnIssueMode, new Point(0, 0));
+        }
+
     }
 
     internal class MainView : Main.IView, IView<frmMain>
     {
+
+        class ExContextMenu : ContextMenuStrip
+        {
+            private RedmineIssueData item;
+            private Action<string, RedmineIssueData> data;
+            public ExContextMenu()
+            {
+                Items.Add(new ToolStripMenuItem("Add Sub Issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
+            }
+
+            public void Set(RedmineIssueData inItem, Action<string, object> inData)
+            {
+                item = inItem;
+                data = inData;
+            }
+        }
+
+        static ExContextMenu menu = new ExContextMenu();
+
         private Main.Actions currentMode;
         private frmMain Form;
         private Main.IModel model;
@@ -74,7 +145,12 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateIssueEvent;
+
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<RedmineIssueData>> SetSubIssueEvent;
+
         private frmSmall smallForm;
+        private frmSubIssue addIssueForm;
 
         public void GoLink(Uri inUri)
         {
@@ -97,7 +173,7 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
-            Form.btnBugs.Click += SearchBugClick;
+            Form.tsmMyBugs.Click += SearchBugClick;
             Form.tbIssue.KeyDown += SaveIssue;
             Form.btnRemoveItem.Click += DelIssue;
             Form.btnComments.Click += LoadComment;
@@ -105,7 +181,7 @@ namespace RedmineLog
             Form.btnRemoveComment.Click += DelComment;
             Form.tbComment.KeyDown += SaveComment;
             Form.cmComments.ItemClicked += SelectComment;
-            Form.btnIssues.Click += OnSearchIssueClick;
+            Form.tsmMyIssues.Click += OnSearchIssueClick;
             Form.btnSubmit.Click += OnSubmitClick;
             Form.btnSubmitAll.Click += OnSubmitAllClick;
             Form.btnResetIdle.Click += OnResetClockClick;
@@ -114,17 +190,58 @@ namespace RedmineLog
             Form.lblClockActive.Click += OnWorkMode;
             Form.lblClockIndle.Click += OnIdleMode;
             Form.cbActivity.SelectedIndexChanged += OnActivityTypeChange;
+            Form.cbResolveIssue.CheckedChanged += OnResolveIssueChange;
             Form.lnkSettings.Click += OnSettingClick;
             Form.lnkIssues.Click += OnRedmineIssuesLink;
-            Form.lblIssue.Click += OnRedmineIssueLink;
+            Form.lblIssue.MouseClick += OnRedmineIssueLink;
             Form.tbComment.Click += OnCommentClick;
-            Form.btnWorkTime.Click += OnWorkLogClick;
+            Form.tsmMyWork.Click += OnWorkLogClick;
             Form.btnRemoveItem.Visible = false;
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
             Form.Resize += OnResize;
             AppTimers.Start();
+            Form.lblParentIssue.MouseClick += OnParentIssueMouseClick;
+            Form.lblIssue.MouseClick += OnIssueMouseClick;
             Load();
+        }
+
+        void OnIssueMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                menu.Set(model.IssueInfo, OnSpecialClick);
+                menu.Show(Form.lblIssue, new Point(0, 0));
+            }
+        }
+
+        void OnParentIssueMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                menu.Set(model.IssueParentInfo, OnSpecialClick);
+                menu.Show(Form.lblParentIssue, new Point(0, 0));
+            }
+        }
+        private void OnSpecialClick(string action, object data)
+        {
+            if (action == "AddSubIssue" && data is RedmineIssueData)
+            {
+                new frmProcessing().Show(Form,
+                        () =>
+                        {
+                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                            UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                            addIssueForm = new frmSubIssue();
+                            SetSubIssueEvent.Fire(this, (RedmineIssueData)data);
+                            addIssueForm.ShowDialog();
+                        });
+            }
+        }
+
+        private void OnResolveIssueChange(object sender, EventArgs e)
+        {
+            model.Resolve = Form.cbResolveIssue.Checked;
         }
 
         private void OnResize(object sender, EventArgs e)
@@ -393,9 +510,10 @@ namespace RedmineLog
                });
         }
 
-        private void OnRedmineIssueLink(object sender, EventArgs e)
+        private void OnRedmineIssueLink(object sender, MouseEventArgs e)
         {
-            GoLinkEvent.Fire(this, "Issue");
+            if (e.Button == MouseButtons.Left)
+                GoLinkEvent.Fire(this, "Issue");
         }
 
         private void OnRedmineIssuesLink(object sender, EventArgs e)
@@ -484,6 +602,16 @@ namespace RedmineLog
                     ui.Text = data.ToString();
                 });
         }
+
+        private void OnResolveChange()
+        {
+            Form.cbResolveIssue.Set(model.Resolve,
+                (ui, data) =>
+                {
+                    ui.Checked = data;
+                });
+        }
+
         private void SaveComment(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.S)

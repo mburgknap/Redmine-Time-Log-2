@@ -12,6 +12,7 @@ namespace RedmineLog.Common
         {
             public const string Load = "topic://IssueLog/Load";
             public const string Select = "topic://IssueLog/Select";
+            public const string Delete = "topic://IssueLog/Delete";
         }
 
         public interface IView

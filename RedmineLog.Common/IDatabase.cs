@@ -16,6 +16,9 @@ namespace RedmineLog.Common
 
         void Delete(IssueData issueData);
 
+        void Delete(BugLogItem bugData);
+
+
         IEnumerable<IssueData> GetList();
     }
     public interface IDbComment
@@ -29,6 +32,31 @@ namespace RedmineLog.Common
 
         void Delete(CommentData comment);
     }
+
+    public interface IDbCache
+    {
+        void Init();
+
+        bool HasWorkActivities { get; }
+
+        IEnumerable<WorkActivityType> GetWorkActivityTypes();
+
+        void InitWorkActivities(IEnumerable<WorkActivityType> inData);
+
+        void InitUsers(IEnumerable<UserData> inData);
+
+        void InitTrackers(IEnumerable<TrackerData> inData);
+
+        void InitPriorities(IEnumerable<PriorityData> inData);
+
+        IEnumerable<PriorityData> GetPriorities();
+
+        IEnumerable<UserData> GetUsers();
+
+        IEnumerable<TrackerData> GetTrackers();
+    }
+
+
     public interface IDbRedmineIssue
     {
 

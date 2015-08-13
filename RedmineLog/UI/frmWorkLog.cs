@@ -4,8 +4,11 @@ using RedmineLog.Common;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using RedmineLog.UI.Items;
 
 namespace RedmineLog
 {
@@ -15,11 +18,15 @@ namespace RedmineLog
         {
             InitializeComponent();
             this.Initialize<WorkLog.IView, frmWorkLog>();
+            cHeader.SetDescription();
         }
 
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
     }
 
@@ -55,12 +62,9 @@ namespace RedmineLog
         {
             Form = inView;
             Form.blLoadMore.Click += OnLoadMore;
-            Form.blLoadMore.KeyDown += OnGridViewKeyDown;
             Form.blLoadMore.Focus();
-            Form.dataGridView1.KeyDown += OnGridViewKeyDown;
-            Form.dataGridView1.CellClick += OnGridCellClick;
             Form.FormClosing += OnCloseForm;
-            Form.KeyDown += Form_KeyDown;
+            KeyHelpers.BindKey(Form, OnKeyDown);
             Load();
         }
         public void Load()
@@ -84,41 +88,11 @@ namespace RedmineLog
                 editform.Close();
         }
 
-        private void OnGridCellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-                return;
 
-            var timeEntry = Form.dataGridView1.Rows[e.RowIndex].Tag as WorkLogItem;
-
-            if (timeEntry != null)
-            {
-                if (e.ColumnIndex != 1)
-                    SelectIssue(timeEntry);
-                else if (e.ColumnIndex == 1)
-                {
-                    if (editform == null)
-                    {
-                        editform = new frmEditTimeLog();
-                        editform.FormClosed += (s, arg) =>
-                        {
-                            editform = null;
-                        };
-                        editform.Show();
-                    }
-
-                    EditEvent.Fire(this, timeEntry);
-                }
-            }
-        }
-
-        private void OnGridViewKeyDown(object sender, KeyEventArgs e)
+        private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
                 Form.Close();
-
-            if (e.KeyCode == Keys.Enter && Form.dataGridView1.SelectedRows.Count > 0)
-                SelectIssue(Form.dataGridView1.SelectedRows[0].Tag as WorkLogItem);
         }
 
         private void SelectIssue(WorkLogItem item)
@@ -146,72 +120,109 @@ namespace RedmineLog
 
         private void OnWorkLogsChange()
         {
-            Form.dataGridView1.Set(model,
+            var list = new List<Control>();
+
+            WorkLogGroupItemView dayItem = null;
+
+            foreach (var item in (from p in model.WorkLogs
+                                  group p by p.Date.Date into g
+                                  select new { Date = g.Key, Issues = g.ToList() }))
+            {
+
+                var dayTime = new TimeSpan(0);
+
+                dayItem = new WorkLogGroupItemView();
+                dayItem.Set(item.Date);
+                list.Add(dayItem);
+                KeyHelpers.BindKey(dayItem, OnKeyDown);
+
+                foreach (var item2 in (from p in item.Issues
+                                       group p by p.ProjectName into g
+                                       select new { Project = g.Key, Issues = g.ToList() }))
+                {
+
+                    var projectTime = new TimeSpan(0);
+                    var projectItem = new WorkLogGroupItemView();
+                    projectItem.Set(item2.Project);
+                    list.Add(projectItem);
+                    KeyHelpers.BindKey(projectItem, OnKeyDown);
+
+                    foreach (var item3 in item2.Issues)
+                    {
+                        projectTime = projectTime.Add(new TimeSpan(0, (int)(item3.Hours * 60), 0));
+
+                        list.Add(new WorkLogItemView().Set(item3));
+                        KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                        KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                        KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                    }
+
+                    dayTime = dayTime.Add(projectTime);
+                    projectItem.Update(projectTime);
+
+                }
+
+                dayItem.Update(dayTime);
+            }
+
+            Form.fpWokLogList.Set(model,
                        (ui, data) =>
                        {
-                           ui.Rows.Clear();
-
-                           int headrow = -1;
-                           int row = 0;
-
-                           var workTime = new TimeSpan();
-
-
-                           foreach (var item in data.WorkLogs)
-                           {
-                               if (item.Id < 0)
-                               {
-                                   UpdateWorkTime(ui, headrow, workTime);
-
-                                   workTime = new TimeSpan();
-                                   headrow = ui.Rows.Add(new Object[] { ToDayInfo(item.Date), "", "", item.Date.ToShortDateString() });
-                                   ui.Rows[headrow].Cells[2].Style.BackColor = Color.LightBlue;
-                                   ui.Rows[headrow].Cells[0].Style.BackColor = Color.LightBlue;
-                                   ui.Rows[headrow].Cells[3].Style.BackColor = Color.LightBlue;
-                                   ui.Rows[headrow].Cells[1].Style.BackColor = Color.Yellow;
-                               }
-                               else
-                               {
-                                   var time = new TimeSpan(0, (int)(item.Hours * 60), 0);
-                                   workTime = workTime.Add(time);
-
-                                   row = ui.Rows.Add(new Object[] {
-                                                        item.IdIssue,
-                                                        time.ToString(@"hh\:mm"),
-                                                        item.ProjectName ,
-                                                        "(" + item.ActivityName + ")" + Environment.NewLine + item.Comment });
-
-                                   ui.Rows[row].Tag = item;
-                               }
-                           }
-
-                           UpdateWorkTime(ui, headrow, workTime);
-
-                           ui.FirstDisplayedScrollingRowIndex = headrow;
-
-                           ui.Focus();
-
+                           ui.Controls.Clear();
+                           ui.Controls.AddRange(list.ToArray());
+                           ui.ScrollControlIntoView(dayItem);
                        });
-
         }
 
-        private void UpdateWorkTime(DataGridView ui, int headrow, TimeSpan workTime)
+        private void OnSpecialClick(string action, object data)
         {
-            if (headrow >= 0)
+            if (action == "Select" && data is ICustomItem)
             {
-                ui.Rows[headrow].Cells[1].Value = workTime.ToString(@"hh\:mm");
+                SelectIssue(((ICustomItem)data).Data as WorkLogItem);
+                return;
+            }
 
-                if (workTime.TotalHours < 8)
-                    ui.Rows[headrow].Cells[1].Style.BackColor = Color.Red;
+            if (action == "Edit" && data is Control && data is ICustomItem)
+            {
+                if (editform == null)
+                {
+                    editform = new frmEditTimeLog();
+                    editform.FormClosed += (s, arg) =>
+                    {
+                        editform = null;
+                    };
+                    editform.Shown += (s, e) =>
+                    {
+                        EditEvent.Fire(this, ((ICustomItem)data).Data as WorkLogItem);
+                    };
+                    editform.Show();
+                    return;
+                }
+
+                EditEvent.Fire(this, ((ICustomItem)data).Data as WorkLogItem);
+                return;
+            }
+
+            if (action == "AddIssue" && data is Control && data is ICustomItem)
+            {
+                return;
             }
         }
 
-        private object ToDayInfo(DateTime inDate)
+        private void OnClick(object sender)
         {
-            if (DateTime.Today.Equals(inDate.Date))
-                return "Today";
+            if (sender is ICustomItem)
+            {
+                SelectIssue(((ICustomItem)sender).Data as WorkLogItem);
+                return;
+            }
 
-            return inDate.DayOfWeek.ToString();
+            if (sender is Control)
+            {
+                OnClick(((Control)sender).Parent);
+                return;
+            }
         }
+
     }
 }

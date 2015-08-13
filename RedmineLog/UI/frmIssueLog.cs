@@ -3,7 +3,9 @@ using Ninject;
 using RedmineLog.Common;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
+using RedmineLog.UI.Items;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,16 +18,16 @@ namespace RedmineLog
         {
             InitializeComponent();
             this.Initialize<IssueLog.IView, frmIssueLog>();
+
+            cHeader.SetDescription();
         }
 
         private void OnSearchLoad(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
-        }
-
-        private void OnSearchMouseLeave(object sender, EventArgs e)
-        {
-            //  this.Close();
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
     }
 
@@ -47,12 +49,16 @@ namespace RedmineLog
         [EventPublication(IssueLog.Events.Select)]
         public event EventHandler<Args<WorkingIssue>> SelectEvent;
 
+        [EventPublication(Main.Events.IssueResolve)]
+        public event EventHandler<Args<WorkingIssue>> ResolveEvent;
+
+        [EventPublication(IssueLog.Events.Delete)]
+        public event EventHandler<Args<WorkingIssue>> DeleteEvent;
+
         public void Init(frmIssueLog inView)
         {
             Form = inView;
-            Form.dataGridView1.KeyDown += OnKeyDown;
-            Form.dataGridView1.CellClick += OnCellClick;
-
+            KeyHelpers.BindKey(Form, OnKeyDown);
             Load();
         }
 
@@ -65,57 +71,84 @@ namespace RedmineLog
                 });
         }
 
-        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        private void OnClick(object sender)
         {
-            if (e.RowIndex > 0)
-                SelectIssue(Form.dataGridView1.Rows[e.RowIndex].Tag as WorkingIssue);
+            if (sender is ICustomItem)
+            {
+                SelectIssue(((ICustomItem)sender).Data as WorkingIssue);
+                return;
+            }
+
+            if (sender is Control)
+            {
+                OnClick(((Control)sender).Parent);
+                return;
+            }
+        }
+
+        private void OnSpecialClick(string action, object data)
+        {
+            if (action == "Select" && data is ICustomItem)
+            {
+                SelectIssue(((ICustomItem)data).Data as WorkingIssue);
+                return;
+            }
+
+            if (action == "Resolve" && data is Control && data is ICustomItem)
+            {
+                Form.fpLogItemList.Controls.Remove((Control)data);
+                ResolveEvent.Fire(this, ((ICustomItem)data).Data as WorkingIssue);
+                return;
+            }
+
+            if (action == "Delete" && data is Control && data is ICustomItem)
+            {
+                Form.fpLogItemList.Controls.Remove((Control)data);
+                DeleteEvent.Fire(this, ((ICustomItem)data).Data as WorkingIssue);
+                return;
+            }
         }
 
         private void OnIssuesChange()
         {
-            Form.dataGridView1.Set(model,
+            var list = new List<Control>();
+
+            foreach (var item in (from p in model.Issues
+                                  group p by p.Issue.Project into g
+                                  select new { Project = g.Key, Issues = g.ToList() }))
+            {
+                list.Add(new IssueLogGroupItemView().Set(item.Project));
+                KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+
+                foreach (var issue in item.Issues)
+                {
+                    list.Add(new IssueLogItemView().Set(issue));
+                    KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                    KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                    KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                }
+
+            }
+
+            Form.fpLogItemList.Set(model,
               (ui, data) =>
               {
-                  int row;
+                  ui.Controls.Clear();
 
-                  ui.Rows.Clear();
-
-                  foreach (var item in data.Issues.OrderByDescending(x =>
-                  {
-                      if (x.Issue.Id == 0) return int.MaxValue;
-                      return x.Data.UsedCount;
-                  }))
-                  {
-                      if (item.Data.Id > 0)
-                          row = ui.Rows.Add(new Object[] {
-                        item.Data.Id,
-                        item.Data.GetWorkTime(new TimeSpan(0)).ToString(),
-                        item.Issue.Project,
-                        String.Format("{0}{1}",  
-                                        item.Parent != null ? item.Parent.Subject + Environment.NewLine :"" , 
-                                        "("+ item.Issue.Tracker +")" + Environment.NewLine + " " + item.Issue.Subject )});
-                      else
-                          row = ui.Rows.Add(new Object[] { "", "", "" });
-
-                      if (item.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1)
-                          ui.Rows[row].Cells[0].Style.BackColor = Color.Red;
-                      else
-                          ui.Rows[row].Cells[0].Style.BackColor = Color.White;
-
-                      ui.Rows[row].Tag = item;
-                  }
+                  Form.fpLogItemList.Controls.AddRange(list.ToArray());
               });
         }
+
+
+
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
+
             if (e.KeyCode == Keys.Escape)
+            {
                 Form.Close();
-
-            if (Form.dataGridView1.SelectedRows.Count == 0)
                 return;
-
-            if (e.KeyCode == Keys.Enter)
-                SelectIssue(Form.dataGridView1.SelectedRows[0].Tag as WorkingIssue);
+            }
         }
 
         private void SelectIssue(WorkingIssue item)

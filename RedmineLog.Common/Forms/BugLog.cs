@@ -12,6 +12,7 @@ namespace RedmineLog.Common.Forms
         {
             public const string Load = "topic://BugLog/Load";
             public const string Select = "topic://BugLog/Select";
+            public const string Resolve = "topic://BugLog/Resolve";
         }
 
         public interface IView

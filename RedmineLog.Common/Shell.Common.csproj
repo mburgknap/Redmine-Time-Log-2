@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities.cs" />
+    <Compile Include="Forms\SubIssue.cs" />
     <Compile Include="Forms\BugLog.cs" />
     <Compile Include="Forms\EditLog.cs" />
     <Compile Include="IModelSync.cs" />

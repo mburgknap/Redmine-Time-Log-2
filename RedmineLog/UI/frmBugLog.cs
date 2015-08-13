@@ -3,6 +3,7 @@ using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
 using RedmineLog.UI.Common;
+using RedmineLog.UI.Items;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,11 +22,15 @@ namespace RedmineLog.UI
         {
             InitializeComponent();
             this.Initialize<BugLog.IView, frmBugLog>();
+            cHeader.SetDescription();
 
         }
         private void OnBugLogLoad(object sender, EventArgs e)
         {
-            this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            else
+                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
         }
     }
 
@@ -50,48 +55,77 @@ namespace RedmineLog.UI
         [EventPublication(BugLog.Events.Select)]
         public event EventHandler<Args<BugLogItem>> SelectEvent;
 
+        [EventPublication(BugLog.Events.Resolve)]
+        public event EventHandler<Args<BugLogItem>> ResolveEvent;
+
         public void Init(frmBugLog inView)
         {
             Form = inView;
-            Form.dataGrid.KeyDown += OnKeyDown;
-            Form.dataGrid.CellClick += OnCellClick;
-
+            KeyHelpers.BindKey(Form, OnKeyDown);
             Load();
         }
 
         private void OnBugsChange()
         {
-            Form.dataGrid.Set(model,
+            var list = new List<Control>();
+
+            foreach (var item in (from p in model.Bugs
+                                  group p by p.Project into g
+                                  select new { Project = g.Key, Issues = g.ToList() }))
+            {
+                list.Add(new BugLogGroupItemView().Set(item.Project));
+                KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+
+
+                foreach (var issue in item.Issues)
+                {
+
+                    list.Add(new BugLogItemView().Set(issue));
+                    KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                    KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                    KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                }
+            }
+
+
+            Form.fpBugList.Set(model,
               (ui, data) =>
               {
-                  int row;
-                  ui.Rows.Clear();
-                  foreach (var item in data.Bugs)
-                  {
-                      row = ui.Rows.Add(new Object[] {
-                        item.Id > 0 ? item.Id.ToString() : "",
-                        item.Project,
-                        item.Subject });
-
-                      ui.Rows[row].Tag = item;
-
-                      if (item.Id == 0)
-                      {
-                          ui.Rows[row].Cells[0].Style.BackColor = Color.Azure;
-                          ui.Rows[row].Cells[1].Style.BackColor = Color.Azure;
-                          ui.Rows[row].Cells[2].Style.BackColor = Color.Azure;
-                      }
-
-                  }
-
+                  ui.Controls.Clear();
+                  Form.fpBugList.Controls.AddRange(list.ToArray());
               });
         }
 
-
-        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        private void OnSpecialClick(string action, object data)
         {
-            if (e.RowIndex > 0)
-                SelectBug(Form.dataGrid.Rows[e.RowIndex].Tag as BugLogItem);
+            if (action == "Select" && data is ICustomItem)
+            {
+                SelectBug(((ICustomItem)data).Data as BugLogItem);
+                SelectEvent.Fire(this, ((ICustomItem)data).Data as BugLogItem);
+                return;
+            }
+
+            if (action == "Resolve" && data is Control && data is ICustomItem)
+            {
+                Form.fpBugList.Controls.Remove((Control)data);
+                ResolveEvent.Fire(this, ((ICustomItem)data).Data as BugLogItem);
+                return;
+            }
+        }
+
+        private void OnClick(object sender)
+        {
+            if (sender is ICustomItem)
+            {
+                SelectBug(((ICustomItem)sender).Data as BugLogItem);
+                return;
+            }
+
+            if (sender is Control)
+            {
+                OnClick(((Control)sender).Parent);
+                return;
+            }
         }
 
         private void SelectBug(BugLogItem item)
@@ -115,11 +149,6 @@ namespace RedmineLog.UI
             if (e.KeyCode == Keys.Escape)
                 Form.Close();
 
-            if (Form.dataGrid.SelectedRows.Count == 0)
-                return;
-
-            if (e.KeyCode == Keys.Enter)
-                SelectBug(Form.dataGrid.SelectedRows[0].Tag as BugLogItem);
         }
 
         public void Load()

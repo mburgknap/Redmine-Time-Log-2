@@ -42,7 +42,7 @@
             // 
             // nHour
             // 
-            this.nHour.Location = new System.Drawing.Point(32, 24);
+            this.nHour.Location = new System.Drawing.Point(168, 26);
             this.nHour.Name = "nHour";
             this.nHour.Size = new System.Drawing.Size(54, 20);
             this.nHour.TabIndex = 0;
@@ -54,7 +54,7 @@
             0,
             0,
             0});
-            this.nMinute.Location = new System.Drawing.Point(92, 24);
+            this.nMinute.Location = new System.Drawing.Point(228, 26);
             this.nMinute.Maximum = new decimal(new int[] {
             60,
             0,
@@ -67,7 +67,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(64, 6);
+            this.label1.Location = new System.Drawing.Point(200, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(50, 13);
             this.label1.TabIndex = 2;
@@ -77,14 +77,14 @@
             // 
             this.cbEventType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbEventType.FormattingEnabled = true;
-            this.cbEventType.Location = new System.Drawing.Point(11, 50);
+            this.cbEventType.Location = new System.Drawing.Point(170, 67);
             this.cbEventType.Name = "cbEventType";
-            this.cbEventType.Size = new System.Drawing.Size(157, 21);
+            this.cbEventType.Size = new System.Drawing.Size(118, 21);
             this.cbEventType.TabIndex = 3;
             // 
             // tbMessage
             // 
-            this.tbMessage.Location = new System.Drawing.Point(10, 77);
+            this.tbMessage.Location = new System.Drawing.Point(6, 7);
             this.tbMessage.Multiline = true;
             this.tbMessage.Name = "tbMessage";
             this.tbMessage.Size = new System.Drawing.Size(158, 81);
@@ -93,7 +93,7 @@
             // calWorkDate
             // 
             this.calWorkDate.FirstDayOfWeek = System.Windows.Forms.Day.Monday;
-            this.calWorkDate.Location = new System.Drawing.Point(11, 170);
+            this.calWorkDate.Location = new System.Drawing.Point(6, 100);
             this.calWorkDate.MaxSelectionCount = 1;
             this.calWorkDate.Name = "calWorkDate";
             this.calWorkDate.ShowToday = false;
@@ -102,7 +102,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(10, 334);
+            this.btnSave.Location = new System.Drawing.Point(130, 262);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(158, 23);
             this.btnSave.TabIndex = 6;
@@ -113,7 +113,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(177, 359);
+            this.ClientSize = new System.Drawing.Size(292, 290);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.calWorkDate);
             this.Controls.Add(this.tbMessage);
