@@ -15,6 +15,12 @@ namespace RedmineLog
             // This call is required by the Windows Form Designer.
             InitializeComponent();
             this.Initialize<Settings.IView, frmSettings>();
+            Load += OnSettingsLoad;
+        }
+
+        void OnSettingsLoad(object sender, EventArgs e)
+        {
+            this.SetupLocation(0, -100);
         }
     }
 

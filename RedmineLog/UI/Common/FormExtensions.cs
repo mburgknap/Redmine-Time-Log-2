@@ -1,6 +1,7 @@
 ﻿using Ninject;
 using RedmineLog.Logic.Common;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace RedmineLog.UI.Common
@@ -25,6 +26,15 @@ namespace RedmineLog.UI.Common
                 return;
             }
             inAction(inUI, inData);
+        }
+
+
+        public static void SetupLocation(this Form inThis, int x, int y)
+        {
+            if (SystemInformation.VirtualScreen.Location.X < 0)
+                inThis.Location = new Point(0 - inThis.Width + x, SystemInformation.VirtualScreen.Height - inThis.Height + y);
+            else
+                inThis.Location = new Point(SystemInformation.VirtualScreen.Width - inThis.Width + x, SystemInformation.VirtualScreen.Height - inThis.Height + y);
         }
     }
 }

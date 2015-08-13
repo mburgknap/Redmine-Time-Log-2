@@ -67,10 +67,7 @@ namespace RedmineLog
 
         private void OnMainLoad(object sender, EventArgs e)
         {
-            if (SystemInformation.VirtualScreen.Location.X < 0)
-                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            this.SetupLocation(0, -50);
         }
 
         private void btnBugs_Click(object sender, EventArgs e)
@@ -83,11 +80,27 @@ namespace RedmineLog
     internal class MainView : Main.IView, IView<frmMain>
     {
 
-        class ExContextMenu : ContextMenuStrip
+        class ExContextMenuSubIssue : ContextMenuStrip
         {
             private RedmineIssueData item;
             private Action<string, RedmineIssueData> data;
-            public ExContextMenu()
+            public ExContextMenuSubIssue()
+            {
+                Items.Add(new ToolStripMenuItem("Add subtask", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
+                Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve, (s, e) => { data("ResolveIssue", item); }));
+            }
+
+            public void Set(RedmineIssueData inItem, Action<string, object> inData)
+            {
+                item = inItem;
+                data = inData;
+            }
+        }
+        class ExContextMenuIssue : ContextMenuStrip
+        {
+            private RedmineIssueData item;
+            private Action<string, RedmineIssueData> data;
+            public ExContextMenuIssue()
             {
                 Items.Add(new ToolStripMenuItem("Add Sub Issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
             }
@@ -99,7 +112,9 @@ namespace RedmineLog
             }
         }
 
-        static ExContextMenu menu = new ExContextMenu();
+        static ExContextMenuSubIssue menuSubIssue = new ExContextMenuSubIssue();
+
+        static ExContextMenuIssue menuIssue = new ExContextMenuIssue();
 
         private Main.Actions currentMode;
         private frmMain Form;
@@ -210,8 +225,8 @@ namespace RedmineLog
         {
             if (e.Button == MouseButtons.Right)
             {
-                menu.Set(model.IssueInfo, OnSpecialClick);
-                menu.Show(Form.lblIssue, new Point(0, 0));
+                menuSubIssue.Set(model.IssueInfo, OnSpecialClick);
+                menuSubIssue.Show(Form.lblIssue, new Point(0, 0));
             }
         }
 
@@ -219,8 +234,8 @@ namespace RedmineLog
         {
             if (e.Button == MouseButtons.Right)
             {
-                menu.Set(model.IssueParentInfo, OnSpecialClick);
-                menu.Show(Form.lblParentIssue, new Point(0, 0));
+                menuIssue.Set(model.IssueParentInfo, OnSpecialClick);
+                menuIssue.Show(Form.lblParentIssue, new Point(0, 0));
             }
         }
         private void OnSpecialClick(string action, object data)

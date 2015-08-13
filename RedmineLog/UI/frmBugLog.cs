@@ -27,10 +27,7 @@ namespace RedmineLog.UI
         }
         private void OnBugLogLoad(object sender, EventArgs e)
         {
-            if (SystemInformation.VirtualScreen.Location.X < 0)
-                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            this.SetupLocation(0, -50);
         }
     }
 
