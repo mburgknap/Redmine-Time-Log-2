@@ -44,7 +44,7 @@ namespace RedmineLog
                     using (var client = new WebClient())
                     {
                         File.Delete(filename);
-                        client.DownloadFile("https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1", filename);
+                        client.DownloadFile("https://raw.githubusercontent.com/mburgknap/Redmine-Time-Log/master/RedmineLog/Version.config", filename);
 
                         var version = File.ReadAllText(filename);
 
