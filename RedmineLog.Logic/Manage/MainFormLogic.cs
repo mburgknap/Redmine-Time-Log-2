@@ -127,15 +127,16 @@ namespace RedmineLog.Logic
         public void OnLoadEvent(object sender, EventArgs arg)
         {
 
-            if (dbCache.HasWorkActivities)
-            {
-                model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
-            }
-            else
-            {
+            if (!dbCache.HasWorkActivities)
                 dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
-                model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
-            }
+
+            model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+
+
+            if (!dbCache.HasWorkActivities)
+                dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
+
+            model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
 
             model.Sync.Value(SyncTarget.View, "WorkActivities");
 
@@ -201,7 +202,7 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(IssueLog.Events.Resolve, typeof(OnPublisher))]
+        [EventSubscription(Main.Events.IssueResolve, typeof(OnPublisher))]
         public void OnResolveEvent(object sender, Args<WorkingIssue> arg)
         {
             redmine.Resolve(arg.Data);
@@ -240,8 +241,8 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Main.Events.AddSubIssue, typeof(Subscribe<Main.IView>))]
-        public void OnAddSubIssueEvent(object sender, Args<RedmineIssueData> arg)
+        [EventSubscription(Main.Events.AddSubIssue, typeof(OnPublisher))]
+        public void OnAddSubIssueEvent(object sender, Args<SubIssueData> arg)
         {
             int newIssueId = redmine.AddSubIssue(arg.Data);
             OnAddIssueEvent(view, new Args<string>(newIssueId.ToString()));

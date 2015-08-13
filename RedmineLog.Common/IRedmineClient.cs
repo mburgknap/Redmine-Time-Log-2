@@ -31,6 +31,12 @@ namespace RedmineLog.Common
 
         IEnumerable<BugLogItem> GetUserBugs(int idUser);
 
-        int AddSubIssue(RedmineIssueData inIssueData);
+        int AddSubIssue(SubIssueData inIssueData);
+
+        IEnumerable<UserData> GetUsers();
+
+        IEnumerable<TrackerData> GetTrackers();
+
+        IEnumerable<PriorityData> GetPriorites();
     }
 }

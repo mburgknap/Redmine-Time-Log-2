@@ -2,6 +2,7 @@
 using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.Common.Forms;
 using RedmineLog.Properties;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
@@ -47,7 +48,7 @@ namespace RedmineLog
 
                         var version = File.ReadAllText(filename);
 
-                        if (!Assembly.GetExecutingAssembly().GetName().Version.Equals(new Version(version.Split(';')[0])))
+                        if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(new Version(version.Split(';')[0])) == -1)
                         {
                             if (MessageBox.Show("New version availible " + version.Split(';')[0]
                                                 + Environment.NewLine
@@ -145,10 +146,11 @@ namespace RedmineLog
         [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateIssueEvent;
 
-        [EventPublication(Main.Events.AddSubIssue, typeof(Publish<Main.IView>))]
-        public event EventHandler<Args<RedmineIssueData>> AddSubIssueEvent;
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<RedmineIssueData>> SetSubIssueEvent;
 
         private frmSmall smallForm;
+        private frmSubIssue addIssueForm;
 
         public void GoLink(Uri inUri)
         {
@@ -230,7 +232,9 @@ namespace RedmineLog
                         {
                             UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                             UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
-                            AddSubIssueEvent.Fire(this, (RedmineIssueData)data);
+                            addIssueForm = new frmSubIssue();
+                            SetSubIssueEvent.Fire(this, (RedmineIssueData)data);
+                            addIssueForm.ShowDialog();
                         });
             }
         }

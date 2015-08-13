@@ -49,7 +49,7 @@ namespace RedmineLog
         [EventPublication(IssueLog.Events.Select)]
         public event EventHandler<Args<WorkingIssue>> SelectEvent;
 
-        [EventPublication(IssueLog.Events.Resolve)]
+        [EventPublication(Main.Events.IssueResolve)]
         public event EventHandler<Args<WorkingIssue>> ResolveEvent;
 
         [EventPublication(IssueLog.Events.Delete)]

@@ -133,7 +133,7 @@ namespace RedmineLog.Logic
         {
             get
             {
-                var result = database.Get<CacheTable, int, DbCustomSerializer<List<WorkActivityType>>>(1, null);
+                var result = database.Get<CacheTable, String, DbCustomSerializer<List<WorkActivityType>>>(typeof(WorkActivityType).ToString(), null);
 
                 return result != null;
             }
@@ -141,7 +141,7 @@ namespace RedmineLog.Logic
 
         public IEnumerable<WorkActivityType> GetWorkActivityTypes()
         {
-            var result = database.Get<CacheTable, int, DbCustomSerializer<List<WorkActivityType>>>(1, null);
+            var result = database.Get<CacheTable, String, DbCustomSerializer<List<WorkActivityType>>>(typeof(WorkActivityType).ToString(), null);
 
             if (result != null)
                 return result.Get;
@@ -149,9 +149,56 @@ namespace RedmineLog.Logic
             return new List<WorkActivityType>();
         }
 
-        public void InitWorkActivities(IEnumerable<WorkActivityType> inWorkActivities)
+        public IEnumerable<UserData> GetUsers()
         {
-            database.Set<CacheTable, int, DbCustomSerializer<List<WorkActivityType>>>(1, new List<WorkActivityType>(inWorkActivities));
+            var result = database.Get<CacheTable, String, DbCustomSerializer<List<UserData>>>(typeof(UserData).ToString(), null);
+
+            if (result != null)
+                return result.Get;
+
+            return new List<UserData>();
+        }
+
+        public IEnumerable<TrackerData> GetTrackers()
+        {
+            var result = database.Get<CacheTable, String, DbCustomSerializer<List<TrackerData>>>(typeof(TrackerData).ToString(), null);
+
+            if (result != null)
+                return result.Get;
+
+            return new List<TrackerData>();
+        }
+
+        public IEnumerable<PriorityData> GetPriorities()
+        {
+            var result = database.Get<CacheTable, String, DbCustomSerializer<List<PriorityData>>>(typeof(PriorityData).ToString(), null);
+
+            if (result != null)
+                return result.Get;
+
+            return new List<PriorityData>();
+        }
+
+
+        public void InitWorkActivities(IEnumerable<WorkActivityType> inData)
+        {
+            database.Set<CacheTable, String, DbCustomSerializer<List<WorkActivityType>>>(typeof(WorkActivityType).ToString(), new List<WorkActivityType>(inData));
+        }
+
+
+        public void InitUsers(IEnumerable<UserData> inData)
+        {
+            database.Set<CacheTable, String, DbCustomSerializer<List<UserData>>>(typeof(UserData).ToString(), new List<UserData>(inData));
+        }
+
+        public void InitTrackers(IEnumerable<TrackerData> inData)
+        {
+            database.Set<CacheTable, String, DbCustomSerializer<List<TrackerData>>>(typeof(TrackerData).ToString(), new List<TrackerData>(inData));
+        }
+
+        public void InitPriorities(IEnumerable<PriorityData> inData)
+        {
+            database.Set<CacheTable, String, DbCustomSerializer<List<PriorityData>>>(typeof(PriorityData).ToString(), new List<PriorityData>(inData));
         }
     }
 

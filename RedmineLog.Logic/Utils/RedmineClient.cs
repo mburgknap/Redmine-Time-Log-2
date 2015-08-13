@@ -42,27 +42,7 @@ namespace RedmineLog.Logic
         }
 
 
-        public IEnumerable<WorkActivityType> GetWorkActivityTypes()
-        {
-            try
-            {
-                var parameters = new NameValueCollection { };
 
-                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
-
-                var responseList = manager.GetObjectList<TimeEntryActivity>(parameters);
-
-                return responseList.Select(x => new WorkActivityType()
-                                    {
-                                        Id = x.Id,
-                                        Name = x.Name
-                                    });
-            }
-            catch (Exception ex)
-            { logger.Error("GetWorkActivityTypes", ex); }
-
-            return new List<WorkActivityType>(); ;
-        }
 
 
 
@@ -284,13 +264,13 @@ namespace RedmineLog.Logic
         }
 
 
-        public int AddSubIssue(RedmineIssueData inIssueData)
+        public int AddSubIssue(SubIssueData inIssueData)
         {
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
-                var issue = manager.GetObject<Issue>(inIssueData.Id.ToString(), null);
+                var issue = manager.GetObject<Issue>(inIssueData.ParentId.ToString(), null);
 
                 issue.SpentHours = 0;
                 issue.EstimatedHours = 0;
@@ -307,8 +287,13 @@ namespace RedmineLog.Logic
                 if (issue.Watchers != null)
                     issue.Watchers.Clear();
 
+                issue.Subject = inIssueData.Subject;
+                issue.Description = inIssueData.Description;
                 issue.Status = new IdentifiableName() { Id = 1 };
-                issue.ParentIssue = new IdentifiableName() { Id = inIssueData.Id };
+                issue.ParentIssue = new IdentifiableName() { Id = inIssueData.ParentId };
+                issue.Tracker = new IdentifiableName() { Id = inIssueData.Tracker.Id };
+                issue.Priority = new IdentifiableName() { Id = inIssueData.Priority.Id };
+                issue.AssignedTo = new IdentifiableName() { Id = inIssueData.User.Id };
 
                 var newIssue = manager.CreateObject<Issue>(issue);
 
@@ -318,6 +303,94 @@ namespace RedmineLog.Logic
             { logger.Error("AddSubIssue ", ex); }
 
             return 0;
+        }
+        public IEnumerable<WorkActivityType> GetWorkActivityTypes()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<TimeEntryActivity>(parameters);
+
+                return responseList.Select(x => new WorkActivityType()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetWorkActivityTypes", ex); }
+
+            return new List<WorkActivityType>(); ;
+        }
+
+        public IEnumerable<UserData> GetUsers()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<Redmine.Net.Api.Types.User>(parameters);
+
+                return responseList.Select(x => new UserData()
+                {
+                    Id = x.Id,
+                    Name = x.FirstName + " " + x.LastName
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetUsers", ex); }
+
+            return new List<UserData>(); ;
+        }
+
+        public IEnumerable<TrackerData> GetTrackers()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<Tracker>(parameters);
+
+                return responseList.Select(x => new TrackerData()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetTrackers", ex); }
+
+            return new List<TrackerData>(); ;
+        }
+
+        public IEnumerable<PriorityData> GetPriorites()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<IssuePriority>(parameters);
+
+                return responseList.Select(x => new PriorityData()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsDefault = x.IsDefault
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetPriorites", ex); }
+
+            return new List<PriorityData>(); ;
         }
     }
 }

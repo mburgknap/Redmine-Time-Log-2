@@ -41,7 +41,19 @@ namespace RedmineLog.Common
 
         IEnumerable<WorkActivityType> GetWorkActivityTypes();
 
-        void InitWorkActivities(IEnumerable<WorkActivityType> inWorkActivities);
+        void InitWorkActivities(IEnumerable<WorkActivityType> inData);
+
+        void InitUsers(IEnumerable<UserData> inData);
+
+        void InitTrackers(IEnumerable<TrackerData> inData);
+
+        void InitPriorities(IEnumerable<PriorityData> inData);
+
+        IEnumerable<PriorityData> GetPriorities();
+
+        IEnumerable<UserData> GetUsers();
+
+        IEnumerable<TrackerData> GetTrackers();
     }
 
 

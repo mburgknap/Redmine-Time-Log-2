@@ -6,6 +6,7 @@ using RedmineLog.Common;
 using RedmineLog.Logic.Common;
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace RedmineLog.Logic
 {
@@ -52,6 +53,22 @@ namespace RedmineLog.Logic
         public void OnReloadCacheEvent(object sender, EventArgs arg)
         {
             dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
+
+            var users = redmine.GetUsers().ToList();
+            int myId = redmine.GetCurrentUser();
+            var user = users.Where(x => x.Id == myId).First();
+            user.IsDefault = true;
+            dbCache.InitUsers(users);
+
+            var trackers = redmine.GetTrackers();
+
+            trackers = trackers.Where(x => x.Name.ToLower().StartsWith("zadanie")
+                                            || x.Name.ToLower().Contains("błąd")).ToList();
+
+            trackers.Where(x => x.Name.ToLower().Contains("dev")).First().IsDefault = true;
+
+            dbCache.InitTrackers(trackers);
+            dbCache.InitPriorities(redmine.GetPriorites());
         }
     }
 }

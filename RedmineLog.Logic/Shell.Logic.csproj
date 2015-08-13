@@ -66,9 +66,11 @@
     <Compile Include="Data\Database.cs" />
     <Compile Include="Bindings.cs" />
     <Compile Include="Common\ILogic.cs" />
+    <Compile Include="Manage\SubIssueFormLogic.cs" />
     <Compile Include="Manage\BugLogFormLogic.cs" />
     <Compile Include="Manage\EditLogFormLogic.cs" />
     <Compile Include="Manage\MainFormLogic.cs" />
+    <Compile Include="Model\SubIssueModel.cs" />
     <Compile Include="Model\Bindings.cs" />
     <Compile Include="Model\BugLogModel.cs" />
     <Compile Include="Model\EditLogModel.cs" />

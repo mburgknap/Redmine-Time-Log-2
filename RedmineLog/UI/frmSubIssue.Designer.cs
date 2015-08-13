@@ -1,6 +1,6 @@
 ﻿namespace RedmineLog.UI
 {
-    partial class frmAddSubIssue
+    partial class frmSubIssue
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.tbSubject = new System.Windows.Forms.TextBox();
             this.tbDescription = new System.Windows.Forms.TextBox();
-            this.tbAccept = new System.Windows.Forms.Button();
+            this.btnAccept = new System.Windows.Forms.Button();
             this.cbTracker = new System.Windows.Forms.ComboBox();
             this.cbPriority = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -46,40 +46,42 @@
             this.tbSubject.Location = new System.Drawing.Point(12, 22);
             this.tbSubject.Multiline = true;
             this.tbSubject.Name = "tbSubject";
-            this.tbSubject.Size = new System.Drawing.Size(308, 35);
+            this.tbSubject.Size = new System.Drawing.Size(308, 30);
             this.tbSubject.TabIndex = 0;
             // 
             // tbDescription
             // 
-            this.tbDescription.Location = new System.Drawing.Point(12, 84);
+            this.tbDescription.Location = new System.Drawing.Point(11, 74);
             this.tbDescription.Multiline = true;
             this.tbDescription.Name = "tbDescription";
-            this.tbDescription.Size = new System.Drawing.Size(308, 99);
+            this.tbDescription.Size = new System.Drawing.Size(309, 62);
             this.tbDescription.TabIndex = 1;
             // 
-            // tbAccept
+            // btnAccept
             // 
-            this.tbAccept.Location = new System.Drawing.Point(341, 160);
-            this.tbAccept.Name = "tbAccept";
-            this.tbAccept.Size = new System.Drawing.Size(138, 23);
-            this.tbAccept.TabIndex = 2;
-            this.tbAccept.Text = "Accept";
-            this.tbAccept.UseVisualStyleBackColor = true;
+            this.btnAccept.Location = new System.Drawing.Point(192, 197);
+            this.btnAccept.Name = "btnAccept";
+            this.btnAccept.Size = new System.Drawing.Size(128, 39);
+            this.btnAccept.TabIndex = 2;
+            this.btnAccept.Text = "Accept";
+            this.btnAccept.UseVisualStyleBackColor = true;
             // 
             // cbTracker
             // 
+            this.cbTracker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTracker.FormattingEnabled = true;
-            this.cbTracker.Location = new System.Drawing.Point(341, 22);
+            this.cbTracker.Location = new System.Drawing.Point(12, 162);
             this.cbTracker.Name = "cbTracker";
-            this.cbTracker.Size = new System.Drawing.Size(138, 21);
+            this.cbTracker.Size = new System.Drawing.Size(174, 21);
             this.cbTracker.TabIndex = 3;
             // 
             // cbPriority
             // 
+            this.cbPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPriority.FormattingEnabled = true;
-            this.cbPriority.Location = new System.Drawing.Point(341, 65);
+            this.cbPriority.Location = new System.Drawing.Point(192, 162);
             this.cbPriority.Name = "cbPriority";
-            this.cbPriority.Size = new System.Drawing.Size(138, 21);
+            this.cbPriority.Size = new System.Drawing.Size(128, 21);
             this.cbPriority.TabIndex = 5;
             // 
             // label1
@@ -94,7 +96,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 65);
+            this.label2.Location = new System.Drawing.Point(12, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 13);
             this.label2.TabIndex = 7;
@@ -103,7 +105,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(341, 6);
+            this.label3.Location = new System.Drawing.Point(12, 146);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 13);
             this.label3.TabIndex = 8;
@@ -112,7 +114,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(341, 49);
+            this.label5.Location = new System.Drawing.Point(189, 146);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(38, 13);
             this.label5.TabIndex = 10;
@@ -121,7 +123,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(341, 99);
+            this.label4.Location = new System.Drawing.Point(11, 197);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(62, 13);
             this.label4.TabIndex = 12;
@@ -129,17 +131,18 @@
             // 
             // cbPerson
             // 
+            this.cbPerson.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPerson.FormattingEnabled = true;
-            this.cbPerson.Location = new System.Drawing.Point(341, 115);
+            this.cbPerson.Location = new System.Drawing.Point(11, 213);
             this.cbPerson.Name = "cbPerson";
-            this.cbPerson.Size = new System.Drawing.Size(138, 21);
+            this.cbPerson.Size = new System.Drawing.Size(175, 21);
             this.cbPerson.TabIndex = 11;
             // 
-            // frmAddSubIssue
+            // frmSubIssue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 193);
+            this.ClientSize = new System.Drawing.Size(332, 250);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.cbPerson);
             this.Controls.Add(this.label5);
@@ -148,13 +151,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbPriority);
             this.Controls.Add(this.cbTracker);
-            this.Controls.Add(this.tbAccept);
+            this.Controls.Add(this.btnAccept);
             this.Controls.Add(this.tbDescription);
             this.Controls.Add(this.tbSubject);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmAddSubIssue";
+            this.Name = "frmSubIssue";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Add sub issue";
             this.TopMost = true;
@@ -165,16 +168,16 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox tbSubject;
-        private System.Windows.Forms.TextBox tbDescription;
-        private System.Windows.Forms.Button tbAccept;
-        private System.Windows.Forms.ComboBox cbTracker;
-        private System.Windows.Forms.ComboBox cbPriority;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox cbPerson;
+        internal System.Windows.Forms.TextBox tbSubject;
+        internal System.Windows.Forms.TextBox tbDescription;
+        internal System.Windows.Forms.ComboBox cbTracker;
+        internal System.Windows.Forms.ComboBox cbPriority;
+        internal System.Windows.Forms.ComboBox cbPerson;
+        public System.Windows.Forms.Button btnAccept;
     }
 }

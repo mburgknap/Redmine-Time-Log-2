@@ -31,6 +31,7 @@ namespace RedmineLog.Common
             public const string UpdateComment = "topic://Main/UpdateComment";
             public const string DelComment = "topic://Main/DelComment";
             public const string AddSubIssue = "topic://Main/AddSubIssue";
+            public const string IssueResolve = "topic://Main/IssueResolve";
         }
 
         public interface IView

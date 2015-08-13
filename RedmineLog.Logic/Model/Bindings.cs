@@ -9,6 +9,7 @@ namespace RedmineLog.Model
     {
         public override void Load()
         {
+            Bind<SubIssue.IModel>().To<SubIssueModel>().InSingletonScope();
             Bind<Settings.IModel>().To<SettingsModel>().InSingletonScope();
             Bind<EditLog.IModel>().To<EditLogModel>().InSingletonScope();
             Bind<Main.IModel>().To<MainModel>().InSingletonScope();
