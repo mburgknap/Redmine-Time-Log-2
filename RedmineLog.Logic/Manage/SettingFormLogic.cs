@@ -65,7 +65,10 @@ namespace RedmineLog.Logic
             trackers = trackers.Where(x => x.Name.ToLower().StartsWith("zadanie")
                                             || x.Name.ToLower().Contains("błąd")).ToList();
 
-            trackers.Where(x => x.Name.ToLower().Contains("dev")).First().IsDefault = true;
+            var tmpItem = trackers.Where(x => x.Name.ToLower().Contains("dev")).FirstOrDefault();
+
+            if (tmpItem != null)
+                tmpItem.IsDefault = true;
 
             dbCache.InitTrackers(trackers);
             dbCache.InitPriorities(redmine.GetPriorites());
