@@ -12,7 +12,6 @@ using RedmineLog.UI.Common;
 using Appccelerate.EventBroker;
 using RedmineLog.Common;
 using Ninject;
-using System.Linq;
 using Appccelerate.Events;
 
 namespace RedmineLog.UI

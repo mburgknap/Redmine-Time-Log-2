@@ -242,7 +242,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Version.cfg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
