@@ -76,6 +76,8 @@
     <Compile Include="UI\Common\FormExtensions.cs" />
     <Compile Include="UI\AppTimers.cs" />
     <Compile Include="UI\Common\KeyHelpers.cs" />
+    <Compile Include="UI\Common\LinkClickExtension.cs" />
+    <Compile Include="UI\Common\NotifyBox.cs" />
     <Compile Include="UI\frmSubIssue.cs">
       <SubType>Form</SubType>
     </Compile>

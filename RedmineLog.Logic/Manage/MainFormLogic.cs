@@ -120,23 +120,16 @@ namespace RedmineLog.Logic
             if (arg.Data.Equals("Redmine"))
             { view.GoLink(redmine.IssueListUrl()); }
             else if (arg.Data.Equals("Issue"))
-            { view.GoLink(redmine.IssueUrl(model.Issue)); }
+            { view.GoLink(new Uri(redmine.IssueUrl(model.Issue.Id))); }
         }
 
         [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-
             if (!dbCache.HasWorkActivities)
                 dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
-
-            model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
-
-
-            if (!dbCache.HasWorkActivities)
-                dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
-
-            model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+            else
+                model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
 
             model.Sync.Value(SyncTarget.View, "WorkActivities");
 

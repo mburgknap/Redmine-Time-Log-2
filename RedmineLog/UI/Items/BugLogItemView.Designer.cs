@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.lblIdIssue = new System.Windows.Forms.Label();
-            this.lblIssue = new System.Windows.Forms.Label();
+            this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.lblActivityType = new System.Windows.Forms.Label();
             this.separator = new System.Windows.Forms.Panel();
             this.lblPriority = new System.Windows.Forms.Label();
@@ -60,7 +60,7 @@
             // lblActivityType
             // 
             this.lblActivityType.BackColor = System.Drawing.Color.Transparent;
-            this.lblActivityType.ForeColor = System.Drawing.Color.Blue;
+            this.lblActivityType.ForeColor = System.Drawing.SystemColors.MenuText;
             this.lblActivityType.Location = new System.Drawing.Point(3, 27);
             this.lblActivityType.Name = "lblActivityType";
             this.lblActivityType.Size = new System.Drawing.Size(41, 18);
@@ -105,7 +105,7 @@
         #endregion
 
         private System.Windows.Forms.Label lblIdIssue;
-        private System.Windows.Forms.Label lblIssue;
+        private System.Windows.Forms.LinkLabel lblIssue;
         private System.Windows.Forms.Label lblActivityType;
         private System.Windows.Forms.Panel separator;
         private System.Windows.Forms.Label lblPriority;

@@ -35,7 +35,13 @@ namespace RedmineLog.Logic.Manage
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             model.Bugs.Clear();
-            model.Bugs.AddRange(redmine.GetUserBugs(dbConfig.GetIdUser()));
+
+            foreach (var bug in redmine.GetUserBugs(dbConfig.GetIdUser()))
+            {
+                bug.Uri = redmine.IssueUrl(bug.Id);
+                model.Bugs.Add(bug);
+            }
+
             if (model.Bugs.Count > 0)
                 model.Sync.Value(SyncTarget.View, "Bugs");
         }

@@ -4,6 +4,8 @@ using RedmineLog.Common;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -65,7 +67,8 @@ namespace RedmineLog
                      ReloadCacheEvent.Fire(this);
                  }, () =>
                  {
-                     MessageBox.Show("Cache reloaded");
+                     NotifyBox.Show("Info", "Cache reloaded.");
+
                  });
         }
 

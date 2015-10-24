@@ -30,7 +30,7 @@
         {
             this.lblIdIssue = new System.Windows.Forms.Label();
             this.lblParentIssue = new System.Windows.Forms.Label();
-            this.lblIssue = new System.Windows.Forms.Label();
+            this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.lblTime = new System.Windows.Forms.Label();
             this.lblActivityType = new System.Windows.Forms.Label();
             this.separator = new System.Windows.Forms.Panel();
@@ -120,7 +120,7 @@
 
         private System.Windows.Forms.Label lblIdIssue;
         private System.Windows.Forms.Label lblParentIssue;
-        private System.Windows.Forms.Label lblIssue;
+        private System.Windows.Forms.LinkLabel lblIssue;
         private System.Windows.Forms.Label lblTime;
         private System.Windows.Forms.Label lblActivityType;
         private System.Windows.Forms.Panel separator;

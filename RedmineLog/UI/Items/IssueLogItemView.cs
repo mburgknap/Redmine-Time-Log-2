@@ -42,7 +42,22 @@ namespace RedmineLog.UI.Items
         public IssueLogItemView()
         {
             InitializeComponent();
+            lblIssue.SetLinkMouseClick(IssueLinkGo, this.OnMouseClick);
         }
+
+        void IssueLinkGo()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(((WorkingIssue)Data).IssueUri);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("GoLink", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
+        }
+
 
         internal void SetDescription()
         {

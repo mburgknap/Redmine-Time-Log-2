@@ -39,12 +39,27 @@ namespace RedmineLog.UI.Items
         public WorkLogItemView()
         {
             InitializeComponent();
+            lbIssue.SetLinkMouseClick(IssueLinkGo, this.OnMouseClick);
+        }
+
+        void IssueLinkGo()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(((WorkLogItem)Data).IssueUri);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("GoLink", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
         }
 
         internal void SetDescription()
         {
-            lblIdIssue.Text = "#ID";
-            lblComment.Text = "Issue Comment";
+            lbParentIssue.Text = "Parent issue";
+            lbIssue.Text = "Issue";
+            lblComment.Text = "Comment";
             lblTime.Text = "Time";
             lblActivityType.Text = "Activity type";
         }
@@ -61,7 +76,8 @@ namespace RedmineLog.UI.Items
         {
             Data = item;
 
-            lblIdIssue.Text = item.Id.ToString();
+            lbIssue.Text = item.Issue;
+            lbParentIssue.Text = item.ParentIssue;
             lblComment.Text = item.Comment;
             lblActivityType.Text = item.ActivityName;
 
@@ -71,5 +87,6 @@ namespace RedmineLog.UI.Items
 
             return this;
         }
+
     }
 }

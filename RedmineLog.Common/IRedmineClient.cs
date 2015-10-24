@@ -17,8 +17,6 @@ namespace RedmineLog.Common
 
         Uri IssueListUrl();
 
-        Uri IssueUrl(IssueData issueData);
-
         void Resolve(IssueData issueData);
 
         void Resolve(WorkingIssue workingIssue);
@@ -38,5 +36,7 @@ namespace RedmineLog.Common
         IEnumerable<TrackerData> GetTrackers();
 
         IEnumerable<PriorityData> GetPriorites();
+        
+        string IssueUrl(int iniDIssue);
     }
 }
