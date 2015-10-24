@@ -284,6 +284,23 @@ namespace RedmineLog.Logic
         {
             database.Set<AppConfig, string, int>("IdUser", value);
         }
+
+
+        public void SetDisplay(DisplayData value)
+        {
+            database.Set<AppConfig, string, DbCustomSerializer<DisplayData>>("DisplayData", value);
+        }
+
+
+        public DisplayData GetDisplay()
+        {
+            var result = database.Get<AppConfig, string, DbCustomSerializer<DisplayData>>("DisplayData", null);
+
+            if (result != null)
+                return result.Get;
+
+            return null;
+        }
     }
 
     internal class Database : IDatabase

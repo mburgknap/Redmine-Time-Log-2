@@ -12,8 +12,9 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmIssueLog : Form
+    public partial class frmIssueLog : Form, ISetup
     {
+        private IAppSettings settings;
         public frmIssueLog()
         {
             InitializeComponent();
@@ -24,7 +25,12 @@ namespace RedmineLog
 
         private void OnSearchLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(0, -50);
+            this.SetupLocation(settings.Display, 0, -50);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 

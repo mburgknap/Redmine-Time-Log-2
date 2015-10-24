@@ -28,6 +28,7 @@ namespace RedmineLog.Logic
             dbRedmine = inDbRedmine;
             dbConfig = inDbConfig;
             dbCache = inDbCache;
+            model.Sync.Bind(SyncTarget.Source, this);
             inEvents.Register(this);
         }
 
@@ -44,9 +45,11 @@ namespace RedmineLog.Logic
         {
             model.ApiKey = dbRedmine.GetApiKey();
             model.Url = dbRedmine.GetUrl();
+            model.Display = dbConfig.GetDisplay();
 
             model.Sync.Value(SyncTarget.View, "ApiKey");
             model.Sync.Value(SyncTarget.View, "Url");
+            model.Sync.Value(SyncTarget.View, "Display");
         }
 
         [EventSubscription(Settings.Events.ReloadCache, typeof(Subscribe<Settings.IView>))]
@@ -72,6 +75,11 @@ namespace RedmineLog.Logic
 
             dbCache.InitTrackers(trackers);
             dbCache.InitPriorities(redmine.GetPriorites());
+        }
+
+        private void OnDisplayChange()
+        {
+            dbConfig.SetDisplay(model.Display);
         }
     }
 }

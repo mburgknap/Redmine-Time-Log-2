@@ -84,6 +84,10 @@ namespace RedmineLog.Common
         int GetIdUser();
 
         void SetIdUser(int value);
+
+        void SetDisplay(DisplayData value);
+
+        DisplayData GetDisplay();
     }
 
     public interface IDatabase

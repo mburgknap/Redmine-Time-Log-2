@@ -16,8 +16,9 @@ using System.Windows.Forms;
 
 namespace RedmineLog.UI
 {
-    public partial class frmBugLog : Form
+    public partial class frmBugLog : Form, ISetup
     {
+        private IAppSettings settings;
         public frmBugLog()
         {
             InitializeComponent();
@@ -27,7 +28,12 @@ namespace RedmineLog.UI
         }
         private void OnBugLogLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(0, -50);
+            this.SetupLocation(settings.Display, 0, -50);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 

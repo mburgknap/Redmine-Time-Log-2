@@ -11,9 +11,10 @@ using System.Windows.Forms;
 
 namespace RedmineLog.UI
 {
-    public partial class frmEditTimeLog : Form
+    public partial class frmEditTimeLog : Form, ISetup
     {
         public Action OnChange;
+        private IAppSettings settings;
 
         public frmEditTimeLog()
         {
@@ -23,7 +24,12 @@ namespace RedmineLog.UI
 
         private void OnFormLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(0, -160);
+            this.SetupLocation(settings.Display, 0, -160);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 
@@ -112,6 +118,9 @@ namespace RedmineLog.UI
                 () =>
                 {
                     SaveEvent.Fire(this);
+                }, () =>
+                {
+                    Form.Close();
                 });
         }
 

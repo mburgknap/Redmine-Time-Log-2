@@ -10,7 +10,7 @@ namespace RedmineLog.UI.Common
 {
     public static class NotifyBox
     {
-        public static void Show(String inTitle, string inText)
+        public static void Show(string inText, String inTitle)
         {
             var notifyIcon1 = new NotifyIcon();
             notifyIcon1.Icon = SystemIcons.Application;

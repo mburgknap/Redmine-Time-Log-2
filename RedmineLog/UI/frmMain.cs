@@ -19,8 +19,9 @@ using System.Windows.Forms;
 namespace RedmineLog
 {
     //https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1
-    public partial class frmMain : Form
+    public partial class frmMain : Form, ISetup
     {
+        private IAppSettings settings;
         public frmMain()
         {
             InitializeComponent();
@@ -67,7 +68,7 @@ namespace RedmineLog
 
         private void OnMainLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(0, -50);
+            this.SetupLocation(settings.Display, 0, -50);
         }
 
         private void btnBugs_Click(object sender, EventArgs e)
@@ -75,6 +76,11 @@ namespace RedmineLog
             cmIssuesKind.Show(btnIssueMode, new Point(0, 0));
         }
 
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
+        }
     }
 
     internal class MainView : Main.IView, IView<frmMain>

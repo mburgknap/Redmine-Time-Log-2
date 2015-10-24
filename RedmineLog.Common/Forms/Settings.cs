@@ -21,6 +21,7 @@
 
             string ApiKey { get; set; }
 
+            DisplayData Display { get; set; }
         }
     }
 }

@@ -39,7 +39,7 @@
             this.lbProject = new System.Windows.Forms.Label();
             this.lblTracker = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnHide = new System.Windows.Forms.Button();
+            this.btnHide = new System.Windows.Forms.Label();
             this.cbAutoHide = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -54,6 +54,8 @@
             this.lbWorkTime.Size = new System.Drawing.Size(72, 21);
             this.lbWorkTime.TabIndex = 0;
             this.lbWorkTime.Text = "00:00:00";
+            this.lbWorkTime.MouseEnter += new System.EventHandler(this.OnMouseEnter);
+            this.lbWorkTime.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             // 
             // lbIdleTime
             // 
@@ -65,6 +67,8 @@
             this.lbIdleTime.Size = new System.Drawing.Size(55, 15);
             this.lbIdleTime.TabIndex = 1;
             this.lbIdleTime.Text = "00:00:00";
+            this.lbIdleTime.MouseEnter += new System.EventHandler(this.OnMouseEnter);
+            this.lbIdleTime.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             // 
             // lbParentIssue
             // 
@@ -76,6 +80,7 @@
             this.lbParentIssue.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lbParentIssue.Size = new System.Drawing.Size(0, 16);
             this.lbParentIssue.TabIndex = 2;
+            this.lbParentIssue.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             // 
             // lbIssue
             // 
@@ -86,6 +91,7 @@
             this.lbIssue.Name = "lbIssue";
             this.lbIssue.Size = new System.Drawing.Size(0, 13);
             this.lbIssue.TabIndex = 3;
+            this.lbIssue.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             // 
             // flowLayoutPanel1
             // 
@@ -101,6 +107,8 @@
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3, 3, 0, 0);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(130, 92);
             this.flowLayoutPanel1.TabIndex = 4;
+            this.flowLayoutPanel1.MouseEnter += new System.EventHandler(this.OnMouseEnter);
+            this.flowLayoutPanel1.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             // 
             // lbComment
             // 
@@ -112,6 +120,7 @@
             this.lbComment.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.lbComment.Size = new System.Drawing.Size(5, 13);
             this.lbComment.TabIndex = 6;
+            this.lbComment.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             // 
             // lbProject
             // 
@@ -122,6 +131,7 @@
             this.lbProject.Name = "lbProject";
             this.lbProject.Size = new System.Drawing.Size(0, 13);
             this.lbProject.TabIndex = 4;
+            this.lbProject.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             // 
             // lblTracker
             // 
@@ -133,17 +143,21 @@
             this.lblTracker.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.lblTracker.Size = new System.Drawing.Size(5, 13);
             this.lblTracker.TabIndex = 5;
+            this.lblTracker.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             // 
             // btnHide
             // 
+            this.btnHide.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btnHide.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnHide.Location = new System.Drawing.Point(0, 4);
             this.btnHide.Name = "btnHide";
             this.btnHide.Size = new System.Drawing.Size(22, 91);
             this.btnHide.TabIndex = 5;
             this.btnHide.Text = ">";
-            this.btnHide.UseVisualStyleBackColor = true;
-            this.btnHide.Click += new System.EventHandler(this.btnHide_Click);
-            this.btnHide.MouseEnter += new System.EventHandler(this.btnHide_MouseEnter);
+            this.btnHide.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnHide.Click += new System.EventHandler(this.OnHideClick);
+            this.btnHide.MouseEnter += new System.EventHandler(this.OnMouseEnter);
+            this.btnHide.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             // 
             // cbAutoHide
             // 
@@ -153,6 +167,8 @@
             this.cbAutoHide.Size = new System.Drawing.Size(15, 14);
             this.cbAutoHide.TabIndex = 6;
             this.cbAutoHide.UseVisualStyleBackColor = true;
+            this.cbAutoHide.MouseEnter += new System.EventHandler(this.OnMouseEnter);
+            this.cbAutoHide.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             // 
             // frmSmall
             // 
@@ -173,8 +189,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "frmSmall";
             this.TopMost = true;
-            this.Deactivate += new System.EventHandler(this.frmSmall_Deactivate);
-            this.MouseEnter += new System.EventHandler(this.frmSmall_MouseEnter);
+            this.Deactivate += new System.EventHandler(this.OnFormDeactivate);
+            this.MouseEnter += new System.EventHandler(this.OnMouseEnter);
+            this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -193,7 +210,7 @@
         internal System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         internal System.Windows.Forms.ToolTip toolTip1;
         internal System.Windows.Forms.Label lbComment;
-        private System.Windows.Forms.Button btnHide;
+        private System.Windows.Forms.Label btnHide;
         private System.Windows.Forms.CheckBox cbAutoHide;
     }
 }

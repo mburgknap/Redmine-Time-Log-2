@@ -35,6 +35,7 @@
             this.Label1 = new System.Windows.Forms.Label();
             this.tbRedmineURL = new System.Windows.Forms.TextBox();
             this.btnReloadCache = new System.Windows.Forms.Button();
+            this.cbDisplay = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // Label2
@@ -55,9 +56,9 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(265, 96);
+            this.btnConnect.Location = new System.Drawing.Point(234, 96);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.Size = new System.Drawing.Size(106, 23);
             this.btnConnect.TabIndex = 8;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
@@ -87,11 +88,21 @@
             this.btnReloadCache.Text = "Reload cache";
             this.btnReloadCache.UseVisualStyleBackColor = true;
             // 
+            // cbDisplay
+            // 
+            this.cbDisplay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbDisplay.FormattingEnabled = true;
+            this.cbDisplay.Location = new System.Drawing.Point(128, 136);
+            this.cbDisplay.Name = "cbDisplay";
+            this.cbDisplay.Size = new System.Drawing.Size(106, 21);
+            this.cbDisplay.TabIndex = 13;
+            // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(357, 169);
+            this.ClientSize = new System.Drawing.Size(357, 162);
+            this.Controls.Add(this.cbDisplay);
             this.Controls.Add(this.btnReloadCache);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.tbApiKey);
@@ -119,5 +130,6 @@
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.TextBox tbRedmineURL;
         internal System.Windows.Forms.Button btnReloadCache;
+        internal System.Windows.Forms.ComboBox cbDisplay;
     }
 }

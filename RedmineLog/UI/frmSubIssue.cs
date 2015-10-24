@@ -16,8 +16,9 @@ using Appccelerate.Events;
 
 namespace RedmineLog.UI
 {
-    public partial class frmSubIssue : Form
+    public partial class frmSubIssue : Form, ISetup
     {
+        private IAppSettings settings;
         public frmSubIssue()
         {
             InitializeComponent();
@@ -27,7 +28,12 @@ namespace RedmineLog.UI
 
         private void OnAddIssueLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(0, -150);
+            this.SetupLocation(settings.Display, 0, -150);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 

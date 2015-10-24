@@ -12,8 +12,9 @@ using RedmineLog.UI.Items;
 
 namespace RedmineLog
 {
-    public partial class frmWorkLog : Form
+    public partial class frmWorkLog : Form, ISetup
     {
+        private IAppSettings settings;
         public frmWorkLog()
         {
             InitializeComponent();
@@ -23,7 +24,12 @@ namespace RedmineLog
 
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(0, -50);
+            this.SetupLocation(settings.Display, 0, -50);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 
