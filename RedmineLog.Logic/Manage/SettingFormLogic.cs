@@ -64,16 +64,26 @@ namespace RedmineLog.Logic
             dbCache.InitUsers(users);
 
             var trackers = redmine.GetTrackers();
+            TrackerData tmpItem = null;
 
-            trackers = trackers.Where(x => x.Name.ToLower().StartsWith("zadanie")
+            var tmpTrackers = trackers.Where(x => x.Name.ToLower().StartsWith("zadanie")
                                             || x.Name.ToLower().Contains("błąd")).ToList();
 
-            var tmpItem = trackers.Where(x => x.Name.ToLower().Contains("dev")).FirstOrDefault();
+            if (tmpTrackers.Count == 0)
+            {
+                tmpTrackers = trackers.ToList();
+                tmpItem = trackers.FirstOrDefault();
+            }
+            else
+            {
+                tmpItem = tmpTrackers.Where(x => x.Name.ToLower().Contains("dev")).FirstOrDefault();
+            }
+
 
             if (tmpItem != null)
                 tmpItem.IsDefault = true;
 
-            dbCache.InitTrackers(trackers);
+            dbCache.InitTrackers(tmpTrackers);
             dbCache.InitPriorities(redmine.GetPriorites());
         }
 

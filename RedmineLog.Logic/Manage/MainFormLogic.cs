@@ -441,6 +441,7 @@ namespace RedmineLog.Logic
                     issue.Comments.Add(issue.IdComment);
                     dbComment.Update(comment);
                     dbIssue.Update(model.Issue);
+                    model.Sync.Value(SyncTarget.View, "Comment");
                 }
 
             }

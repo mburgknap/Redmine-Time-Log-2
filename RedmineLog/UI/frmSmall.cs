@@ -98,8 +98,10 @@ namespace RedmineLog
         private void OnFormDeactivate(object sender, EventArgs e)
         {
             timer.Stop();
-
-            WrapForm();
+            if (!isHide)
+            {
+                WrapForm();
+            }
         }
 
 
@@ -232,8 +234,18 @@ namespace RedmineLog
 
         private void OnIssueClick(object sender, EventArgs e)
         {
-            if (model.Comment != null) Form.toolTip1.Show(model.Comment.Text, Form.lbIssue);
+        
+            try
+            {
+                System.Diagnostics.Process.Start(model.IssueUri);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("GoLink", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
         }
+
 
         private void OnFormClick(object sender, EventArgs e)
         {

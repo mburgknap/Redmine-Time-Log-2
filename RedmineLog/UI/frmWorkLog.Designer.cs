@@ -52,7 +52,7 @@
             this.fpWokLogList.Dock = System.Windows.Forms.DockStyle.Top;
             this.fpWokLogList.Location = new System.Drawing.Point(0, 68);
             this.fpWokLogList.Name = "fpWokLogList";
-            this.fpWokLogList.Size = new System.Drawing.Size(343, 431);
+            this.fpWokLogList.Size = new System.Drawing.Size(343, 418);
             this.fpWokLogList.TabIndex = 4;
             // 
             // cHeader

@@ -248,15 +248,13 @@ namespace RedmineLog
         {
             if (action == "AddSubIssue" && data is RedmineIssueData)
             {
-                new frmProcessing().Show(Form,
-                        () =>
-                        {
-                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                            UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
-                            addIssueForm = new frmSubIssue();
-                            SetSubIssueEvent.Fire(this, (RedmineIssueData)data);
-                            addIssueForm.ShowDialog();
-                        });
+
+                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
+                UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (RedmineIssueData)data);
+                addIssueForm.ShowDialog();
+
             }
         }
 

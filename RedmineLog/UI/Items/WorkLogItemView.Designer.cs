@@ -40,9 +40,9 @@
             // 
             this.lblComment.BackColor = System.Drawing.Color.Transparent;
             this.lblComment.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblComment.Location = new System.Drawing.Point(13, 46);
+            this.lblComment.Location = new System.Drawing.Point(11, 45);
             this.lblComment.Name = "lblComment";
-            this.lblComment.Size = new System.Drawing.Size(299, 23);
+            this.lblComment.Size = new System.Drawing.Size(299, 41);
             this.lblComment.TabIndex = 2;
             // 
             // lblTime
@@ -72,7 +72,7 @@
             // 
             this.separator.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.separator.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.separator.Location = new System.Drawing.Point(0, 74);
+            this.separator.Location = new System.Drawing.Point(0, 90);
             this.separator.Name = "separator";
             this.separator.Size = new System.Drawing.Size(315, 1);
             this.separator.TabIndex = 5;
@@ -107,7 +107,7 @@
             this.Controls.Add(this.lbIssue);
             this.Controls.Add(this.lblComment);
             this.Name = "WorkLogItemView";
-            this.Size = new System.Drawing.Size(315, 75);
+            this.Size = new System.Drawing.Size(315, 91);
             this.ResumeLayout(false);
 
         }

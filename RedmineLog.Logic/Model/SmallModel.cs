@@ -23,5 +23,8 @@ namespace RedmineLog.Logic.Model
         public CommentData Comment{ get { return Model.Comment; } }
         public RedmineIssueData IssueParentInfo { get { return Model.IssueParentInfo; } }
         public RedmineIssueData IssueInfo { get { return Model.IssueInfo; } }
+
+
+        public string IssueUri { get; set; }
     }
 }

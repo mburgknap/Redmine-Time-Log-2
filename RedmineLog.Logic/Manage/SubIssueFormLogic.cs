@@ -18,13 +18,15 @@ namespace RedmineLog.Logic.Manage
         private SubIssue.IModel model;
         private SubIssue.IView view;
         private IDbCache dbCache;
+        private IRedmineClient redmine;
 
         [Inject]
-        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IEventBroker inEvents)
+        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IEventBroker inEvents, IRedmineClient inClient)
         {
             view = inView;
             model = inModel;
             dbCache = inDbCache;
+            redmine = inClient;
             inEvents.Register(this);
         }
 
@@ -51,6 +53,7 @@ namespace RedmineLog.Logic.Manage
         {
             model.ParentId = arg.Data.Id;
         }
+
 
     }
 }

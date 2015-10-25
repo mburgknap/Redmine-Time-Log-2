@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSmall));
             this.lbWorkTime = new System.Windows.Forms.Label();
             this.lbIdleTime = new System.Windows.Forms.Label();
@@ -38,7 +37,6 @@
             this.lbComment = new System.Windows.Forms.Label();
             this.lbProject = new System.Windows.Forms.Label();
             this.lblTracker = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnHide = new System.Windows.Forms.Label();
             this.cbAutoHide = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1.SuspendLayout();
@@ -208,7 +206,6 @@
         internal System.Windows.Forms.Label lbWorkTime;
         internal System.Windows.Forms.Label lbIdleTime;
         internal System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        internal System.Windows.Forms.ToolTip toolTip1;
         internal System.Windows.Forms.Label lbComment;
         private System.Windows.Forms.Label btnHide;
         private System.Windows.Forms.CheckBox cbAutoHide;
