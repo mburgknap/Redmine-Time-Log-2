@@ -8,7 +8,7 @@ namespace RedmineLog.Common
 {
     public interface IRedmineClient
     {
-        int GetCurrentUser();
+        UserData GetCurrentUser();
         IEnumerable<WorkActivityType> GetWorkActivityTypes();
 
         RedmineIssueData GetIssue(int idIssue);

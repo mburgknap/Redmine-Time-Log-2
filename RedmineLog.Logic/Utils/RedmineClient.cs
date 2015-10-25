@@ -25,7 +25,7 @@ namespace RedmineLog.Logic
             logger = inLogger;
         }
 
-        public int GetCurrentUser()
+        public UserData GetCurrentUser()
         {
             try
             {
@@ -33,12 +33,17 @@ namespace RedmineLog.Logic
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
                 var user = manager.GetCurrentUser(parameters);
 
-                return user.Id;
+                return new UserData()
+                {
+                    Id = user.Id,
+                    Name = user.FirstName + " " + user.LastName,
+                    IsDefault = true
+                };
             }
             catch (Exception ex)
             { logger.Error("GetCurrentUser", ex); }
 
-            return 0;
+            return new UserData() { Id = 0, Name = "Unknown" };
         }
 
 
