@@ -28,6 +28,7 @@ namespace RedmineLog.Logic
             dbRedmine = inDbRedmine;
             dbConfig = inDbConfig;
             dbCache = inDbCache;
+            model.Sync.Bind(SyncTarget.Source, this);
             inEvents.Register(this);
         }
 
@@ -44,9 +45,11 @@ namespace RedmineLog.Logic
         {
             model.ApiKey = dbRedmine.GetApiKey();
             model.Url = dbRedmine.GetUrl();
+            model.Display = dbConfig.GetDisplay();
 
             model.Sync.Value(SyncTarget.View, "ApiKey");
             model.Sync.Value(SyncTarget.View, "Url");
+            model.Sync.Value(SyncTarget.View, "Display");
         }
 
         [EventSubscription(Settings.Events.ReloadCache, typeof(Subscribe<Settings.IView>))]
@@ -61,14 +64,32 @@ namespace RedmineLog.Logic
             dbCache.InitUsers(users);
 
             var trackers = redmine.GetTrackers();
+            TrackerData tmpItem = null;
 
-            trackers = trackers.Where(x => x.Name.ToLower().StartsWith("zadanie")
+            var tmpTrackers = trackers.Where(x => x.Name.ToLower().StartsWith("zadanie")
                                             || x.Name.ToLower().Contains("błąd")).ToList();
 
-            trackers.Where(x => x.Name.ToLower().Contains("dev")).First().IsDefault = true;
+            if (tmpTrackers.Count == 0)
+            {
+                tmpTrackers = trackers.ToList();
+                tmpItem = trackers.FirstOrDefault();
+            }
+            else
+            {
+                tmpItem = tmpTrackers.Where(x => x.Name.ToLower().Contains("dev")).FirstOrDefault();
+            }
 
-            dbCache.InitTrackers(trackers);
+
+            if (tmpItem != null)
+                tmpItem.IsDefault = true;
+
+            dbCache.InitTrackers(tmpTrackers);
             dbCache.InitPriorities(redmine.GetPriorites());
+        }
+
+        private void OnDisplayChange()
+        {
+            dbConfig.SetDisplay(model.Display);
         }
     }
 }

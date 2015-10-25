@@ -44,7 +44,7 @@ namespace RedmineLog.Common
             if (action != null)
                 action();
             else
-                Debug.WriteLine("Property: " + property + "fo Mode: " + mode + " is not defined");
+                Debug.WriteLine("Property: " + property + " for Mode: " + mode + " is not defined");
         }
 
         public void Bind(SyncTarget mode, object inObject)

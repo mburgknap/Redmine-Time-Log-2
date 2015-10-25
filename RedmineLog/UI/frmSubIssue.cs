@@ -12,13 +12,13 @@ using RedmineLog.UI.Common;
 using Appccelerate.EventBroker;
 using RedmineLog.Common;
 using Ninject;
-using System.Linq;
 using Appccelerate.Events;
 
 namespace RedmineLog.UI
 {
-    public partial class frmSubIssue : Form
+    public partial class frmSubIssue : Form, ISetup
     {
+        private IAppSettings settings;
         public frmSubIssue()
         {
             InitializeComponent();
@@ -28,10 +28,12 @@ namespace RedmineLog.UI
 
         private void OnAddIssueLoad(object sender, EventArgs e)
         {
-            if (SystemInformation.VirtualScreen.Location.X < 0)
-                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            this.SetupLocation(settings.Display, 0, -150);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 
@@ -191,6 +193,8 @@ namespace RedmineLog.UI
                     AddSubIssueEvent.Fire(this, model.ToSubIssueData());
                 }, () =>
                 {
+
+                    NotifyBox.Show("Sub issue added", "Info");
                     this.Form.Close();
                 });
 

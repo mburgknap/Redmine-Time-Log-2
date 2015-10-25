@@ -17,13 +17,16 @@ namespace RedmineLog.Logic
         private IDbRedmineIssue dbRedmineIssue;
         private IssueLog.IModel model;
         private IssueLog.IView view;
+        private IRedmineClient redmine;
+
         [Inject]
-        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IDbRedmineIssue inDbRedmineIssue)
+        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue)
         {
             view = inView;
             model = inModel;
             model.Sync.Bind(SyncTarget.Source, this);
             dbIssue = inDbIssue;
+            redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
             inEvents.Register(this);
         }
@@ -46,7 +49,10 @@ namespace RedmineLog.Logic
                     model.Issues.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
                 else
                     model.Issues.Add(item, tmp, null);
+
+                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item.Id);
             }
+
 
             model.Sync.Value(SyncTarget.View, "Issues");
         }

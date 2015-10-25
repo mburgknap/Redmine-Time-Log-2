@@ -103,11 +103,6 @@ namespace RedmineLog.Logic
             return new Uri(dbRedmine.GetUrl() + "issues");
         }
 
-        public Uri IssueUrl(IssueData issue)
-        {
-            return new Uri(dbRedmine.GetUrl() + "issues/" + issue.Id.ToString());
-        }
-
 
         public IEnumerable<WorkLogItem> GetWorkLogs(int idUser, DateTime workDate)
         {
@@ -391,6 +386,12 @@ namespace RedmineLog.Logic
             { logger.Error("GetPriorites", ex); }
 
             return new List<PriorityData>(); ;
+        }
+
+
+        public string IssueUrl(int inIdIssue)
+        {
+            return new Uri(dbRedmine.GetUrl() + "issues/" + inIdIssue).ToString();
         }
     }
 }

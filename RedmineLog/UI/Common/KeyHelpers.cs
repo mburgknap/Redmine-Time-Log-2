@@ -27,7 +27,7 @@ namespace RedmineLog.UI.Common
 
             inControl.MouseClick += (s, e) =>
             {
-                if (e.Button == MouseButtons.Left)
+                if (!(s is LinkLabel) && e.Button == MouseButtons.Left)
                 {
                     action(s);
                     return;

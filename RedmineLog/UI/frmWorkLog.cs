@@ -9,11 +9,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using RedmineLog.UI.Items;
+using RedmineLog.Common.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmWorkLog : Form
+    public partial class frmWorkLog : Form, ISetup
     {
+        private IAppSettings settings;
         public frmWorkLog()
         {
             InitializeComponent();
@@ -23,10 +25,12 @@ namespace RedmineLog
 
         private void OnWorkLogLoad(object sender, EventArgs e)
         {
-            if (SystemInformation.VirtualScreen.Location.X < 0)
-                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            this.SetupLocation(settings.Display, 0, -50);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 
@@ -57,6 +61,11 @@ namespace RedmineLog
 
         [EventPublication(WorkLog.Events.Edit)]
         public event EventHandler<Args<WorkLogItem>> EditEvent;
+
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<int>> SetSubIssueEvent;
+
+        private frmSubIssue addIssueForm;
 
         public void Init(frmWorkLog inView)
         {
@@ -203,8 +212,11 @@ namespace RedmineLog
                 return;
             }
 
-            if (action == "AddIssue" && data is Control && data is ICustomItem)
+            if (action == "AddSubIssue" && data is ICustomItem)
             {
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (((ICustomItem)data).Data as WorkLogItem).IdIssue);
+                addIssueForm.ShowDialog();
                 return;
             }
         }

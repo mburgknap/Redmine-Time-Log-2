@@ -18,6 +18,8 @@ namespace RedmineLog.Model
 
         public int IdUser { get; set; }
 
+        public DisplayData Display { get; set; }
+
         public IModelSync Sync { get; private set; }
     }
 }

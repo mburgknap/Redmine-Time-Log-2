@@ -12,26 +12,34 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmSmall : Form
+    public partial class frmSmall : Form, ISetup
     {
         private bool isHide;
+        private IAppSettings settings;
+        private int flowPanelWidth;
+        private Timer timer;
+
         public frmSmall()
         {
             InitializeComponent();
             this.Initialize<Small.IView, frmSmall>();
             isHide = false;
             cbAutoHide.Checked = true;
-            Load += frmSmall_Load;
+            timer = new Timer();
+            timer.Interval = 1000;
+            timer.Tick += ShowHideForm;
+            Load += OnFormLoad;
         }
 
-        void frmSmall_Load(object sender, EventArgs e)
+        void OnFormLoad(object sender, EventArgs e)
         {
-            UnwarpForm();
-            Load -= frmSmall_Load;
+            UnwrapForm();
+            timer.Start();
+            Load -= OnFormLoad;
         }
 
 
-        private void btnHide_Click(object sender, EventArgs e)
+        private void OnHideClick(object sender, EventArgs e)
         {
             if (!isHide)
             {
@@ -39,50 +47,78 @@ namespace RedmineLog
             }
             else
             {
-                UnwarpForm();
+                UnwrapForm();
             }
+
+            timer.Stop();
         }
-        private void UnwarpForm()
+
+        private void ShowHideForm(object sender, EventArgs e)
+        {
+            if (!isHide)
+            {
+                WrapForm();
+            }
+            else
+            {
+                UnwrapForm();
+            }
+
+            timer.Stop();
+        }
+
+        private void UnwrapForm()
         {
             isHide = false;
             btnHide.Text = ">";
-            if (SystemInformation.VirtualScreen.Location.X < 0)
-                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 150);
+            this.Width += flowPanelWidth;
+            this.SetupLocation(settings.Display, 0, -150);
 
         }
 
         private void WrapForm()
         {
             isHide = true;
+            flowPanelWidth = flowLayoutPanel1.Width;
             this.Location = new Point(this.Location.X + flowLayoutPanel1.Width, this.Location.Y);
+            this.Width -= flowPanelWidth;
             btnHide.Text = "<";
         }
 
-        private void frmSmall_MouseEnter(object sender, EventArgs e)
+        private void OnMouseEnter(object sender, EventArgs e)
         {
+            timer.Stop();
+
             if (isHide)
             {
-                UnwarpForm();
+                UnwrapForm();
             }
         }
 
-        private void btnHide_MouseEnter(object sender, EventArgs e)
+        private void OnFormDeactivate(object sender, EventArgs e)
         {
-            if (isHide)
-            {
-                UnwarpForm();
-            }
-        }
-
-        private void frmSmall_Deactivate(object sender, EventArgs e)
-        {
-            if (cbAutoHide.Checked && !isHide)
+            timer.Stop();
+            if (!isHide)
             {
                 WrapForm();
             }
         }
+
+
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            if (cbAutoHide.Checked && !isHide)
+            {
+                timer.Start();
+            }
+        }
+
     }
 
     internal class SmallView : Small.IView, IView<frmSmall>
@@ -198,8 +234,18 @@ namespace RedmineLog
 
         private void OnIssueClick(object sender, EventArgs e)
         {
-            if (model.Comment != null) Form.toolTip1.Show(model.Comment.Text, Form.lbIssue);
+        
+            try
+            {
+                System.Diagnostics.Process.Start(model.IssueUri);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("GoLink", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
         }
+
 
         private void OnFormClick(object sender, EventArgs e)
         {

@@ -18,13 +18,15 @@ namespace RedmineLog.Logic.Manage
         private SubIssue.IModel model;
         private SubIssue.IView view;
         private IDbCache dbCache;
+        private IRedmineClient redmine;
 
         [Inject]
-        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IEventBroker inEvents)
+        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IEventBroker inEvents, IRedmineClient inClient)
         {
             view = inView;
             model = inModel;
             dbCache = inDbCache;
+            redmine = inClient;
             inEvents.Register(this);
         }
 
@@ -47,10 +49,11 @@ namespace RedmineLog.Logic.Manage
         }
 
         [EventSubscription(SubIssue.Events.SetSubIssue, typeof(OnPublisher))]
-        public void OnSetSubIssueEvent(object sender, Args<RedmineIssueData> arg)
+        public void OnSetSubIssueEvent(object sender, Args<int> arg)
         {
-            model.ParentId = arg.Data.Id;
+            model.ParentId = arg.Data;
         }
+
 
     }
 }

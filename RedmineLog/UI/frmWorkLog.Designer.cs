@@ -50,9 +50,9 @@
             // 
             this.fpWokLogList.AutoScroll = true;
             this.fpWokLogList.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fpWokLogList.Location = new System.Drawing.Point(0, 49);
+            this.fpWokLogList.Location = new System.Drawing.Point(0, 68);
             this.fpWokLogList.Name = "fpWokLogList";
-            this.fpWokLogList.Size = new System.Drawing.Size(343, 431);
+            this.fpWokLogList.Size = new System.Drawing.Size(343, 418);
             this.fpWokLogList.TabIndex = 4;
             // 
             // cHeader
@@ -62,7 +62,7 @@
             this.cHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.cHeader.Location = new System.Drawing.Point(0, 0);
             this.cHeader.Name = "cHeader";
-            this.cHeader.Size = new System.Drawing.Size(343, 49);
+            this.cHeader.Size = new System.Drawing.Size(343, 68);
             this.cHeader.TabIndex = 5;
             // 
             // frmWorkLog

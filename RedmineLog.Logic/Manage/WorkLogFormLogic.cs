@@ -12,16 +12,18 @@ namespace RedmineLog.Logic
 {
     internal class WorkLogFormLogic : ILogic<WorkLog.IView>
     {
+        private IDbRedmineIssue dbRedmineIssue;
         private IDbConfig dbConfig;
         private WorkLog.IModel model;
         private IRedmineClient redmine;
         private WorkLog.IView view;
         [Inject]
-        public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbConfig inDbConfig, IEventBroker inEvents)
+        public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue, IDbConfig inDbConfig, IEventBroker inEvents)
         {
             view = inView;
             model = inModel;
             redmine = inClient;
+            dbRedmineIssue = inDbRedmineIssue;
             dbConfig = inDbConfig;
             inEvents.Register(this);
         }
@@ -44,7 +46,45 @@ namespace RedmineLog.Logic
         }
         private void LoadItems()
         {
-            model.WorkLogs.AddRange(redmine.GetWorkLogs(dbConfig.GetIdUser(), model.LoadedTime));
+            RedmineIssueData tmpIssue = null;
+            RedmineIssueData tmpParent = null;
+
+            foreach (var workLog in redmine.GetWorkLogs(dbConfig.GetIdUser(), model.LoadedTime))
+            {
+                tmpIssue = dbRedmineIssue.Get(workLog.IdIssue);
+
+                if (tmpIssue == null)
+                {
+                    tmpIssue = redmine.GetIssue(workLog.IdIssue);
+
+                    if (tmpIssue != null)
+                        dbRedmineIssue.Update(tmpIssue);
+                }
+
+                workLog.Issue = tmpIssue != null ? tmpIssue.Subject : workLog.IdIssue.ToString();
+
+                if (tmpIssue != null && tmpIssue.IdParent.HasValue)
+                {
+                    tmpParent = dbRedmineIssue.Get(tmpIssue.IdParent.Value);
+
+                    if (tmpParent == null)
+                    {
+                        tmpParent = redmine.GetIssue(tmpIssue.IdParent.Value);
+
+                        if (tmpParent != null)
+                            dbRedmineIssue.Update(tmpParent);
+                    }
+
+                    workLog.ParentIssue = tmpParent != null ? tmpParent.Subject : tmpIssue.IdParent.Value.ToString();
+                }
+                else
+                    workLog.ParentIssue = "";
+
+                workLog.IssueUri = redmine.IssueUrl(workLog.IdIssue);
+                model.WorkLogs.Add(workLog);
+            }
+
+
             if (model.WorkLogs.Count > 0)
                 model.Sync.Value(SyncTarget.View, "WorkLogs");
         }

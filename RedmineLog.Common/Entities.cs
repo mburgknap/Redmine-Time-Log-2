@@ -141,6 +141,8 @@ namespace RedmineLog.Common
 
         public RedmineIssueData Parent { get; set; }
 
+        public String IssueUri { get; set; }
+
     }
 
 
@@ -184,6 +186,8 @@ namespace RedmineLog.Common
         public string Project { get; set; }
 
         public string Priority { get; set; }
+
+        public string Uri { get; set; }
     }
 
     public class BugLogList : List<BugLogItem>
@@ -207,6 +211,12 @@ namespace RedmineLog.Common
         public int Id { get; set; }
 
         public int IdActivity { get; set; }
+
+        public string ParentIssue { get; set; }
+
+        public string Issue { get; set; }
+
+        public string IssueUri { get; set; }
     }
 
     public class WorkLogList : List<WorkLogItem>

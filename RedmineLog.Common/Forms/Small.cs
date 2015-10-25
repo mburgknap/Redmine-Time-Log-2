@@ -25,6 +25,7 @@ namespace RedmineLog.Common
             CommentData Comment { get; }
             RedmineIssueData IssueParentInfo { get; }
             RedmineIssueData IssueInfo { get; }
+            string IssueUri { get; set; }
         }
     }
 }

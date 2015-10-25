@@ -1,6 +1,7 @@
 ﻿using Appccelerate.EventBroker;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.Common.Forms;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using RedmineLog.UI.Items;
@@ -12,8 +13,9 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    public partial class frmIssueLog : Form
+    public partial class frmIssueLog : Form, ISetup
     {
+        private IAppSettings settings;
         public frmIssueLog()
         {
             InitializeComponent();
@@ -24,10 +26,12 @@ namespace RedmineLog
 
         private void OnSearchLoad(object sender, EventArgs e)
         {
-            if (SystemInformation.VirtualScreen.Location.X < 0)
-                this.Location = new Point(0 - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
-            else
-                this.Location = new Point(SystemInformation.VirtualScreen.Width - this.Width, SystemInformation.VirtualScreen.Height - this.Height - 50);
+            this.SetupLocation(settings.Display, 0, -50);
+        }
+
+        public void Setup(IAppSettings inSettings)
+        {
+            settings = inSettings;
         }
     }
 
@@ -54,6 +58,12 @@ namespace RedmineLog
 
         [EventPublication(IssueLog.Events.Delete)]
         public event EventHandler<Args<WorkingIssue>> DeleteEvent;
+
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<int>> SetSubIssueEvent;
+
+        private frmSubIssue addIssueForm;
+
 
         public void Init(frmIssueLog inView)
         {
@@ -107,6 +117,15 @@ namespace RedmineLog
                 DeleteEvent.Fire(this, ((ICustomItem)data).Data as WorkingIssue);
                 return;
             }
+
+            if (action == "AddSubIssue" && data is ICustomItem)
+            {
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (((ICustomItem)data).Data as WorkingIssue).Issue.Id);
+                addIssueForm.ShowDialog();
+                return;
+            }
+
         }
 
         private void OnIssuesChange()

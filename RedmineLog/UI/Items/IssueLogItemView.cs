@@ -27,6 +27,7 @@ namespace RedmineLog.UI.Items
             {
                 Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
                 Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve, (s, e) => { data("Resolve", item); }));
+                Items.Add(new ToolStripMenuItem("Add issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
                 Items.Add(new ToolStripMenuItem("Delete", Resources.Remove, (s, e) => { data("Delete", item); }));
             }
 
@@ -42,7 +43,22 @@ namespace RedmineLog.UI.Items
         public IssueLogItemView()
         {
             InitializeComponent();
+            lblIssue.SetLinkMouseClick(IssueLinkGo, this.OnMouseClick);
         }
+
+        void IssueLinkGo()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(((WorkingIssue)Data).IssueUri);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("GoLink", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
+        }
+
 
         internal void SetDescription()
         {
