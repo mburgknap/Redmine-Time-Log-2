@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using RedmineLog.UI.Items;
+using RedmineLog.Common.Forms;
 
 namespace RedmineLog
 {
@@ -60,6 +61,11 @@ namespace RedmineLog
 
         [EventPublication(WorkLog.Events.Edit)]
         public event EventHandler<Args<WorkLogItem>> EditEvent;
+
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<int>> SetSubIssueEvent;
+
+        private frmSubIssue addIssueForm;
 
         public void Init(frmWorkLog inView)
         {
@@ -206,8 +212,11 @@ namespace RedmineLog
                 return;
             }
 
-            if (action == "AddIssue" && data is Control && data is ICustomItem)
+            if (action == "AddSubIssue" && data is ICustomItem)
             {
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (((ICustomItem)data).Data as WorkLogItem).IdIssue);
+                addIssueForm.ShowDialog();
                 return;
             }
         }

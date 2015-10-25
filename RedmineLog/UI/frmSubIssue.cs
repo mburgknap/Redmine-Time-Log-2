@@ -193,6 +193,8 @@ namespace RedmineLog.UI
                     AddSubIssueEvent.Fire(this, model.ToSubIssueData());
                 }, () =>
                 {
+
+                    NotifyBox.Show("Sub issue added", "Info");
                     this.Form.Close();
                 });
 

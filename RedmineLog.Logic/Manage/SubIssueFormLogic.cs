@@ -49,9 +49,9 @@ namespace RedmineLog.Logic.Manage
         }
 
         [EventSubscription(SubIssue.Events.SetSubIssue, typeof(OnPublisher))]
-        public void OnSetSubIssueEvent(object sender, Args<RedmineIssueData> arg)
+        public void OnSetSubIssueEvent(object sender, Args<int> arg)
         {
-            model.ParentId = arg.Data.Id;
+            model.ParentId = arg.Data;
         }
 
 

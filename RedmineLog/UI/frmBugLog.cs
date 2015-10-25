@@ -61,6 +61,12 @@ namespace RedmineLog.UI
         [EventPublication(BugLog.Events.Resolve)]
         public event EventHandler<Args<BugLogItem>> ResolveEvent;
 
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<int>> SetSubIssueEvent;
+
+
+        private frmSubIssue addIssueForm;
+
         public void Init(frmBugLog inView)
         {
             Form = inView;
@@ -112,6 +118,14 @@ namespace RedmineLog.UI
             {
                 Form.fpBugList.Controls.Remove((Control)data);
                 ResolveEvent.Fire(this, ((ICustomItem)data).Data as BugLogItem);
+                return;
+            }
+
+            if (action == "AddSubIssue" && data is ICustomItem)
+            {
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (((ICustomItem)data).Data as BugLogItem).Id);
+                addIssueForm.ShowDialog();
                 return;
             }
         }

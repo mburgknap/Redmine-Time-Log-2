@@ -250,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RedmineTimeLog.ico" />
+    <None Include="Resources\application_form_add.png" />
     <None Include="Resources\XMLIntelliSenseElement-HighConfidence_10468.png" />
     <None Include="Resources\checkbox_16xLG.png" />
     <None Include="Resources\Clearallrequests_8816.png" />

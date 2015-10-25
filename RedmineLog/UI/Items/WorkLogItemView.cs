@@ -24,7 +24,7 @@ namespace RedmineLog.UI.Items
             {
                 Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
                 Items.Add(new ToolStripMenuItem("Edit", Resources.Edit, (s, e) => { data("Edit", item); }));
-                Items.Add(new ToolStripMenuItem("Add Issue", Resources.Add, (s, e) => { data("AddIssue", item); }));
+                Items.Add(new ToolStripMenuItem("Add Issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
             }
 
             public void Set(ICustomItem inItem, Action<string, object> inData)

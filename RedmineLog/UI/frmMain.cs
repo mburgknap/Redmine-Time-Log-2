@@ -168,7 +168,7 @@ namespace RedmineLog
         public event EventHandler<Args<string>> UpdateIssueEvent;
 
         [EventPublication(SubIssue.Events.SetSubIssue)]
-        public event EventHandler<Args<RedmineIssueData>> SetSubIssueEvent;
+        public event EventHandler<Args<int>> SetSubIssueEvent;
 
         private frmSmall smallForm;
         private frmSubIssue addIssueForm;
@@ -248,11 +248,10 @@ namespace RedmineLog
         {
             if (action == "AddSubIssue" && data is RedmineIssueData)
             {
-
                 UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                 UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
                 addIssueForm = new frmSubIssue();
-                SetSubIssueEvent.Fire(this, (RedmineIssueData)data);
+                SetSubIssueEvent.Fire(this, ((RedmineIssueData)data).Id);
                 addIssueForm.ShowDialog();
 
             }

@@ -1,6 +1,7 @@
 ﻿using Appccelerate.EventBroker;
 using Ninject;
 using RedmineLog.Common;
+using RedmineLog.Common.Forms;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using RedmineLog.UI.Items;
@@ -58,6 +59,12 @@ namespace RedmineLog
         [EventPublication(IssueLog.Events.Delete)]
         public event EventHandler<Args<WorkingIssue>> DeleteEvent;
 
+        [EventPublication(SubIssue.Events.SetSubIssue)]
+        public event EventHandler<Args<int>> SetSubIssueEvent;
+
+        private frmSubIssue addIssueForm;
+
+
         public void Init(frmIssueLog inView)
         {
             Form = inView;
@@ -110,6 +117,15 @@ namespace RedmineLog
                 DeleteEvent.Fire(this, ((ICustomItem)data).Data as WorkingIssue);
                 return;
             }
+
+            if (action == "AddSubIssue" && data is ICustomItem)
+            {
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (((ICustomItem)data).Data as WorkingIssue).Issue.Id);
+                addIssueForm.ShowDialog();
+                return;
+            }
+
         }
 
         private void OnIssuesChange()
