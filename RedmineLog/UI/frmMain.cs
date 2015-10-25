@@ -51,11 +51,23 @@ namespace RedmineLog
 
                         if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(new Version(version.Split(';')[0])) == -1)
                         {
-                            if (MessageBox.Show("New version availible " + version.Split(';')[0]
-                                                + Environment.NewLine
-                                                + "Do you want download it ? ", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            bool result = false;
+
+                            if (Boolean.TryParse(version.Split(';')[0], out result))
                             {
-                                System.Diagnostics.Process.Start(version.Split(';')[1]);
+                                if (result)
+                                {
+                                    MessageBox.Show("New version availible " + version.Split(';')[0], "Information", MessageBoxButtons.OK);
+                                }
+                            }
+                            else
+                            {
+                                if (MessageBox.Show("New version availible " + version.Split(';')[0]
+                                                   + Environment.NewLine
+                                                   + "Do you want download it ?", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                {
+                                    System.Diagnostics.Process.Start(version.Split(';')[1]);
+                                }
                             }
                         }
                     }
