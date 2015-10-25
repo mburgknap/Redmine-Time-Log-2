@@ -13,9 +13,6 @@ using RedmineLog.Properties;
 
 namespace RedmineLog.UI.Items
 {
-
-
-
     public partial class IssueLogItemView : UserControl, ICustomItem, ISpecialAction
     {
 
@@ -23,6 +20,7 @@ namespace RedmineLog.UI.Items
         {
             private ICustomItem item;
             private Action<string, object> data;
+
             public ExContextMenu()
             {
                 Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
@@ -64,7 +62,6 @@ namespace RedmineLog.UI.Items
         {
             lblIdIssue.Text = "#ID";
             lblIssue.Text = "Issue Subject";
-            lblParentIssue.Text = "Main Subject";
             lblTime.Text = "Time";
             lblActivityType.Text = "Activity type";
         }
@@ -84,8 +81,7 @@ namespace RedmineLog.UI.Items
             Data = issue;
 
             lblIdIssue.Text = issue.Issue.Id > 0 ? issue.Issue.Id.ToString() : "";
-            lblIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : " Blank issue ";
-            lblParentIssue.Text = issue.Parent != null ? issue.Parent.Subject : "None";
+            lblIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : "";
             lblTime.Text = issue.Data.GetWorkTime(new TimeSpan(0)).ToString();
             lblTime.Visible = issue.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1;
             lblActivityType.Text = issue.Issue.Tracker;
@@ -98,7 +94,9 @@ namespace RedmineLog.UI.Items
         public void Show(Action<string, object> inData)
         {
             menu.Set(this, inData);
-            menu.Show(lblParentIssue, new Point(0, 0));
+            menu.Show(this, 0, 0);
+
         }
+
     }
 }

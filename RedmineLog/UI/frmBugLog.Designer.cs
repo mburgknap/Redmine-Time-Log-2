@@ -41,14 +41,14 @@
             this.cHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.cHeader.Location = new System.Drawing.Point(0, 0);
             this.cHeader.Name = "cHeader";
-            this.cHeader.Size = new System.Drawing.Size(347, 49);
+            this.cHeader.Size = new System.Drawing.Size(347, 43);
             this.cHeader.TabIndex = 1;
             // 
             // fpBugList
             // 
             this.fpBugList.AutoScroll = true;
             this.fpBugList.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fpBugList.Location = new System.Drawing.Point(0, 49);
+            this.fpBugList.Location = new System.Drawing.Point(0, 43);
             this.fpBugList.Name = "fpBugList";
             this.fpBugList.Size = new System.Drawing.Size(347, 460);
             this.fpBugList.TabIndex = 2;

@@ -133,42 +133,62 @@ namespace RedmineLog
 
             WorkLogGroupItemView dayItem = null;
 
-            foreach (var item in (from p in model.WorkLogs
-                                  group p by p.Date.Date into g
-                                  select new { Date = g.Key, Issues = g.ToList() }))
+            foreach (var workItem in (from p in model.WorkLogs
+                                      group p by p.Date.Date into g
+                                      select new { Date = g.Key, Issues = g.ToList() }))
             {
 
                 var dayTime = new TimeSpan(0);
 
                 dayItem = new WorkLogGroupItemView();
-                dayItem.Set(item.Date);
+                dayItem.Set(workItem.Date);
                 list.Add(dayItem);
                 KeyHelpers.BindKey(dayItem, OnKeyDown);
 
-                foreach (var item2 in (from p in item.Issues
-                                       group p by p.ProjectName into g
-                                       select new { Project = g.Key, Issues = g.ToList() }))
+                foreach (var parentIssue in (from p in workItem.Issues
+                                             group p by p.ProjectName into g
+                                             orderby g.Key ascending
+                                             select new { Project = g.Key, Issues = g.ToList() }))
                 {
 
                     var projectTime = new TimeSpan(0);
                     var projectItem = new WorkLogGroupItemView();
-                    projectItem.Set(item2.Project);
+                    projectItem.Set(parentIssue.Project);
                     list.Add(projectItem);
                     KeyHelpers.BindKey(projectItem, OnKeyDown);
 
-                    foreach (var item3 in item2.Issues)
+                    foreach (var issue in (from i in parentIssue.Issues
+                                           group i by i.ParentIssue into g
+                                           orderby (String.IsNullOrWhiteSpace(g.Key) ? "aa" : g.Key) ascending
+                                           select new { ParentIssue = g.Key, Issues = g.ToList() }))
                     {
-                        projectTime = projectTime.Add(new TimeSpan(0, (int)(item3.Hours * 60), 0));
+                        WorkLogGroupItemView parentIssueItem = null;
+                        var parentIssueTime = new TimeSpan(0);
 
-                        list.Add(new WorkLogItemView().Set(item3));
-                        KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
-                        KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
-                        KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                        if (!string.IsNullOrWhiteSpace(issue.ParentIssue))
+                        {
+                            parentIssueItem = new WorkLogGroupItemView();
+                            parentIssueItem.Set(issue.ParentIssue);
+                            list.Add(parentIssueItem);
+                        }
+
+                        foreach (var subIssue in issue.Issues.OrderBy(x => x.Id))
+                        {
+                            projectTime = projectTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
+                            parentIssueTime = parentIssueTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
+
+                            list.Add(new WorkLogItemView().Set(subIssue));
+                            KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                            KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                            KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                        }
+
+                        if (parentIssueItem != null)
+                            parentIssueItem.Update(parentIssueTime);
                     }
 
                     dayTime = dayTime.Add(projectTime);
                     projectItem.Update(projectTime);
-
                 }
 
                 dayItem.Update(dayTime);

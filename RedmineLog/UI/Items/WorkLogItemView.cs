@@ -57,7 +57,6 @@ namespace RedmineLog.UI.Items
 
         internal void SetDescription()
         {
-            lbParentIssue.Text = "Parent issue";
             lbIssue.Text = "Issue";
             lblComment.Text = "Comment";
             lblTime.Text = "Time";
@@ -77,7 +76,6 @@ namespace RedmineLog.UI.Items
             Data = item;
 
             lbIssue.Text = item.Issue;
-            lbParentIssue.Text = item.ParentIssue;
             lblComment.Text = item.Comment;
             lblActivityType.Text = item.ActivityName;
 

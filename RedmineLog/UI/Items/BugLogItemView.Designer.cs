@@ -52,7 +52,7 @@
             this.lblIssue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblIssue.Location = new System.Drawing.Point(50, 5);
             this.lblIssue.Name = "lblIssue";
-            this.lblIssue.Size = new System.Drawing.Size(260, 40);
+            this.lblIssue.Size = new System.Drawing.Size(260, 30);
             this.lblIssue.TabIndex = 2;
             this.lblIssue.DragEnter += new System.Windows.Forms.DragEventHandler(this.lblIssue_DragEnter);
             this.lblIssue.DragLeave += new System.EventHandler(this.lblIssue_DragLeave);
@@ -60,8 +60,9 @@
             // lblActivityType
             // 
             this.lblActivityType.BackColor = System.Drawing.Color.Transparent;
+            this.lblActivityType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblActivityType.ForeColor = System.Drawing.SystemColors.MenuText;
-            this.lblActivityType.Location = new System.Drawing.Point(3, 27);
+            this.lblActivityType.Location = new System.Drawing.Point(3, 17);
             this.lblActivityType.Name = "lblActivityType";
             this.lblActivityType.Size = new System.Drawing.Size(41, 18);
             this.lblActivityType.TabIndex = 4;
@@ -72,15 +73,17 @@
             // 
             this.separator.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.separator.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.separator.Location = new System.Drawing.Point(0, 48);
+            this.separator.Location = new System.Drawing.Point(0, 41);
             this.separator.Name = "separator";
             this.separator.Size = new System.Drawing.Size(315, 1);
             this.separator.TabIndex = 5;
             // 
             // lblPriority
             // 
+            this.lblPriority.BackColor = System.Drawing.Color.Transparent;
             this.lblPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblPriority.Location = new System.Drawing.Point(202, 25);
+            this.lblPriority.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblPriority.Location = new System.Drawing.Point(200, 17);
             this.lblPriority.Name = "lblPriority";
             this.lblPriority.Size = new System.Drawing.Size(110, 20);
             this.lblPriority.TabIndex = 6;
@@ -97,7 +100,7 @@
             this.Controls.Add(this.lblIssue);
             this.Controls.Add(this.lblIdIssue);
             this.Name = "BugLogItemView";
-            this.Size = new System.Drawing.Size(315, 49);
+            this.Size = new System.Drawing.Size(315, 42);
             this.ResumeLayout(false);
 
         }
