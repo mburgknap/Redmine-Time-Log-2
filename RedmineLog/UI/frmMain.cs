@@ -120,7 +120,7 @@ namespace RedmineLog
             private Action<string, RedmineIssueData> data;
             public ExContextMenuIssue()
             {
-                Items.Add(new ToolStripMenuItem("Add Sub Issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
+                Items.Add(new ToolStripMenuItem("Add subtask", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
             }
 
             public void Set(RedmineIssueData inItem, Action<string, object> inData)
@@ -340,6 +340,11 @@ namespace RedmineLog
                 });
         }
 
+        [EventSubscription(AppTimers.TimeUpdate, typeof(OnPublisher))]
+        public void OnTimeUpdateEvent(object sender, EventArgs arg)
+        {
+            model.Sync.Value(SyncTarget.View, "StartTime");
+        }
 
         [EventSubscription(AppTimers.IdleUpdate, typeof(OnPublisher))]
         public void OnIdleUpdateEvent(object sender, Args<int> arg)
@@ -632,6 +637,16 @@ namespace RedmineLog
                     ui.Text = data.ToString();
                 });
         }
+
+        private void OnStartTimeChange()
+        {
+            Form.lbClockTodayTime.Set(model.StartTime,
+                (ui, data) =>
+                {
+                    ui.Text = (DateTime.Now - data).ToString(@"hh\:mm\:ss");
+                });
+        }
+
 
         private void OnResolveChange()
         {

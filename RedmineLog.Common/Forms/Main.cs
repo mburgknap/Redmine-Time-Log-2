@@ -47,6 +47,7 @@ namespace RedmineLog.Common
             bool Resolve { get; set; }
             TimeSpan WorkTime { get; set; }
             TimeSpan IdleTime { get; set; }
+            DateTime StartTime { get; set; }
             WorkActivityList WorkActivities { get; }
             WorkActivityType Activity { get; set; }
             CommentData Comment { get; set; }

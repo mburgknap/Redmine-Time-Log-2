@@ -23,6 +23,8 @@ namespace RedmineLog.Logic.Model
 
         public TimeSpan IdleTime { get; set; }
 
+        public DateTime StartTime { get; set; }
+
         public WorkActivityList WorkActivities { get; private set; }
 
         public CommentData Comment { get; set; }

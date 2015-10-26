@@ -10,6 +10,7 @@ namespace RedmineLog.UI
     {
         public const string WorkUpdate = "topic://Timer/Work/Update";
         public const string IdleUpdate = "topic://Timer/Idle/Update";
+        public const string TimeUpdate = "topic://Timer/Time/Update";
 
         public enum ClockMode
         {
@@ -41,6 +42,9 @@ namespace RedmineLog.UI
 
         [EventPublication(IdleUpdate)]
         public event EventHandler<Args<int>> IdleUpdateEvent;
+
+        [EventPublication(TimeUpdate)]
+        public event EventHandler TimeUpdateEvent;
 
         private System.Timers.Timer WorkTimer
         {
@@ -80,6 +84,8 @@ namespace RedmineLog.UI
                 IdleUpdateEvent.Fire(this, 1);
             else
                 WorkUpdateEvent.Fire(this, 1);
+
+            TimeUpdateEvent.Fire(this, EventArgs.Empty);
         }
 
         internal static void Init(IEventBroker inGlobalEvent)

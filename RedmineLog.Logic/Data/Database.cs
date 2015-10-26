@@ -301,6 +301,22 @@ namespace RedmineLog.Logic
 
             return null;
         }
+
+
+        public DateTime? GetStartTime()
+        {
+            var result = database.Get<AppConfig, string, long>("StartTime", 0L);
+
+            if (result != 0)
+                return new DateTime(result);
+
+            return (DateTime?)null;
+        }
+
+        public void SetStartTime(DateTime inDateTime)
+        {
+            database.Set<AppConfig, string, long>("StartTime", inDateTime.Ticks);
+        }
     }
 
     internal class Database : IDatabase
