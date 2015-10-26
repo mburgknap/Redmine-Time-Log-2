@@ -63,6 +63,7 @@
             this.tsmMyBugs = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmMyIssues = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmMyWork = new System.Windows.Forms.ToolStripMenuItem();
+            this.ttStartTime = new System.Windows.Forms.ToolTip(this.components);
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -490,5 +491,6 @@
         private System.Windows.Forms.Button btnIssueMode;
         internal System.Windows.Forms.CheckBox cbResolveIssue;
         internal System.Windows.Forms.Label lbClockTodayTime;
+        internal System.Windows.Forms.ToolTip ttStartTime;
     }
 }

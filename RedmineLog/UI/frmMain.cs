@@ -643,7 +643,10 @@ namespace RedmineLog
             Form.lbClockTodayTime.Set(model.StartTime,
                 (ui, data) =>
                 {
-                    ui.Text = (DateTime.Now - data).ToString(@"hh\:mm\:ss");
+                    ui.Text = (DateTime.Now - data).ToString(@"HH\:mm\:ss");
+
+                    if (string.IsNullOrWhiteSpace(Form.ttStartTime.ToolTipTitle))
+                        Form.ttStartTime.SetToolTip(ui, data.ToString(@"HH\:mm\:ss"));
                 });
         }
 
