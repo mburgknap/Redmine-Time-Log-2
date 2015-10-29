@@ -55,6 +55,7 @@ namespace RedmineLog.Common
             IssueCommentList IssueComments { get; }
             RedmineIssueData IssueParentInfo { get; set; }
             RedmineIssueData IssueInfo { get; set; }
+            WorkingIssueList Issues { get; }
         }
     }
 }

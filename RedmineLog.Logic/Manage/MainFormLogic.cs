@@ -144,7 +144,35 @@ namespace RedmineLog.Logic
 
             LoadIssue(dbIssue.Get(0));
             LoadIdle();
+            LoadLastIssues();
 
+        }
+
+        private void LoadLastIssues()
+        {
+            RedmineIssueData tmp = null;
+
+            model.Issues.Clear();
+
+            foreach (var item in dbIssue.GetList()
+                                .OrderByDescending(x => x.UsedCount)
+                                .Take(10))
+            {
+                if (item.Id < 0)
+                    continue;
+
+                tmp = dbRedmineIssue.Get(item.Id);
+
+                if (tmp.IdParent.HasValue)
+                    model.Issues.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
+                else
+                    model.Issues.Add(item, tmp, null);
+
+                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item.Id);
+            }
+
+
+            model.Sync.Value(SyncTarget.View, "Issues");
         }
 
         private void SetupStartTime()

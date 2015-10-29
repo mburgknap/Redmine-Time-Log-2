@@ -182,7 +182,6 @@ namespace RedmineLog
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-
             if (e.KeyCode == Keys.Escape)
             {
                 Form.Close();

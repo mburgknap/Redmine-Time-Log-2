@@ -14,6 +14,7 @@ namespace RedmineLog.Logic.Model
         {
             IssueComments = new IssueCommentList();
             WorkActivities = new WorkActivityList();
+            Issues = new WorkingIssueList();
             Sync = new ModelSync<Main.IModel>();
         }
 
@@ -40,5 +41,6 @@ namespace RedmineLog.Logic.Model
         public IssueCommentList IssueComments { get; private set; }
 
         public WorkActivityType Activity { get; set; }
+        public WorkingIssueList Issues { get; private set; }
     }
 }

@@ -64,6 +64,8 @@
             this.tsmMyIssues = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmMyWork = new System.Windows.Forms.ToolStripMenuItem();
             this.ttStartTime = new System.Windows.Forms.ToolTip(this.components);
+            this.cHeader = new RedmineLog.UI.Items.IssueItemView();
+            this.fpIssueList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -77,7 +79,7 @@
             this.lnkExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkExit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkExit.ForeColor = System.Drawing.Color.Blue;
-            this.lnkExit.Location = new System.Drawing.Point(207, 7);
+            this.lnkExit.Location = new System.Drawing.Point(550, 7);
             this.lnkExit.Name = "lnkExit";
             this.lnkExit.Size = new System.Drawing.Size(29, 17);
             this.lnkExit.TabIndex = 31;
@@ -89,7 +91,7 @@
             this.lnkSettings.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkSettings.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkSettings.ForeColor = System.Drawing.Color.Blue;
-            this.lnkSettings.Location = new System.Drawing.Point(70, 7);
+            this.lnkSettings.Location = new System.Drawing.Point(413, 7);
             this.lnkSettings.Name = "lnkSettings";
             this.lnkSettings.Size = new System.Drawing.Size(57, 17);
             this.lnkSettings.TabIndex = 27;
@@ -227,7 +229,7 @@
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVersion.Location = new System.Drawing.Point(7, 7);
+            this.lblVersion.Location = new System.Drawing.Point(335, 7);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(0, 19);
             this.lblVersion.TabIndex = 37;
@@ -262,7 +264,7 @@
             this.pManage.Controls.Add(this.issueInfoPanel);
             this.pManage.Controls.Add(this.btnSubmit);
             this.pManage.Controls.Add(this.lnkIssues);
-            this.pManage.Location = new System.Drawing.Point(-5, 36);
+            this.pManage.Location = new System.Drawing.Point(338, 36);
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
@@ -280,7 +282,7 @@
             // cbResolveIssue
             // 
             this.cbResolveIssue.AutoSize = true;
-            this.cbResolveIssue.Location = new System.Drawing.Point(141, 205);
+            this.cbResolveIssue.Location = new System.Drawing.Point(141, 206);
             this.cbResolveIssue.Name = "cbResolveIssue";
             this.cbResolveIssue.Size = new System.Drawing.Size(92, 17);
             this.cbResolveIssue.TabIndex = 48;
@@ -392,7 +394,7 @@
             this.lHide.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lHide.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lHide.ForeColor = System.Drawing.Color.Blue;
-            this.lHide.Location = new System.Drawing.Point(152, 7);
+            this.lHide.Location = new System.Drawing.Point(495, 7);
             this.lHide.Name = "lHide";
             this.lHide.Size = new System.Drawing.Size(37, 17);
             this.lHide.TabIndex = 40;
@@ -425,11 +427,30 @@
             this.tsmMyWork.Size = new System.Drawing.Size(125, 22);
             this.tsmMyWork.Text = "My work";
             // 
+            // cHeader
+            // 
+            this.cHeader.BackColor = System.Drawing.Color.NavajoWhite;
+            this.cHeader.Data = null;
+            this.cHeader.Location = new System.Drawing.Point(3, 4);
+            this.cHeader.Name = "cHeader";
+            this.cHeader.Size = new System.Drawing.Size(314, 70);
+            this.cHeader.TabIndex = 42;
+            // 
+            // fpIssueList
+            // 
+            this.fpIssueList.AutoScroll = true;
+            this.fpIssueList.Location = new System.Drawing.Point(1, 80);
+            this.fpIssueList.Name = "fpIssueList";
+            this.fpIssueList.Size = new System.Drawing.Size(334, 429);
+            this.fpIssueList.TabIndex = 41;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(248, 509);
+            this.ClientSize = new System.Drawing.Size(599, 509);
+            this.Controls.Add(this.cHeader);
+            this.Controls.Add(this.fpIssueList);
             this.Controls.Add(this.lHide);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.lnkExit);
@@ -492,5 +513,7 @@
         internal System.Windows.Forms.CheckBox cbResolveIssue;
         internal System.Windows.Forms.Label lbClockTodayTime;
         internal System.Windows.Forms.ToolTip ttStartTime;
+        internal UI.Common.ExFlowLayoutPanel fpIssueList;
+        private UI.Items.IssueItemView cHeader;
     }
 }

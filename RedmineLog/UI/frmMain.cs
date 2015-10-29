@@ -6,7 +6,9 @@ using RedmineLog.Common.Forms;
 using RedmineLog.Properties;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
+using RedmineLog.UI.Items;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -30,6 +32,7 @@ namespace RedmineLog
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
             CheckVersion();
+            cHeader.SetDescription();
 
 
         }
@@ -182,6 +185,16 @@ namespace RedmineLog
         [EventPublication(SubIssue.Events.SetSubIssue)]
         public event EventHandler<Args<int>> SetSubIssueEvent;
 
+        [EventPublication(IssueLog.Events.Select)]
+        public event EventHandler<Args<WorkingIssue>> SelectEvent;
+
+        [EventPublication(Main.Events.IssueResolve)]
+        public event EventHandler<Args<WorkingIssue>> ResolveEvent;
+
+        [EventPublication(IssueLog.Events.Delete)]
+        public event EventHandler<Args<WorkingIssue>> DeleteEvent;
+
+
         private frmSmall smallForm;
         private frmSubIssue addIssueForm;
 
@@ -238,6 +251,7 @@ namespace RedmineLog
             Form.lblIssue.MouseClick += OnIssueMouseClick;
             Load();
         }
+
 
         void OnIssueMouseClick(object sender, MouseEventArgs e)
         {
@@ -657,6 +671,92 @@ namespace RedmineLog
                 (ui, data) =>
                 {
                     ui.Checked = data;
+                });
+        }
+
+        private void OnIssuesChange()
+        {
+            var list = new List<Control>();
+
+            foreach (var issue in model.Issues)
+            {
+                        list.Add(new IssueItemView().Set(issue));
+                        KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                        KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                        KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick2);
+            }
+
+            Form.fpIssueList.Set(model,
+              (ui, data) =>
+              {
+                  ui.Controls.Clear();
+
+                  Form.fpIssueList.Controls.AddRange(list.ToArray());
+              });
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Form.Close();
+                return;
+            }
+        }
+
+        private void OnClick(object sender)
+        {
+            if (sender is ICustomItem)
+            {
+                SelectIssue(((ICustomItem)sender).Data as WorkingIssue);
+                return;
+            }
+
+            if (sender is Control)
+            {
+                OnClick(((Control)sender).Parent);
+                return;
+            }
+        }
+        private void OnSpecialClick2(string action, object data)
+        {
+            if (action == "Select" && data is ICustomItem)
+            {
+                SelectIssue(((ICustomItem)data).Data as WorkingIssue);
+                return;
+            }
+
+            if (action == "Resolve" && data is Control && data is ICustomItem)
+            {
+                Form.fpIssueList.Controls.Remove((Control)data);
+                ResolveEvent.Fire(this, ((ICustomItem)data).Data as WorkingIssue);
+                return;
+            }
+
+            if (action == "Delete" && data is Control && data is ICustomItem)
+            {
+                Form.fpIssueList.Controls.Remove((Control)data);
+                DeleteEvent.Fire(this, ((ICustomItem)data).Data as WorkingIssue);
+                return;
+            }
+
+            if (action == "AddSubIssue" && data is ICustomItem)
+            {
+                addIssueForm = new frmSubIssue();
+                SetSubIssueEvent.Fire(this, (((ICustomItem)data).Data as WorkingIssue).Issue.Id);
+                addIssueForm.ShowDialog();
+                return;
+            }
+
+        }
+        private void SelectIssue(WorkingIssue item)
+        {
+            new frmProcessing().Show(Form,
+                () =>
+                {
+                    if (item != null)
+                        SelectEvent.Fire(this, item);
+
                 });
         }
 
