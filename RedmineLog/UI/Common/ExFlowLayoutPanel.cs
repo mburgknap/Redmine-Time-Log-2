@@ -14,18 +14,25 @@ namespace RedmineLog.UI.Common
         public ExFlowLayoutPanel()
         {
             InitializeComponent();
-            AutoScroll = true;
+            SetupScroll();
             Focus();
+        }
+
+        private void SetupScroll()
+        {
+            HorizontalScroll.Maximum = 0;
+            AutoScroll = false;
+            VerticalScroll.Visible = false;
+            AutoScroll = true;
         }
 
 
         public ExFlowLayoutPanel(IContainer container)
         {
-            AutoScroll = true;
-            Focus();
             container.Add(this);
-
             InitializeComponent();
+            SetupScroll();
+            Focus();
         }
 
 

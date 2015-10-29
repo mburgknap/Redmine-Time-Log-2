@@ -22,9 +22,10 @@ namespace RedmineLog.Logic
         private IDbConfig dbConfig;
         private Main.IModel model;
         private Main.IView view;
+        private IDbLastIssue dbLastIssue;
 
         [Inject]
-        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbConfig inDbConfig, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache)
+        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbConfig inDbConfig, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache, IDbLastIssue inDbLastIssue)
         {
             view = inView;
             model = inModel;
@@ -34,6 +35,7 @@ namespace RedmineLog.Logic
             dbConfig = inDbConfig;
             dbComment = inDbComment;
             dbCache = inDbCache;
+            dbLastIssue = inDbLastIssue;
             dbRedmineIssue = inDbRedmineIssue;
             inEvents.Register(this);
         }
@@ -102,6 +104,7 @@ namespace RedmineLog.Logic
             if (model.Issue.Id > 0)
             {
                 dbIssue.Delete(model.Issue);
+                dbLastIssue.Delete(model.Issue.Id);
                 LoadIssue(dbIssue.Get(0));
             }
         }
@@ -139,6 +142,7 @@ namespace RedmineLog.Logic
             model.Sync.Value(SyncTarget.View, "WorkActivities");
 
             dbIssue.Init();
+            dbLastIssue.Init();
             dbComment.Init();
             dbRedmineIssue.Init();
 
@@ -150,25 +154,22 @@ namespace RedmineLog.Logic
 
         private void LoadLastIssues()
         {
-            RedmineIssueData tmp = null;
+            RedmineIssueData tmpRedmine = null;
+            IssueData tmpIssue = null;
 
             model.Issues.Clear();
 
-            foreach (var item in dbIssue.GetList()
-                                .OrderByDescending(x => x.UsedCount)
-                                .Take(10))
+            foreach (var item in dbLastIssue.GetList())
             {
-                if (item.Id < 0)
-                    continue;
+                tmpRedmine = dbRedmineIssue.Get(item);
+                tmpIssue = dbIssue.Get(item);
 
-                tmp = dbRedmineIssue.Get(item.Id);
-
-                if (tmp.IdParent.HasValue)
-                    model.Issues.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
+                if (tmpRedmine.IdParent.HasValue)
+                    model.Issues.Add(tmpIssue, tmpRedmine, dbRedmineIssue.Get(tmpRedmine.IdParent.Value));
                 else
-                    model.Issues.Add(item, tmp, null);
+                    model.Issues.Add(tmpIssue, tmpRedmine, null);
 
-                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item.Id);
+                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item);
             }
 
 
@@ -246,6 +247,7 @@ namespace RedmineLog.Logic
                     LoadIssue(dbIssue.Get(0));
 
                 dbIssue.Delete(arg.Data.Data);
+                dbLastIssue.Delete(arg.Data.Data.Id);
             }
         }
 
@@ -258,6 +260,7 @@ namespace RedmineLog.Logic
                 LoadIssue(dbIssue.Get(0));
 
             dbIssue.Delete(arg.Data.Data);
+            dbLastIssue.Delete(arg.Data.Data.Id);
         }
 
         [EventSubscription(BugLog.Events.Resolve, typeof(OnPublisher))]
@@ -341,6 +344,7 @@ namespace RedmineLog.Logic
             {
                 redmine.Resolve(model.Issue);
                 dbIssue.Delete(model.Issue);
+                dbLastIssue.Delete(model.Issue.Id);
                 LoadIssue(dbIssue.Get(0));
                 model.Resolve = false;
                 model.Sync.Value(SyncTarget.View, "Resolve");
@@ -443,10 +447,31 @@ namespace RedmineLog.Logic
             model.IssueInfo = dbRedmineIssue.Get(inIssue.Id);
             model.IssueParentInfo = dbRedmineIssue.Get(model.IssueInfo.IdParent.GetValueOrDefault(-1));
 
+            SetupLastIssueList(inIssue.Id);
+
             model.Sync.Value(SyncTarget.View, "Comment");
             model.Sync.Value(SyncTarget.View, "IssueInfo");
             model.Sync.Value(SyncTarget.View, "IssueParentInfo");
 
+        }
+
+        private void SetupLastIssueList(int inId)
+        {
+            var tmp = dbLastIssue.GetList();
+
+            if (inId > 0)
+            {
+                if (tmp.Count > 4 && !tmp.Contains(inId))
+                    tmp.Remove(tmp.Count - 1);
+
+                if (tmp.Contains(inId))
+                    tmp.Remove(inId);
+
+                tmp.Insert(0, inId);
+                dbLastIssue.Update(tmp);
+                LoadLastIssues();
+                model.Sync.Value(SyncTarget.View, "Issues");
+            }
         }
 
         private bool ReloadIssueData(int idIssue)

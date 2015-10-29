@@ -30,7 +30,6 @@ namespace RedmineLog
             this.Initialize<Main.IView, frmMain>();
             CheckForIllegalCrossThreadCalls = false;
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
-
             CheckVersion();
             cHeader.SetDescription();
 

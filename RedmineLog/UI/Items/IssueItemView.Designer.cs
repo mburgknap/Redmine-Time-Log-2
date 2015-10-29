@@ -62,7 +62,7 @@
             this.lbTime.AutoSize = true;
             this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbTime.ForeColor = System.Drawing.Color.Red;
-            this.lbTime.Location = new System.Drawing.Point(248, 44);
+            this.lbTime.Location = new System.Drawing.Point(239, 44);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(57, 13);
             this.lbTime.TabIndex = 3;
@@ -73,7 +73,7 @@
             // 
             this.lbTracker.ForeColor = System.Drawing.Color.DarkBlue;
             this.lbTracker.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.lbTracker.Location = new System.Drawing.Point(232, 5);
+            this.lbTracker.Location = new System.Drawing.Point(229, 5);
             this.lbTracker.Name = "lbTracker";
             this.lbTracker.Size = new System.Drawing.Size(73, 33);
             this.lbTracker.TabIndex = 4;
