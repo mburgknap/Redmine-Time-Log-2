@@ -88,6 +88,10 @@ namespace RedmineLog.Common
         void SetDisplay(DisplayData value);
 
         DisplayData GetDisplay();
+
+        DateTime? GetStartTime();
+
+        void SetStartTime(DateTime inDateTime);
     }
 
     public interface IDatabase

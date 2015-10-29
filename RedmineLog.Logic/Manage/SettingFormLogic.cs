@@ -37,7 +37,7 @@ namespace RedmineLog.Logic
         {
             dbRedmine.SetApiKey(model.ApiKey);
             dbRedmine.SetUrl(model.Url);
-            dbConfig.SetIdUser(redmine.GetCurrentUser());
+            dbConfig.SetIdUser(redmine.GetCurrentUser().Id);
         }
 
         [EventSubscription(Settings.Events.Load, typeof(Subscribe<Settings.IView>))]
@@ -58,8 +58,15 @@ namespace RedmineLog.Logic
             dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
 
             var users = redmine.GetUsers().ToList();
-            int myId = redmine.GetCurrentUser();
-            var user = users.Where(x => x.Id == myId).First();
+            var myId = redmine.GetCurrentUser();
+            var user = users.Where(x => x.Id == myId.Id).FirstOrDefault();
+
+            if (user == null)
+            {
+                user = myId;
+                users.Add(myId);
+            }
+
             user.IsDefault = true;
             dbCache.InitUsers(users);
 

@@ -134,17 +134,37 @@ namespace RedmineLog
 
             foreach (var item in (from p in model.Issues
                                   group p by p.Issue.Project into g
+                                  orderby (g.FirstOrDefault().Issue.Id == 0
+                                           ? Int32.MaxValue
+                                           : g.FirstOrDefault().Data.UsedCount) descending
                                   select new { Project = g.Key, Issues = g.ToList() }))
             {
-                list.Add(new IssueLogGroupItemView().Set(item.Project));
-                KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
 
-                foreach (var issue in item.Issues)
+                if (!String.IsNullOrWhiteSpace(item.Project))
                 {
-                    list.Add(new IssueLogItemView().Set(issue));
+                    list.Add(new IssueLogGroupItemView().Set(item.Project));
                     KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
-                    KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
-                    KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                }
+
+                foreach (var issueParent in (from i in item.Issues
+                                             group i by (i.Parent == null ? "" : i.Parent.Subject) into g
+                                             orderby g.FirstOrDefault().Data.UsedCount descending
+                                             select new { Parent = g.Key, Issues = g.ToList() }))
+                {
+                    if (!String.IsNullOrWhiteSpace(issueParent.Parent))
+                    {
+                        list.Add(new IssueLogGroupItemView().Set(issueParent.Parent));
+                        KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                    }
+
+                    foreach (var issue in issueParent.Issues.OrderByDescending(x => x.Data.UsedCount))
+                    {
+                        list.Add(new IssueLogItemView().Set(issue));
+                        KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                        KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                        KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                    }
+
                 }
 
             }

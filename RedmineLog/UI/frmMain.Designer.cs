@@ -46,6 +46,7 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIndle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.lbClockTodayTime = new System.Windows.Forms.Label();
             this.cbResolveIssue = new System.Windows.Forms.CheckBox();
             this.btnIssueMode = new System.Windows.Forms.Button();
             this.btnSubmitAll = new System.Windows.Forms.Button();
@@ -62,6 +63,7 @@
             this.tsmMyBugs = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmMyIssues = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmMyWork = new System.Windows.Forms.ToolStripMenuItem();
+            this.ttStartTime = new System.Windows.Forms.ToolTip(this.components);
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -234,17 +236,18 @@
             // 
             this.lblClockIndle.AutoSize = true;
             this.lblClockIndle.BackColor = System.Drawing.Color.Transparent;
-            this.lblClockIndle.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblClockIndle.Font = new System.Drawing.Font("Segoe WP", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblClockIndle.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lblClockIndle.Location = new System.Drawing.Point(107, 47);
+            this.lblClockIndle.Location = new System.Drawing.Point(86, 44);
             this.lblClockIndle.Name = "lblClockIndle";
-            this.lblClockIndle.Size = new System.Drawing.Size(65, 19);
+            this.lblClockIndle.Size = new System.Drawing.Size(88, 25);
             this.lblClockIndle.TabIndex = 38;
             this.lblClockIndle.Text = "00:00:00";
             // 
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.lbClockTodayTime);
             this.pManage.Controls.Add(this.cbResolveIssue);
             this.pManage.Controls.Add(this.btnIssueMode);
             this.pManage.Controls.Add(this.btnSubmitAll);
@@ -263,6 +266,16 @@
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
+            // 
+            // lbClockTodayTime
+            // 
+            this.lbClockTodayTime.AutoSize = true;
+            this.lbClockTodayTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbClockTodayTime.Location = new System.Drawing.Point(28, 53);
+            this.lbClockTodayTime.Name = "lbClockTodayTime";
+            this.lbClockTodayTime.Size = new System.Drawing.Size(57, 13);
+            this.lbClockTodayTime.TabIndex = 49;
+            this.lbClockTodayTime.Text = "00:00:00";
             // 
             // cbResolveIssue
             // 
@@ -477,5 +490,7 @@
         internal System.Windows.Forms.ToolStripMenuItem tsmMyWork;
         private System.Windows.Forms.Button btnIssueMode;
         internal System.Windows.Forms.CheckBox cbResolveIssue;
+        internal System.Windows.Forms.Label lbClockTodayTime;
+        internal System.Windows.Forms.ToolTip ttStartTime;
     }
 }

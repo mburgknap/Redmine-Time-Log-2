@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.lblIdIssue = new System.Windows.Forms.Label();
-            this.lblParentIssue = new System.Windows.Forms.Label();
             this.lblIssue = new System.Windows.Forms.LinkLabel();
             this.lblTime = new System.Windows.Forms.Label();
             this.lblActivityType = new System.Windows.Forms.Label();
@@ -40,29 +39,20 @@
             // 
             this.lblIdIssue.BackColor = System.Drawing.Color.Transparent;
             this.lblIdIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblIdIssue.Location = new System.Drawing.Point(4, 4);
+            this.lblIdIssue.Location = new System.Drawing.Point(3, 2);
             this.lblIdIssue.Name = "lblIdIssue";
             this.lblIdIssue.Size = new System.Drawing.Size(42, 13);
             this.lblIdIssue.TabIndex = 0;
             this.lblIdIssue.Text = "13465";
             this.lblIdIssue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblParentIssue
-            // 
-            this.lblParentIssue.BackColor = System.Drawing.Color.Transparent;
-            this.lblParentIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblParentIssue.Location = new System.Drawing.Point(52, 4);
-            this.lblParentIssue.Name = "lblParentIssue";
-            this.lblParentIssue.Size = new System.Drawing.Size(173, 18);
-            this.lblParentIssue.TabIndex = 1;
-            // 
             // lblIssue
             // 
             this.lblIssue.BackColor = System.Drawing.Color.Transparent;
             this.lblIssue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblIssue.Location = new System.Drawing.Point(50, 29);
+            this.lblIssue.Location = new System.Drawing.Point(50, 17);
             this.lblIssue.Name = "lblIssue";
-            this.lblIssue.Size = new System.Drawing.Size(260, 20);
+            this.lblIssue.Size = new System.Drawing.Size(262, 20);
             this.lblIssue.TabIndex = 2;
             this.lblIssue.DragEnter += new System.Windows.Forms.DragEventHandler(this.lblIssue_DragEnter);
             this.lblIssue.DragLeave += new System.EventHandler(this.lblIssue_DragLeave);
@@ -72,9 +62,9 @@
             this.lblTime.BackColor = System.Drawing.Color.Transparent;
             this.lblTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblTime.ForeColor = System.Drawing.Color.Red;
-            this.lblTime.Location = new System.Drawing.Point(7, 29);
+            this.lblTime.Location = new System.Drawing.Point(240, 2);
             this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(41, 13);
+            this.lblTime.Size = new System.Drawing.Size(75, 13);
             this.lblTime.TabIndex = 3;
             this.lblTime.Text = "label4";
             this.lblTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -82,13 +72,14 @@
             // lblActivityType
             // 
             this.lblActivityType.BackColor = System.Drawing.Color.Transparent;
-            this.lblActivityType.ForeColor = System.Drawing.Color.Blue;
-            this.lblActivityType.Location = new System.Drawing.Point(231, 0);
+            this.lblActivityType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblActivityType.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.lblActivityType.Location = new System.Drawing.Point(45, 0);
             this.lblActivityType.Name = "lblActivityType";
-            this.lblActivityType.Size = new System.Drawing.Size(79, 29);
+            this.lblActivityType.Size = new System.Drawing.Size(192, 17);
             this.lblActivityType.TabIndex = 4;
             this.lblActivityType.Text = "zadanie developerskie";
-            this.lblActivityType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblActivityType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // separator
             // 
@@ -99,7 +90,7 @@
             this.separator.Size = new System.Drawing.Size(315, 1);
             this.separator.TabIndex = 5;
             // 
-            // IssueLogItem
+            // IssueLogItemView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -108,9 +99,8 @@
             this.Controls.Add(this.lblActivityType);
             this.Controls.Add(this.lblTime);
             this.Controls.Add(this.lblIssue);
-            this.Controls.Add(this.lblParentIssue);
             this.Controls.Add(this.lblIdIssue);
-            this.Name = "IssueLogItem";
+            this.Name = "IssueLogItemView";
             this.Size = new System.Drawing.Size(315, 49);
             this.ResumeLayout(false);
 
@@ -119,7 +109,6 @@
         #endregion
 
         private System.Windows.Forms.Label lblIdIssue;
-        private System.Windows.Forms.Label lblParentIssue;
         private System.Windows.Forms.LinkLabel lblIssue;
         private System.Windows.Forms.Label lblTime;
         private System.Windows.Forms.Label lblActivityType;

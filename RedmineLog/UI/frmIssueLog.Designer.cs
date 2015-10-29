@@ -38,7 +38,7 @@
             // 
             this.fpLogItemList.AutoScroll = true;
             this.fpLogItemList.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fpLogItemList.Location = new System.Drawing.Point(0, 49);
+            this.fpLogItemList.Location = new System.Drawing.Point(0, 43);
             this.fpLogItemList.Name = "fpLogItemList";
             this.fpLogItemList.Size = new System.Drawing.Size(343, 460);
             this.fpLogItemList.TabIndex = 3;
@@ -50,7 +50,7 @@
             this.cHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.cHeader.Location = new System.Drawing.Point(0, 0);
             this.cHeader.Name = "cHeader";
-            this.cHeader.Size = new System.Drawing.Size(343, 49);
+            this.cHeader.Size = new System.Drawing.Size(343, 43);
             this.cHeader.TabIndex = 0;
             // 
             // frmIssueLog

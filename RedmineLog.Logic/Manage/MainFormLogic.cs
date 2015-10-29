@@ -18,17 +18,20 @@ namespace RedmineLog.Logic
         private IDbIssue dbIssue;
         private IDbRedmineIssue dbRedmineIssue;
         private IDbCache dbCache;
-        private Main.IModel model;
         private IRedmineClient redmine;
+        private IDbConfig dbConfig;
+        private Main.IModel model;
         private Main.IView view;
+
         [Inject]
-        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache)
+        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbConfig inDbConfig, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache)
         {
             view = inView;
             model = inModel;
             model.Sync.Bind(SyncTarget.Source, this);
             redmine = inClient;
             dbIssue = inDbIssue;
+            dbConfig = inDbConfig;
             dbComment = inDbComment;
             dbCache = inDbCache;
             dbRedmineIssue = inDbRedmineIssue;
@@ -126,6 +129,8 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
+            SetupStartTime();
+
             if (!dbCache.HasWorkActivities)
                 dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
             else
@@ -140,6 +145,27 @@ namespace RedmineLog.Logic
             LoadIssue(dbIssue.Get(0));
             LoadIdle();
 
+        }
+
+        private void SetupStartTime()
+        {
+            var time = dbConfig.GetStartTime();
+
+            if (time.HasValue)
+            {
+                model.StartTime = time.Value;
+
+                if (time.Value.Date < DateTime.Now.Date)
+                {
+                    model.StartTime = DateTime.Now;
+                    dbConfig.SetStartTime(model.StartTime);
+                }
+            }
+            else
+            {
+                model.StartTime = DateTime.Now;
+                dbConfig.SetStartTime(model.StartTime);
+            }
         }
 
         [EventSubscription(Main.Events.Reset, typeof(Subscribe<Main.IView>))]
