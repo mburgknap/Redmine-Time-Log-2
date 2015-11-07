@@ -79,7 +79,7 @@
             // lbIssue
             // 
             this.lbIssue.BackColor = System.Drawing.Color.Transparent;
-            this.lbIssue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbIssue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbIssue.Location = new System.Drawing.Point(3, 4);
             this.lbIssue.Name = "lbIssue";
             this.lbIssue.Size = new System.Drawing.Size(238, 13);

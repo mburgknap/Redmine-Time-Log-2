@@ -159,6 +159,16 @@ namespace RedmineLog.Logic
         {
             database.Delete<CommentsTable, string>(comment.Id);
         }
+
+        public CommentData Get(IssueData inIssue)
+        {
+            var result = database.Get<CommentsTable, string, DbCustomSerializer<CommentData>>(inIssue.IdComment, null);
+
+            if (result != null)
+                return result.Get;
+
+            return null;
+        }
     }
 
     internal class CacheTable : IDbCache

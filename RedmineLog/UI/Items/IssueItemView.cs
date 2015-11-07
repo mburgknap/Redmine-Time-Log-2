@@ -78,14 +78,14 @@ namespace RedmineLog.UI.Items
         {
             Data = issue;
 
-            lbIssueId.Text = issue.Issue.Id > 0 ? issue.Issue.Id.ToString() : "";
-            lbParentIssue.Text = issue.Parent != null ? issue.Parent.Subject : "";
+            lbIssueId.Text = issue.Issue.Id > 0 ? "#" + issue.Issue.Id.ToString() : "";
+            lbParentIssue.Text = issue.Parent != null ? issue.Parent.Subject + " :" : "";
             lkIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : "";
             lbTime.Text = issue.Data.GetWorkTime(new TimeSpan(0)).ToString();
             lbTime.Visible = issue.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1;
             lbTracker.Text = issue.Issue.Tracker;
-            lbIssueId.Text = issue.Issue.Id.ToString();
             lbProject.Text = issue.Issue.Project;
+            lbComment.Text = issue.Comment;
 
             return this;
         }

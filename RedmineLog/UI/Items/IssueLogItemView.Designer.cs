@@ -41,9 +41,9 @@
             this.lblIdIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblIdIssue.Location = new System.Drawing.Point(3, 2);
             this.lblIdIssue.Name = "lblIdIssue";
-            this.lblIdIssue.Size = new System.Drawing.Size(42, 13);
+            this.lblIdIssue.Size = new System.Drawing.Size(51, 13);
             this.lblIdIssue.TabIndex = 0;
-            this.lblIdIssue.Text = "13465";
+            this.lblIdIssue.Text = "#1234";
             this.lblIdIssue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblIssue
@@ -62,9 +62,9 @@
             this.lblTime.BackColor = System.Drawing.Color.Transparent;
             this.lblTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblTime.ForeColor = System.Drawing.Color.Red;
-            this.lblTime.Location = new System.Drawing.Point(240, 2);
+            this.lblTime.Location = new System.Drawing.Point(247, 2);
             this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(75, 13);
+            this.lblTime.Size = new System.Drawing.Size(68, 13);
             this.lblTime.TabIndex = 3;
             this.lblTime.Text = "label4";
             this.lblTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -74,7 +74,7 @@
             this.lblActivityType.BackColor = System.Drawing.Color.Transparent;
             this.lblActivityType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblActivityType.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblActivityType.Location = new System.Drawing.Point(45, 0);
+            this.lblActivityType.Location = new System.Drawing.Point(59, -1);
             this.lblActivityType.Name = "lblActivityType";
             this.lblActivityType.Size = new System.Drawing.Size(192, 17);
             this.lblActivityType.TabIndex = 4;

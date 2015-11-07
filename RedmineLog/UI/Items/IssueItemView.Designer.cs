@@ -34,25 +34,29 @@
             this.lbTime = new System.Windows.Forms.Label();
             this.lbTracker = new System.Windows.Forms.Label();
             this.lbIssueId = new System.Windows.Forms.Label();
+            this.lbComment = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbProject
             // 
-            this.lbProject.Location = new System.Drawing.Point(3, 6);
+            this.lbProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbProject.Location = new System.Drawing.Point(3, 4);
             this.lbProject.Name = "lbProject";
             this.lbProject.Size = new System.Drawing.Size(198, 13);
             this.lbProject.TabIndex = 0;
             // 
             // lkIssue
             // 
-            this.lkIssue.Location = new System.Drawing.Point(40, 44);
+            this.lkIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lkIssue.Location = new System.Drawing.Point(45, 40);
             this.lkIssue.Name = "lkIssue";
-            this.lkIssue.Size = new System.Drawing.Size(193, 29);
+            this.lkIssue.Size = new System.Drawing.Size(187, 13);
             this.lkIssue.TabIndex = 1;
             // 
             // lbParentIssue
             // 
-            this.lbParentIssue.Location = new System.Drawing.Point(12, 25);
+            this.lbParentIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbParentIssue.Location = new System.Drawing.Point(12, 22);
             this.lbParentIssue.Name = "lbParentIssue";
             this.lbParentIssue.Size = new System.Drawing.Size(193, 13);
             this.lbParentIssue.TabIndex = 2;
@@ -62,7 +66,7 @@
             this.lbTime.AutoSize = true;
             this.lbTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbTime.ForeColor = System.Drawing.Color.Red;
-            this.lbTime.Location = new System.Drawing.Point(239, 44);
+            this.lbTime.Location = new System.Drawing.Point(239, 41);
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(57, 13);
             this.lbTime.TabIndex = 3;
@@ -82,18 +86,27 @@
             // 
             // lbIssueId
             // 
-            this.lbIssueId.AutoSize = true;
-            this.lbIssueId.Location = new System.Drawing.Point(0, 43);
+            this.lbIssueId.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbIssueId.Location = new System.Drawing.Point(2, 48);
             this.lbIssueId.Name = "lbIssueId";
-            this.lbIssueId.Size = new System.Drawing.Size(38, 13);
+            this.lbIssueId.Size = new System.Drawing.Size(43, 13);
             this.lbIssueId.TabIndex = 5;
             this.lbIssueId.Text = "#1234";
+            this.lbIssueId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lbComment
+            // 
+            this.lbComment.Location = new System.Drawing.Point(45, 58);
+            this.lbComment.Name = "lbComment";
+            this.lbComment.Size = new System.Drawing.Size(259, 14);
+            this.lbComment.TabIndex = 6;
             // 
             // IssueItemView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.NavajoWhite;
+            this.Controls.Add(this.lbComment);
             this.Controls.Add(this.lbIssueId);
             this.Controls.Add(this.lbTracker);
             this.Controls.Add(this.lbTime);
@@ -115,5 +128,6 @@
         internal System.Windows.Forms.Label lbTime;
         private System.Windows.Forms.Label lbTracker;
         private System.Windows.Forms.Label lbIssueId;
+        private System.Windows.Forms.Label lbComment;
     }
 }

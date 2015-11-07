@@ -172,6 +172,10 @@ namespace RedmineLog.Logic
                 else
                     model.LastIssues.Value.Add(tmpIssue, tmpRedmine, null);
 
+                var tmpComment = dbComment.Get(tmpIssue);
+                if (tmpComment != null)
+                    model.LastIssues.Value.Last().Comment = tmpComment.Text;
+
                 model.LastIssues.Value.Last().IssueUri = redmine.IssueUrl(item);
             }
 

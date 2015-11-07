@@ -41,6 +41,8 @@ namespace RedmineLog.Common
         void Update(CommentData comment);
 
         void Delete(CommentData comment);
+
+        CommentData Get(IssueData inIssue);
     }
 
     public interface IDbCache

@@ -137,6 +137,8 @@ namespace RedmineLog.Common
     {
         public IssueData Data { get; set; }
 
+        public String Comment { get; set; }
+
         public RedmineIssueData Issue { get; set; }
 
         public RedmineIssueData Parent { get; set; }

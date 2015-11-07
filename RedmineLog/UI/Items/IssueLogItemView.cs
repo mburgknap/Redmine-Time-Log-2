@@ -80,7 +80,7 @@ namespace RedmineLog.UI.Items
         {
             Data = issue;
 
-            lblIdIssue.Text = issue.Issue.Id > 0 ? issue.Issue.Id.ToString() : "";
+            lblIdIssue.Text = issue.Issue.Id > 0 ? "#" + issue.Issue.Id.ToString() : "";
             lblIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : "";
             lblTime.Text = issue.Data.GetWorkTime(new TimeSpan(0)).ToString();
             lblTime.Visible = issue.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1;
