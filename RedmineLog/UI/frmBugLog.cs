@@ -44,11 +44,10 @@ namespace RedmineLog.UI
         private frmBugLog Form;
 
         [Inject]
-        public BugLogView(BugLog.IModel inModel, IEventBroker inGlobalEvent)
+        public BugLogView(BugLog.IModel inModel)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
 

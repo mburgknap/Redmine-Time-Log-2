@@ -18,14 +18,13 @@ namespace RedmineLog.Logic
         private IRedmineClient redmine;
         private WorkLog.IView view;
         [Inject]
-        public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue, IDbConfig inDbConfig, IEventBroker inEvents)
+        public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue, IDbConfig inDbConfig)
         {
             view = inView;
             model = inModel;
             redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
             dbConfig = inDbConfig;
-            inEvents.Register(this);
         }
 
 

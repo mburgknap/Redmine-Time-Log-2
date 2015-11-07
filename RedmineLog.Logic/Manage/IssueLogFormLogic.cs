@@ -20,7 +20,7 @@ namespace RedmineLog.Logic
         private IRedmineClient redmine;
 
         [Inject]
-        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue)
+        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IDbIssue inDbIssue, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue)
         {
             view = inView;
             model = inModel;
@@ -28,7 +28,6 @@ namespace RedmineLog.Logic
             dbIssue = inDbIssue;
             redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
-            inEvents.Register(this);
         }
 
         [EventSubscription(IssueLog.Events.Load, typeof(Subscribe<IssueLog.IView>))]

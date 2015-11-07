@@ -1,6 +1,12 @@
-﻿using System;
+﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
+using Appccelerate.EventBroker.Matchers.Scope;
+using RedmineLog.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,19 +49,18 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-            bool Resolve { get; set; }
-            TimeSpan WorkTime { get; set; }
-            TimeSpan IdleTime { get; set; }
-            DateTime StartTime { get; set; }
-            WorkActivityList WorkActivities { get; }
-            WorkActivityType Activity { get; set; }
-            CommentData Comment { get; set; }
-            IssueData Issue { get; set; }
-            IssueCommentList IssueComments { get; }
-            RedmineIssueData IssueParentInfo { get; set; }
-            RedmineIssueData IssueInfo { get; set; }
-            WorkingIssueList Issues { get; }
+            DataProperty<bool> Resolve { get; }
+            DataProperty<TimeSpan> WorkTime { get; }
+            DataProperty<TimeSpan> IdleTime { get; }
+            DataProperty<DateTime> StartTime { get; }
+            DataProperty<WorkActivityList> WorkActivities { get; }
+            DataProperty<WorkActivityType> Activity { get; }
+            DataProperty<CommentData> Comment { get; }
+            DataProperty<IssueData> Issue { get; }
+            DataProperty<IssueCommentList> IssueComments { get; }
+            DataProperty<RedmineIssueData> IssueParentInfo { get; }
+            DataProperty<RedmineIssueData> IssueInfo { get; }
+            DataProperty<WorkingIssueList> LastIssues { get; }
         }
     }
 }

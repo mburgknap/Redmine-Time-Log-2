@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Reactive.Subjects;
 
 namespace RedmineLog.Common
 {
-
     public class Args<T> : EventArgs
     {
         public Args(T inValue)

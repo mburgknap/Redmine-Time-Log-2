@@ -43,11 +43,10 @@ namespace RedmineLog
         private frmEditTimeLog editform;
 
         [Inject]
-        public WorkLogView(WorkLog.IModel inModel, IEventBroker inGlobalEvent)
+        public WorkLogView(WorkLog.IModel inModel)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
         [EventPublication(WorkLog.Events.Load, typeof(Publish<WorkLog.IView>))]

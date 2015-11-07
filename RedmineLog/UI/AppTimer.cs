@@ -1,4 +1,7 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
+using Ninject;
+using NLog;
 using RedmineLog.Common;
 using System;
 using System.Runtime.InteropServices;
@@ -6,11 +9,9 @@ using System.Timers;
 
 namespace RedmineLog.UI
 {
-    internal class AppTimers
+
+    public class AppTimer : AppTime.IClock
     {
-        public const string WorkUpdate = "topic://Timer/Work/Update";
-        public const string IdleUpdate = "topic://Timer/Idle/Update";
-        public const string TimeUpdate = "topic://Timer/Time/Update";
 
         public enum ClockMode
         {
@@ -32,18 +33,16 @@ namespace RedmineLog.UI
 
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-
-        private static AppTimers instance = new AppTimers();
-
+        
         private System.Timers.Timer workTimer;
 
-        [EventPublication(WorkUpdate)]
+        [EventPublication(AppTime.Events.WorkUpdate)]
         public event EventHandler<Args<int>> WorkUpdateEvent;
 
-        [EventPublication(IdleUpdate)]
+        [EventPublication(AppTime.Events.IdleUpdate)]
         public event EventHandler<Args<int>> IdleUpdateEvent;
 
-        [EventPublication(TimeUpdate)]
+        [EventPublication(AppTime.Events.TimeUpdate)]
         public event EventHandler TimeUpdateEvent;
 
         private System.Timers.Timer WorkTimer
@@ -88,16 +87,19 @@ namespace RedmineLog.UI
             TimeUpdateEvent.Fire(this, EventArgs.Empty);
         }
 
-        internal static void Init(IEventBroker inGlobalEvent)
+
+        [Inject]
+        public AppTimer()
         {
-            instance.WorkTimer = new System.Timers.Timer(1000);
-            inGlobalEvent.Register(instance);
         }
 
-        internal static void Start()
+        public void Start()
         {
-            if (!instance.workTimer.Enabled)
-                instance.WorkTimer.Start();
+            if (workTimer == null)
+            {
+                WorkTimer = new System.Timers.Timer(1000);
+                WorkTimer.Start();
+            }
         }
     }
 }

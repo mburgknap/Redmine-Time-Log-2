@@ -21,13 +21,12 @@ namespace RedmineLog.Logic.Manage
         private IRedmineClient redmine;
 
         [Inject]
-        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IEventBroker inEvents, IRedmineClient inClient)
+        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IRedmineClient inClient)
         {
             view = inView;
             model = inModel;
             dbCache = inDbCache;
             redmine = inClient;
-            inEvents.Register(this);
         }
 
 

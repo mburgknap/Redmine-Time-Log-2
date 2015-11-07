@@ -40,11 +40,10 @@ namespace RedmineLog
         private frmIssueLog Form;
         private IssueLog.IModel model;
         [Inject]
-        public IssueLogView(IssueLog.IModel inModel, IEventBroker inGlobalEvent)
+        public IssueLogView(IssueLog.IModel inModel)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
         [EventPublication(IssueLog.Events.Load, typeof(Publish<IssueLog.IView>))]

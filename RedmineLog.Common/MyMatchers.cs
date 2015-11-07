@@ -5,6 +5,35 @@ using System;
 
 namespace RedmineLog.Common
 {
+
+    public class TopicMatcher : IPublicationMatcher
+    {
+
+        public void DescribeTo(System.IO.TextWriter writer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Match(IPublication publication, ISubscription subscription, EventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(publication.ToString());
+            System.Diagnostics.Debug.WriteLine(subscription.ToString());
+
+            return false;
+        }
+    }
+
+
+    public class TopicPublisher : OnPublisher
+    {
+
+        public override void Handle(IEventTopicInfo eventTopic, object subscriber, object sender, EventArgs e, Appccelerate.EventBroker.Internals.Subscriptions.IDelegateWrapper delegateWrapper)
+        {
+            base.Handle(eventTopic, subscriber, sender, e, delegateWrapper);
+        }
+
+    }
+
     public abstract class MyPublisher : IPublicationMatcher
     {
         public abstract Type View { get; }

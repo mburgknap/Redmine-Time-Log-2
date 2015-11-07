@@ -20,7 +20,7 @@ namespace RedmineLog.Logic
         private Settings.IView View;
 
         [Inject]
-        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig, IDbCache inDbCache)
+        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig, IDbCache inDbCache)
         {
             View = inView;
             model = inModel;
@@ -29,7 +29,6 @@ namespace RedmineLog.Logic
             dbConfig = inDbConfig;
             dbCache = inDbCache;
             model.Sync.Bind(SyncTarget.Source, this);
-            inEvents.Register(this);
         }
 
         [EventSubscription(Settings.Events.Connect, typeof(Subscribe<Settings.IView>))]

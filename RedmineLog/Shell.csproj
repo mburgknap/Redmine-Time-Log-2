@@ -47,8 +47,28 @@
     <Reference Include="Appccelerate.Fundamentals">
       <HintPath>..\Lib\Appccelerate.Fundamentals.dll</HintPath>
     </Reference>
+    <Reference Include="CommonServiceLocator.NinjectAdapter">
+      <HintPath>..\Lib\CommonServiceLocator.NinjectAdapter.dll</HintPath>
+    </Reference>
+    <Reference Include="DBreeze, Version=1.71.2015.306, Culture=neutral, PublicKeyToken=174b57f1c155f3c6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\DBreeze.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\Lib\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.AppccelerateEventBroker">
+      <HintPath>..\Lib\Ninject.Extensions.AppccelerateEventBroker.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.ContextPreservation">
+      <HintPath>..\Lib\Ninject.Extensions.ContextPreservation.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.NamedScope">
+      <HintPath>..\Lib\Ninject.Extensions.NamedScope.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\Lib\NLog.dll</HintPath>
@@ -58,6 +78,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive.Interfaces, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive.Linq, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive.Providers, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,7 +98,7 @@
       <DependentUpon>ExFlowLayoutPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Common\FormExtensions.cs" />
-    <Compile Include="UI\AppTimers.cs" />
+    <Compile Include="UI\AppTimer.cs" />
     <Compile Include="UI\Common\KeyHelpers.cs" />
     <Compile Include="UI\Common\LinkClickExtension.cs" />
     <Compile Include="UI\Common\NotifyBox.cs" />

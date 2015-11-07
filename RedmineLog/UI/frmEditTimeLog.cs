@@ -40,11 +40,10 @@ namespace RedmineLog.UI
         private frmEditTimeLog Form;
 
         [Inject]
-        public EditTimeLogView(EditLog.IModel inModel, IEventBroker inGlobalEvent)
+        public EditTimeLogView(EditLog.IModel inModel)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
         [EventPublication(EditLog.Events.Save, typeof(Publish<EditLog.IView>))]

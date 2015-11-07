@@ -128,27 +128,25 @@ namespace RedmineLog
         private frmSmall Form;
 
         [Inject]
-        public SmallView(Small.IModel inModel, IEventBroker inGlobalEvent)
+        public SmallView(Small.IModel inModel)
         {
             model = inModel;
-            model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
 
         [EventPublication(Small.Events.Load, typeof(Publish<Small.IView>))]
         public event EventHandler LoadEvent;
 
-        [EventSubscription(AppTimers.WorkUpdate, typeof(OnPublisher))]
+        [EventSubscription(AppTime.Events.WorkUpdate, typeof(OnPublisher))]
         public void OnWorkUpdateEvent(object sender, Args<int> arg)
         {
-            model.Sync.Value(SyncTarget.View, "WorkTime");
+            model.WorkTime.Notify();
         }
 
-        [EventSubscription(AppTimers.IdleUpdate, typeof(OnPublisher))]
+        [EventSubscription(AppTime.Events.IdleUpdate, typeof(OnPublisher))]
         public void OnIdleUpdateEvent(object sender, Args<int> arg)
         {
-            model.Sync.Value(SyncTarget.View, "IdleTime");
+            model.IdleTime.Notify();
         }
 
 
@@ -198,7 +196,7 @@ namespace RedmineLog
                 (ui, data) =>
                 {
                     if (model.Comment != null)
-                        ui.Text = "Comment : " + Environment.NewLine + " " + data.Comment.Text;
+                        ui.Text = "Comment : " + Environment.NewLine + " " + data.Comment.Value.Text;
                 });
         }
 
@@ -209,7 +207,7 @@ namespace RedmineLog
                {
                    if (data != null)
                    {
-                       ui.Text = data.Subject + " :";
+                       ui.Text = data.Value.Subject + " :";
                        ui.Visible = true;
                    }
                    else
@@ -222,22 +220,22 @@ namespace RedmineLog
             Form.Set(model,
               (ui, data) =>
               {
-                  ui.lbComment.Visible = data.IssueInfo.Id == 0;
+                  ui.lbComment.Visible = data.IssueInfo.Value.Id == 0;
 
-                  ui.lbIssue.Text = data.IssueInfo.Id > 0 ? data.IssueInfo.Id.ToString() : "";
+                  ui.lbIssue.Text = data.IssueInfo.Value.Id > 0 ? data.IssueInfo.Value.Id.ToString() : "";
 
-                  ui.lbProject.Text = data.IssueInfo.Project;
-                  ui.lblTracker.Text = data.IssueInfo.Id > 0 ? "(" + data.IssueInfo.Tracker + ")" : "";
-                  ui.lbIssue.Text = data.IssueInfo.Subject;
+                  ui.lbProject.Text = data.IssueInfo.Value.Project;
+                  ui.lblTracker.Text = data.IssueInfo.Value.Id > 0 ? "(" + data.IssueInfo.Value.Tracker + ")" : "";
+                  ui.lbIssue.Text = data.IssueInfo.Value.Subject;
               });
         }
 
         private void OnIssueClick(object sender, EventArgs e)
         {
-        
+
             try
             {
-                System.Diagnostics.Process.Start(model.IssueUri);
+                System.Diagnostics.Process.Start(model.IssueUri.Value.ToString());
             }
             catch (Exception ex)
             {

@@ -17,26 +17,28 @@ namespace RedmineLog.Logic
         private IRedmineClient redmine;
 
         [Inject]
-        public SmallFormLogic(Small.IView inView, Small.IModel inModel, IEventBroker inEvents, IRedmineClient inClient)
+        public SmallFormLogic(Small.IView inView, Small.IModel inModel, IRedmineClient inClient)
         {
             view = inView;
             model = inModel;
             redmine = inClient;
-            inEvents.Register(this);
         }
 
 
         [EventSubscription(Small.Events.Load, typeof(Subscribe<Small.IView>))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            if (model.IssueInfo != null)
-                model.IssueUri = redmine.IssueUrl(model.IssueInfo.Id);
+            if (!String.IsNullOrWhiteSpace(model.IssueInfo.Value.ToString()))
+            {
+                model.IssueUri.Value.Clear();
+                model.IssueUri.Value.Append(redmine.IssueUrl(model.IssueInfo.Value.Id));
+            }
 
-            model.Sync.Value(SyncTarget.View, "WorkTime");
-            model.Sync.Value(SyncTarget.View, "IdleTime");
-            model.Sync.Value(SyncTarget.View, "Comment");
-            model.Sync.Value(SyncTarget.View, "IssueInfo");
-            model.Sync.Value(SyncTarget.View, "IssueParentInfo");
+            model.WorkTime.Update();
+            model.IdleTime.Update();
+            model.Comment.Update();
+            model.IssueInfo.Update();
+            model.IssueParentInfo.Update();
         }
     }
 }

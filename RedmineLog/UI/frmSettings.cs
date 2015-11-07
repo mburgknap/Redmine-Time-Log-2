@@ -40,11 +40,10 @@ namespace RedmineLog
         private frmSettings Form;
 
         [Inject]
-        public SettingsView(Settings.IModel inModel, IEventBroker inGlobalEvent)
+        public SettingsView(Settings.IModel inModel)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
         [EventPublication(Settings.Events.Connect, typeof(Publish<Settings.IView>))]

@@ -44,6 +44,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive.Interfaces, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive.Linq, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
+    <Reference Include="System.Reactive.Providers, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +60,7 @@
     <Compile Include="Forms\BugLog.cs" />
     <Compile Include="Forms\EditLog.cs" />
     <Compile Include="IAppSettings.cs" />
+    <Compile Include="IAppTimer.cs" />
     <Compile Include="IModelSync.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="AppLogger.cs" />
@@ -69,6 +74,7 @@
     <Compile Include="Forms\Settings.cs" />
     <Compile Include="Forms\Small.cs" />
     <Compile Include="Forms\WorkLog.cs" />
+    <Compile Include="Property.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

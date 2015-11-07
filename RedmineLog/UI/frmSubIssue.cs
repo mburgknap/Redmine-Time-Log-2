@@ -51,11 +51,10 @@ namespace RedmineLog.UI
 
 
         [Inject]
-        public SubIssueView(SubIssue.IModel inModel, IEventBroker inGlobalEvent)
+        public SubIssueView(SubIssue.IModel inModel)
         {
             model = inModel;
             model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
         }
 
         public void Init(frmSubIssue inView)

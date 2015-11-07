@@ -17,12 +17,11 @@ namespace RedmineLog.Logic
         private IRedmineClient redmine;
         private EditLog.IView view;
         [Inject]
-        public EditLogFormLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient, IEventBroker inEvents)
+        public EditLogFormLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient)
         {
             view = inView;
             model = inModel;
             redmine = inClient;
-            inEvents.Register(this);
         }
 
 

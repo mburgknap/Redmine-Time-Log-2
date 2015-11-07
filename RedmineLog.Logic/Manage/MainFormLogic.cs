@@ -25,11 +25,10 @@ namespace RedmineLog.Logic
         private IDbLastIssue dbLastIssue;
 
         [Inject]
-        public MainFormLogic(Main.IView inView, Main.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbConfig inDbConfig, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache, IDbLastIssue inDbLastIssue)
+        public MainFormLogic(Main.IView inView, Main.IModel inModel, IRedmineClient inClient, IDbConfig inDbConfig, IDbIssue inDbIssue, IDbComment inDbComment, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache, IDbLastIssue inDbLastIssue)
         {
             view = inView;
             model = inModel;
-            model.Sync.Bind(SyncTarget.Source, this);
             redmine = inClient;
             dbIssue = inDbIssue;
             dbConfig = inDbConfig;
@@ -37,7 +36,11 @@ namespace RedmineLog.Logic
             dbCache = inDbCache;
             dbLastIssue = inDbLastIssue;
             dbRedmineIssue = inDbRedmineIssue;
-            inEvents.Register(this);
+
+            model.Activity.OnNotify.Subscribe(x =>
+            {
+                System.Diagnostics.Debug.WriteLine(x.Name);
+            });
         }
 
         [EventSubscription(Main.Events.AddComment, typeof(Subscribe<Main.IView>))]
@@ -47,20 +50,20 @@ namespace RedmineLog.Logic
             {
                 Id = Guid.NewGuid().ToString(),
                 Text = arg.Data,
-                IsGlobal = model.Issue.Id == 0
+                IsGlobal = model.Issue.Value.Id == 0
             };
 
-            model.Comment = comment;
+            model.Comment.Update(comment);
             dbComment.Update(comment);
 
-            model.Issue.Comments.Add(comment.Id);
-            if (model.Issue.Id > 0)
-                model.Issue.IdComment = comment.Id;
+            model.Issue.Value.Comments.Add(comment.Id);
+            if (model.Issue.Value.Id > 0)
+                model.Issue.Value.IdComment = comment.Id;
 
-            dbIssue.Update(model.Issue);
+            dbIssue.Update(model.Issue.Value);
 
-            model.IssueComments.Add(comment);
-            model.Sync.Value(SyncTarget.View, "Comment");
+            model.IssueComments.Value.Add(comment);
+            model.IssueComments.Update();
         }
 
         [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
@@ -75,8 +78,7 @@ namespace RedmineLog.Logic
             }
             else
             {
-                model.Comment = null;
-                model.Sync.Value(SyncTarget.View, "Comment");
+                model.Comment.Update(null);
                 LoadIssue(dbIssue.Get(0));
             }
         }
@@ -86,14 +88,15 @@ namespace RedmineLog.Logic
         {
             if (model.Comment != null)
             {
-                model.Issue.IdComment = null;
-                model.Issue.Comments.Remove(model.Comment.Id);
-                model.IssueComments.Remove(model.Comment);
+                model.Issue.Value.IdComment = null;
+                model.Issue.Value.Comments.Remove(model.Comment.Value.Id);
+                model.IssueComments.Value.Remove(model.Comment.Value);
 
-                dbIssue.Update(model.Issue);
-                dbComment.Delete(model.Comment);
-                model.Comment = null;
-                model.Sync.Value(SyncTarget.View, "Comment");
+                dbIssue.Update(model.Issue.Value);
+                dbComment.Delete(model.Comment.Value);
+
+                model.Comment.Update();
+                model.IssueComments.Update();
             }
 
         }
@@ -101,10 +104,10 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.DelIssue, typeof(Subscribe<Main.IView>))]
         public void OnDelIssueEvent(object sender, EventArgs arg)
         {
-            if (model.Issue.Id > 0)
+            if (model.Issue.Value.Id > 0)
             {
-                dbIssue.Delete(model.Issue);
-                dbLastIssue.Delete(model.Issue.Id);
+                dbIssue.Delete(model.Issue.Value);
+                dbLastIssue.Delete(model.Issue.Value.Id);
                 LoadIssue(dbIssue.Get(0));
             }
         }
@@ -113,11 +116,11 @@ namespace RedmineLog.Logic
         public void OnExitEvent(object sender, EventArgs arg)
         {
             var idleIssue = dbIssue.Get(-1);
-            idleIssue.SetWorkTime(model.IdleTime);
+            idleIssue.SetWorkTime(model.IdleTime.Value);
             dbIssue.Update(idleIssue);
 
-            model.Issue.SetWorkTime(model.WorkTime);
-            dbIssue.Update(model.Issue);
+            model.Issue.Value.SetWorkTime(model.WorkTime.Value);
+            dbIssue.Update(model.Issue.Value);
         }
 
         [EventSubscription(Main.Events.Link, typeof(Subscribe<Main.IView>))]
@@ -126,7 +129,7 @@ namespace RedmineLog.Logic
             if (arg.Data.Equals("Redmine"))
             { view.GoLink(redmine.IssueListUrl()); }
             else if (arg.Data.Equals("Issue"))
-            { view.GoLink(new Uri(redmine.IssueUrl(model.Issue.Id))); }
+            { view.GoLink(new Uri(redmine.IssueUrl(model.Issue.Value.Id))); }
         }
 
         [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
@@ -137,9 +140,9 @@ namespace RedmineLog.Logic
             if (!dbCache.HasWorkActivities)
                 dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());
             else
-                model.WorkActivities.AddRange(dbCache.GetWorkActivityTypes());
+                model.WorkActivities.Value.AddRange(dbCache.GetWorkActivityTypes());
 
-            model.Sync.Value(SyncTarget.View, "WorkActivities");
+            model.WorkActivities.Update();
 
             dbIssue.Init();
             dbLastIssue.Init();
@@ -157,7 +160,7 @@ namespace RedmineLog.Logic
             RedmineIssueData tmpRedmine = null;
             IssueData tmpIssue = null;
 
-            model.Issues.Clear();
+            model.LastIssues.Value.Clear();
 
             foreach (var item in dbLastIssue.GetList())
             {
@@ -165,15 +168,14 @@ namespace RedmineLog.Logic
                 tmpIssue = dbIssue.Get(item);
 
                 if (tmpRedmine.IdParent.HasValue)
-                    model.Issues.Add(tmpIssue, tmpRedmine, dbRedmineIssue.Get(tmpRedmine.IdParent.Value));
+                    model.LastIssues.Value.Add(tmpIssue, tmpRedmine, dbRedmineIssue.Get(tmpRedmine.IdParent.Value));
                 else
-                    model.Issues.Add(tmpIssue, tmpRedmine, null);
+                    model.LastIssues.Value.Add(tmpIssue, tmpRedmine, null);
 
-                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item);
+                model.LastIssues.Value.Last().IssueUri = redmine.IssueUrl(item);
             }
 
-
-            model.Sync.Value(SyncTarget.View, "Issues");
+            model.LastIssues.Update();
         }
 
         private void SetupStartTime()
@@ -182,18 +184,18 @@ namespace RedmineLog.Logic
 
             if (time.HasValue)
             {
-                model.StartTime = time.Value;
+                model.StartTime.Update(time.Value);
 
                 if (time.Value.Date < DateTime.Now.Date)
                 {
-                    model.StartTime = DateTime.Now;
-                    dbConfig.SetStartTime(model.StartTime);
+                    model.StartTime.Update(DateTime.Now);
+                    dbConfig.SetStartTime(model.StartTime.Value);
                 }
             }
             else
             {
-                model.StartTime = DateTime.Now;
-                dbConfig.SetStartTime(model.StartTime);
+                model.StartTime.Update(DateTime.Now);
+                dbConfig.SetStartTime(model.StartTime.Value);
             }
         }
 
@@ -202,16 +204,14 @@ namespace RedmineLog.Logic
         {
             if (arg.Data == Main.Actions.Issue)
             {
-                model.WorkTime = new TimeSpan(0);
-                model.Sync.Value(SyncTarget.View, "WorkTime");
-                model.Issue.SetWorkTime(model.WorkTime);
-                dbIssue.Update(model.Issue);
+                model.WorkTime.Update(new TimeSpan(0));
+                model.Issue.Value.SetWorkTime(model.WorkTime.Value);
+                dbIssue.Update(model.Issue.Value);
                 LoadIssue(dbIssue.Get(0));
             }
             else
             {
-                model.IdleTime = new TimeSpan(0);
-                model.Sync.Value(SyncTarget.View, "IdleTime");
+                model.IdleTime.Update(new TimeSpan(0));
             }
         }
 
@@ -243,7 +243,7 @@ namespace RedmineLog.Logic
         {
             if (arg.Data.Data.Id > 0)
             {
-                if (model.Issue.Id == arg.Data.Data.Id)
+                if (model.Issue.Value.Id == arg.Data.Data.Id)
                     LoadIssue(dbIssue.Get(0));
 
                 dbIssue.Delete(arg.Data.Data);
@@ -256,7 +256,7 @@ namespace RedmineLog.Logic
         {
             redmine.Resolve(arg.Data);
 
-            if (model.Issue.Id == arg.Data.Data.Id)
+            if (model.Issue.Value.Id == arg.Data.Data.Id)
                 LoadIssue(dbIssue.Get(0));
 
             dbIssue.Delete(arg.Data.Data);
@@ -268,7 +268,7 @@ namespace RedmineLog.Logic
         {
             redmine.Resolve(arg.Data);
 
-            if (model.Issue.Id == arg.Data.Id)
+            if (model.Issue.Value.Id == arg.Data.Id)
                 LoadIssue(dbIssue.Get(0));
 
             dbIssue.Delete(arg.Data);
@@ -307,7 +307,7 @@ namespace RedmineLog.Logic
                 return;
             }
 
-            if (!(model.Issue.Id > 0))
+            if (!(model.Issue.Value.Id > 0))
             {
                 view.Info("Select issue to the task");
                 return;
@@ -315,47 +315,45 @@ namespace RedmineLog.Logic
 
             var workData = new WorkTimeData()
             {
-                IdUssue = model.Issue.Id,
-                IdActivityType = model.Activity.Id,
+                IdUssue = model.Issue.Value.Id,
+                IdActivityType = model.Activity.Value.Id,
                 Time = new TimeSpan(),
-                Comment = model.Comment.Text
+                Comment = model.Comment.Value.Text
             };
 
             if (arg.Data == Main.Actions.Issue || arg.Data == Main.Actions.All)
             {
-                workData.Time = workData.Time.Add(model.WorkTime);
-                model.WorkTime = new TimeSpan(0);
-                model.Sync.Value(SyncTarget.View, "WorkTime");
+                workData.Time = workData.Time.Add(model.WorkTime.Value);
+                model.WorkTime.Update(new TimeSpan(0));
             }
 
             if (arg.Data == Main.Actions.Idle || arg.Data == Main.Actions.All)
             {
-                workData.Time = workData.Time.Add(model.IdleTime);
-                model.IdleTime = new TimeSpan(0);
-                model.Sync.Value(SyncTarget.View, "IdleTime");
+                workData.Time = workData.Time.Add(model.IdleTime.Value);
+                model.IdleTime.Update(new TimeSpan(0));
             }
 
-            model.Issue.Time = null;
+            model.Issue.Value.Time = null;
 
             if (!redmine.AddWorkTime(workData))
-            { model.Issue.SetWorkTime(workData.Time); }
+            { model.Issue.Value.SetWorkTime(workData.Time); }
 
-            if (model.Resolve)
+            if (model.Resolve.Value)
             {
-                redmine.Resolve(model.Issue);
-                dbIssue.Delete(model.Issue);
-                dbLastIssue.Delete(model.Issue.Id);
+                redmine.Resolve(model.Issue.Value);
+                dbIssue.Delete(model.Issue.Value);
+                dbLastIssue.Delete(model.Issue.Value.Id);
                 LoadIssue(dbIssue.Get(0));
-                model.Resolve = false;
-                model.Sync.Value(SyncTarget.View, "Resolve");
+                model.Resolve.Update(false);
             }
             else
             {
 
                 if (arg.Data == Main.Actions.Issue || arg.Data == Main.Actions.All)
                 {
-                    dbIssue.Update(model.Issue);
+                    dbIssue.Update(model.Issue.Value);
                     LoadIssue(dbIssue.Get(0));
+                    LoadLastIssues();
                 }
 
                 if (arg.Data == Main.Actions.Idle || arg.Data == Main.Actions.All)
@@ -370,15 +368,15 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.UpdateComment, typeof(Subscribe<Main.IView>))]
         public void OnUpdateCommentEvent(object sender, Args<string> arg)
         {
-            if (model.Comment != null)
+            if (model.Comment.Value != null)
             {
-                model.Comment.Text = arg.Data;
+                model.Comment.Value.Text = arg.Data;
 
-                if (model.Issue.Id > 0)
-                    model.Issue.IdComment = model.Comment.Id;
+                if (model.Issue.Value.Id > 0)
+                    model.Issue.Value.IdComment = model.Comment.Value.Id;
 
-                dbIssue.Update(model.Issue);
-                dbComment.Update(model.Comment);
+                dbIssue.Update(model.Issue.Value);
+                dbComment.Update(model.Comment.Value);
             }
         }
 
@@ -389,15 +387,17 @@ namespace RedmineLog.Logic
 
             if (Int32.TryParse(arg.Data, out idIssue))
             {
-                if (model.Issue.Id == idIssue)
+                if (model.Issue.Value.Id == idIssue)
                 {
-                    model.Issue.SetWorkTime(model.WorkTime);
-                    dbIssue.Update(model.Issue);
+                    model.Issue.Value.SetWorkTime(model.WorkTime.Value);
+                    dbIssue.Update(model.Issue.Value);
                 }
                 else
                 {
                     ReloadIssueData(idIssue);
                 }
+
+                LoadLastIssues();
             }
         }
 
@@ -427,31 +427,29 @@ namespace RedmineLog.Logic
         private void LoadIdle()
         {
             var idleIssue = dbIssue.Get(-1);
-            model.IdleTime = idleIssue.GetWorkTime(new TimeSpan(0));
-            model.Sync.Value(SyncTarget.View, "IdleTime");
+            model.IdleTime.Update(idleIssue.GetWorkTime(new TimeSpan(0)));
         }
         private void LoadIssue(IssueData inIssue)
         {
-            model.Issue = inIssue;
+            model.Issue.Update(inIssue);
 
-            model.WorkTime = inIssue.GetWorkTime(model.WorkTime);
+            model.WorkTime.Update(inIssue.GetWorkTime(model.WorkTime.Value));
 
-            model.IssueComments.Clear();
-            model.IssueComments.AddRange(dbComment.GetList(inIssue));
+            model.IssueComments.Value.Clear();
+            model.IssueComments.Value.AddRange(dbComment.GetList(inIssue));
 
             if (inIssue.Id > 0)
-                model.IssueComments.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
+                model.IssueComments.Value.AddRange(dbComment.GetList(dbIssue.Get(0)).Select(x => { x.IsGlobal = true; return x; }));
 
-            model.Comment = model.IssueComments.Where(x => x.Id == inIssue.IdComment).FirstOrDefault();
+            model.IssueComments.Update();
 
-            model.IssueInfo = dbRedmineIssue.Get(inIssue.Id);
-            model.IssueParentInfo = dbRedmineIssue.Get(model.IssueInfo.IdParent.GetValueOrDefault(-1));
+            model.Comment.Update(model.IssueComments.Value.Where(x => x.Id == inIssue.IdComment).FirstOrDefault());
+
+            model.IssueInfo.Update(dbRedmineIssue.Get(inIssue.Id));
+            model.IssueParentInfo.Update(dbRedmineIssue.Get(model.IssueInfo.Value.IdParent.GetValueOrDefault(-1)));
 
             SetupLastIssueList(inIssue.Id);
 
-            model.Sync.Value(SyncTarget.View, "Comment");
-            model.Sync.Value(SyncTarget.View, "IssueInfo");
-            model.Sync.Value(SyncTarget.View, "IssueParentInfo");
 
         }
 
@@ -462,7 +460,7 @@ namespace RedmineLog.Logic
             if (inId > 0)
             {
                 if (tmp.Count > 4 && !tmp.Contains(inId))
-                    tmp.Remove(tmp.Count - 1);
+                    tmp = tmp.Take(4).ToList();
 
                 if (tmp.Contains(inId))
                     tmp.Remove(inId);
@@ -470,7 +468,6 @@ namespace RedmineLog.Logic
                 tmp.Insert(0, inId);
                 dbLastIssue.Update(tmp);
                 LoadLastIssues();
-                model.Sync.Value(SyncTarget.View, "Issues");
             }
         }
 
@@ -496,31 +493,30 @@ namespace RedmineLog.Logic
         }
         private void SetupLastIssue(IssueData issue)
         {
-            if (model.Issue.Id > 0)
+            if (model.Issue.Value.Id > 0)
             {
-                model.Issue.IdComment = model.Comment != null ? model.Comment.Id : null;
-                model.Issue.SetWorkTime(model.WorkTime);
-                dbIssue.Update(model.Issue);
+                model.Issue.Value.IdComment = model.Comment.Value != null ? model.Comment.Value.Id : null;
+                model.Issue.Value.SetWorkTime(model.WorkTime.Value);
+                dbIssue.Update(model.Issue.Value);
 
-                model.WorkTime = new TimeSpan(0);
-                model.Sync.Value(SyncTarget.View, "WorkTime");
+                model.WorkTime.Update(new TimeSpan(0));
             }
             else
             {
-                issue.AddWorkTime(model.WorkTime);
+                issue.AddWorkTime(model.WorkTime.Value);
 
-                model.Issue.SetWorkTime(new TimeSpan(0));
-                dbIssue.Update(model.Issue);
+                model.Issue.Value.SetWorkTime(new TimeSpan(0));
+                dbIssue.Update(model.Issue.Value);
 
-                if (model.Comment != null
-                    && model.Comment.IsGlobal)
+                if (model.Comment.Value != null
+                    && model.Comment.Value.IsGlobal)
                 {
-                    var comment = new CommentData() { Id = Guid.NewGuid().ToString(), Text = model.Comment.Text };
+                    var comment = new CommentData() { Id = Guid.NewGuid().ToString(), Text = model.Comment.Value.Text };
                     issue.IdComment = comment.Id;
                     issue.Comments.Add(issue.IdComment);
                     dbComment.Update(comment);
-                    dbIssue.Update(model.Issue);
-                    model.Sync.Value(SyncTarget.View, "Comment");
+                    dbIssue.Update(model.Issue.Value);
+                    model.Comment.Update();
                 }
 
             }
