@@ -85,7 +85,7 @@
             // 
             this.separator.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.separator.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.separator.Location = new System.Drawing.Point(0, 48);
+            this.separator.Location = new System.Drawing.Point(0, 43);
             this.separator.Name = "separator";
             this.separator.Size = new System.Drawing.Size(315, 1);
             this.separator.TabIndex = 5;
@@ -101,7 +101,7 @@
             this.Controls.Add(this.lblIssue);
             this.Controls.Add(this.lblIdIssue);
             this.Name = "IssueLogItemView";
-            this.Size = new System.Drawing.Size(315, 49);
+            this.Size = new System.Drawing.Size(315, 44);
             this.ResumeLayout(false);
 
         }

@@ -39,7 +39,7 @@
             // 
             this.lblComment.BackColor = System.Drawing.Color.Transparent;
             this.lblComment.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblComment.Location = new System.Drawing.Point(6, 19);
+            this.lblComment.Location = new System.Drawing.Point(6, 21);
             this.lblComment.Name = "lblComment";
             this.lblComment.Size = new System.Drawing.Size(304, 31);
             this.lblComment.TabIndex = 2;
@@ -60,9 +60,9 @@
             // 
             this.lblActivityType.BackColor = System.Drawing.Color.Transparent;
             this.lblActivityType.ForeColor = System.Drawing.Color.Blue;
-            this.lblActivityType.Location = new System.Drawing.Point(129, 30);
+            this.lblActivityType.Location = new System.Drawing.Point(156, 34);
             this.lblActivityType.Name = "lblActivityType";
-            this.lblActivityType.Size = new System.Drawing.Size(186, 18);
+            this.lblActivityType.Size = new System.Drawing.Size(159, 18);
             this.lblActivityType.TabIndex = 4;
             this.lblActivityType.Text = "Projektowanie";
             this.lblActivityType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -80,9 +80,9 @@
             // 
             this.lbIssue.BackColor = System.Drawing.Color.Transparent;
             this.lbIssue.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbIssue.Location = new System.Drawing.Point(3, 4);
+            this.lbIssue.Location = new System.Drawing.Point(3, 3);
             this.lbIssue.Name = "lbIssue";
-            this.lbIssue.Size = new System.Drawing.Size(238, 13);
+            this.lbIssue.Size = new System.Drawing.Size(238, 18);
             this.lbIssue.TabIndex = 7;
             // 
             // WorkLogItemView

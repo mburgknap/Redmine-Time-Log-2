@@ -78,7 +78,7 @@ namespace RedmineLog.Logic
             }
             else
             {
-                model.Comment.Update(null);
+                model.Comment.Update(null, false);
                 LoadIssue(dbIssue.Get(0));
             }
         }

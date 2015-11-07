@@ -83,9 +83,9 @@
             this.lblPriority.BackColor = System.Drawing.Color.Transparent;
             this.lblPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblPriority.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblPriority.Location = new System.Drawing.Point(200, 17);
+            this.lblPriority.Location = new System.Drawing.Point(202, 20);
             this.lblPriority.Name = "lblPriority";
-            this.lblPriority.Size = new System.Drawing.Size(110, 20);
+            this.lblPriority.Size = new System.Drawing.Size(110, 18);
             this.lblPriority.TabIndex = 6;
             this.lblPriority.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 

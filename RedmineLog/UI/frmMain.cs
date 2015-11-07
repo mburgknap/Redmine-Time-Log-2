@@ -303,10 +303,11 @@ namespace RedmineLog
         {
             var list = new List<Control>();
 
+            KeyHelpers.BindMouseClick(Form.cHeader, OnClick);
+
             foreach (var issue in value)
             {
                 list.Add(new IssueItemView().Set(issue));
-                KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
                 KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
                 KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick2);
             }
@@ -754,7 +755,17 @@ namespace RedmineLog
             {
                 UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                 UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
-                SelectIssue(((ICustomItem)sender).Data as WorkingIssue);
+
+                var tmp = ((ICustomItem)sender).Data as WorkingIssue;
+
+                if (tmp != null)
+                    SelectIssue(tmp);
+                else
+                {
+                    Form.tbIssue.Text = string.Empty;
+                    AddIssueEvent.Fire(this, string.Empty);
+                }
+
                 return;
             }
 
@@ -802,7 +813,6 @@ namespace RedmineLog
                 {
                     if (item != null)
                         SelectEvent.Fire(this, item);
-
                 });
         }
 

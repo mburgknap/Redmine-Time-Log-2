@@ -514,6 +514,6 @@
         internal System.Windows.Forms.Label lbClockTodayTime;
         internal System.Windows.Forms.ToolTip ttStartTime;
         internal UI.Common.ExFlowLayoutPanel fpIssueList;
-        private UI.Items.IssueItemView cHeader;
+        internal UI.Items.IssueItemView cHeader;
     }
 }
