@@ -1,6 +1,7 @@
 ﻿using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic;
+using System.Text;
 
 namespace RedmineLog.Model
 {
@@ -9,17 +10,17 @@ namespace RedmineLog.Model
         [Inject]
         public SettingsModel()
         {
-            Sync = new ModelSync<Settings.IModel>();
+            ApiKey = new DataProperty<StringBuilder>();
+            Display = new DataProperty<DisplayData>();
+            Url = new DataProperty<StringBuilder>();
         }
 
-        public string Url { get; set; }
-
-        public string ApiKey { get; set; }
+        public DataProperty<StringBuilder> ApiKey { get; private set; }
 
         public int IdUser { get; set; }
 
-        public DisplayData Display { get; set; }
+        public DataProperty<DisplayData> Display { get; private set; }
 
-        public IModelSync Sync { get; private set; }
+        public DataProperty<StringBuilder> Url { get; private set; }
     }
 }

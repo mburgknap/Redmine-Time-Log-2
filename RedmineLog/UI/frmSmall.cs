@@ -131,6 +131,68 @@ namespace RedmineLog
         public SmallView(Small.IModel inModel)
         {
             model = inModel;
+            model.IdleTime.OnUpdate.Subscribe(OnUpdateIdleTime);
+            model.IssueInfo.OnUpdate.Subscribe(OnUpdateIssueInfo);
+            model.IssueParentInfo.OnUpdate.Subscribe(OnUpdateIssueParentInfo);
+            model.Comment.OnUpdate.Subscribe(OnUpdateComment);
+            model.WorkTime.OnUpdate.Subscribe(OnUpdateWorkTime);
+        }
+
+        private void OnUpdateComment(CommentData obj)
+        {
+            Form.lbComment.Set(obj,
+                  (ui, data) =>
+                  {
+                      if (data != null)
+                          ui.Text = "Comment : " + Environment.NewLine + " " + data.Text;
+                  });
+        }
+
+        private void OnUpdateWorkTime(TimeSpan obj)
+        {
+            Form.lbWorkTime.Set(obj, (ui, data) =>
+            {
+                ui.Text = data.ToString();
+            });
+        }
+
+        private void OnUpdateIssueParentInfo(RedmineIssueData obj)
+        {
+            Form.lbParentIssue.Set(obj,
+              (ui, data) =>
+              {
+                  if (data != null)
+                  {
+                      ui.Text = data.Subject + " :";
+                      ui.Visible = true;
+                  }
+                  else
+                      ui.Visible = false;
+              });
+        }
+
+        private void OnUpdateIssueInfo(RedmineIssueData obj)
+        {
+            Form.Set(obj,
+               (ui, data) =>
+               {
+                   ui.lbComment.Visible = data.Id == 0;
+
+                   ui.lbIssue.Text = data.Id > 0 ? "#" + data.Id.ToString() : "";
+
+                   ui.lbProject.Text = data.Project;
+                   ui.lblTracker.Text = data.Id > 0 ? "(" + data.Tracker + ")" : "";
+                   ui.lbIssue.Text = data.Subject;
+               });
+        }
+
+        private void OnUpdateIdleTime(TimeSpan obj)
+        {
+            Form.lbIdleTime.Set(obj,
+                  (ui, data) =>
+                  {
+                      ui.Text = data.ToString();
+                  });
         }
 
 
@@ -140,13 +202,13 @@ namespace RedmineLog
         [EventSubscription(AppTime.Events.WorkUpdate, typeof(OnPublisher))]
         public void OnWorkUpdateEvent(object sender, Args<int> arg)
         {
-            model.WorkTime.Notify();
+            model.WorkTime.Update();
         }
 
         [EventSubscription(AppTime.Events.IdleUpdate, typeof(OnPublisher))]
         public void OnIdleUpdateEvent(object sender, Args<int> arg)
         {
-            model.IdleTime.Notify();
+            model.IdleTime.Update();
         }
 
 
@@ -174,61 +236,7 @@ namespace RedmineLog
                   LoadEvent.Fire(this);
               });
         }
-        void OnWorkTimeChange()
-        {
-            Form.lbWorkTime.Set(model.WorkTime, (ui, data) =>
-            {
-                ui.Text = data.ToString();
-            });
-        }
 
-        void OnIdleTimeChange()
-        {
-            Form.lbIdleTime.Set(model.IdleTime,
-                (ui, data) =>
-                {
-                    ui.Text = data.ToString();
-                });
-        }
-        void OnCommentChange()
-        {
-            Form.lbComment.Set(model,
-                (ui, data) =>
-                {
-                    if (model.Comment != null)
-                        ui.Text = "Comment : " + Environment.NewLine + " " + data.Comment.Value.Text;
-                });
-        }
-
-        void OnIssueParentInfoChange()
-        {
-            Form.lbParentIssue.Set(model.IssueParentInfo,
-               (ui, data) =>
-               {
-                   if (data != null)
-                   {
-                       ui.Text = data.Value.Subject + " :";
-                       ui.Visible = true;
-                   }
-                   else
-                       ui.Visible = false;
-               });
-
-        }
-        void OnIssueInfoChange()
-        {
-            Form.Set(model,
-              (ui, data) =>
-              {
-                  ui.lbComment.Visible = data.IssueInfo.Value.Id == 0;
-
-                  ui.lbIssue.Text = data.IssueInfo.Value.Id > 0 ? data.IssueInfo.Value.Id.ToString() : "";
-
-                  ui.lbProject.Text = data.IssueInfo.Value.Project;
-                  ui.lblTracker.Text = data.IssueInfo.Value.Id > 0 ? "(" + data.IssueInfo.Value.Tracker + ")" : "";
-                  ui.lbIssue.Text = data.IssueInfo.Value.Subject;
-              });
-        }
 
         private void OnIssueClick(object sender, EventArgs e)
         {

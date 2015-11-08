@@ -8,6 +8,23 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
+
+
+    public static class PropertyExtension
+    {
+        public static void Update(this DataProperty<StringBuilder> inThis, String inValue)
+        {
+            inThis.Value.Init(inValue);
+            inThis.Update();
+        }
+
+        public static void Notify(this DataProperty<StringBuilder> inThis, String inValue)
+        {
+            inThis.Value.Init(inValue);
+            inThis.Notify();
+        }
+    }
+
     public class EventProperty<T> : IObservable<EventPattern<T>>, IDisposable
         where T : EventArgs
     {

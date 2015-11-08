@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -43,7 +46,65 @@ namespace RedmineLog
         public SettingsView(Settings.IModel inModel)
         {
             model = inModel;
-            model.Sync.Bind(SyncTarget.View, this);
+            inModel.ApiKey.OnUpdate.Subscribe(OnUpdateApiKey);
+            inModel.Display.OnUpdate.Subscribe(OnUpdateDisplay);
+            inModel.Url.OnUpdate.Subscribe(OnUpdateUrl);
+        }
+
+        private void OnUpdateUrl(StringBuilder obj)
+        {
+            Form.tbRedmineURL.Set(obj,
+                          (ui, data) =>
+                          {
+                              ui.Text = data.ToString();
+                          });
+        }
+
+        private void OnUpdateDisplay(DisplayData obj)
+        {
+        
+            Form.cbDisplay.Set(obj,
+                     (ui, data) =>
+                     {
+                         displayChanged.Dispose();
+                         Form.cbDisplay.Items.Clear();
+
+                         foreach (var display in Screen.AllScreens)
+                         {
+                             Form.cbDisplay.Items.Add(new DisplayData()
+                             {
+                                 Name = display.DeviceName,
+                                 X = display.Bounds.X,
+                                 Y = display.Bounds.Y,
+                                 Width = display.Bounds.Width,
+                                 Height = display.Bounds.Height,
+                             });
+
+                             if (data != null && data.Name == display.DeviceName)
+                                 ui.SelectedItem = Form.cbDisplay.Items[Form.cbDisplay.Items.Count - 1];
+                         }
+
+                         if (ui.SelectedItem == null)
+                             ui.SelectedItem = Form.cbDisplay.Items[0];
+
+                         displayChanged.Subscribe(Observer.Create<EventPattern<EventArgs>>(OnNotifyDisplay));
+                     });
+        }
+
+        private void OnNotifyDisplay(EventPattern<EventArgs> obj)
+        {
+            model.Display.Notify(((DisplayData)Form.cbDisplay.SelectedItem));
+            NotifyBox.Show("Please restart application", "Info");
+            Form.Close();
+        }
+
+        private void OnUpdateApiKey(StringBuilder obj)
+        {
+            Form.tbApiKey.Set(obj,
+                   (ui, data) =>
+                   {
+                       ui.Text = data.ToString();
+                   });
         }
 
         [EventPublication(Settings.Events.Connect, typeof(Publish<Settings.IView>))]
@@ -55,22 +116,19 @@ namespace RedmineLog
         [EventPublication(Settings.Events.ReloadCache, typeof(Publish<Settings.IView>))]
         public event EventHandler ReloadCacheEvent;
 
+        EventProperty<EventArgs> displayChanged = new EventProperty<EventArgs>();
+
         public void Init(frmSettings frmSettings)
         {
             Form = frmSettings;
 
-            Form.cbDisplay.SelectedIndexChanged += OnDisplaySelectedIndexChanged;
+            displayChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbDisplay, "SelectedIndexChanged"));
+
             Form.btnConnect.Click += OnConnectClick;
             Form.btnReloadCache.Click += OnReloadCacheClick;
             Load();
         }
 
-        void OnDisplaySelectedIndexChanged(object sender, EventArgs e)
-        {
-            model.Display = ((DisplayData)Form.cbDisplay.SelectedItem);
-            model.Sync.Value(SyncTarget.Source, "Display");
-            NotifyBox.Show("Please restart application", "Info");
-        }
 
         private void OnReloadCacheClick(object sender, EventArgs e)
         {
@@ -95,8 +153,8 @@ namespace RedmineLog
 
         private void OnConnectClick(System.Object sender, System.EventArgs e)
         {
-            model.Url = Form.tbRedmineURL.Text;
-            model.ApiKey = Form.tbApiKey.Text;
+            model.Url.Notify(Form.tbRedmineURL.Text);
+            model.ApiKey.Notify(Form.tbApiKey.Text);
 
             new frmProcessing().Show(Form,
               () =>
@@ -111,53 +169,5 @@ namespace RedmineLog
               });
         }
 
-        private void OnUrlChange()
-        {
-            Form.tbRedmineURL.Set(model.Url,
-                       (ui, data) =>
-                       {
-                           ui.Text = data;
-                       });
-        }
-
-        private void OnApiKeyChange()
-        {
-            Form.tbApiKey.Set(model.ApiKey,
-                      (ui, data) =>
-                      {
-                          ui.Text = data;
-                      });
-        }
-
-
-        private void OnDisplayChange()
-        {
-            Form.cbDisplay.Set(model.Display,
-                      (ui, data) =>
-                      {
-                          Form.cbDisplay.SelectedIndexChanged -= OnDisplaySelectedIndexChanged;
-                          Form.cbDisplay.Items.Clear();
-
-                          foreach (var display in Screen.AllScreens)
-                          {
-                              Form.cbDisplay.Items.Add(new DisplayData()
-                              {
-                                  Name = display.DeviceName,
-                                  X = display.Bounds.X,
-                                  Y = display.Bounds.Y,
-                                  Width = display.Bounds.Width,
-                                  Height = display.Bounds.Height,
-                              });
-
-                              if (data != null && data.Name == display.DeviceName)
-                                  ui.SelectedItem = Form.cbDisplay.Items[Form.cbDisplay.Items.Count - 1];
-                          }
-
-                          if (ui.SelectedItem == null)
-                              ui.SelectedItem = Form.cbDisplay.Items[0];
-
-                          Form.cbDisplay.SelectedIndexChanged += OnDisplaySelectedIndexChanged;
-                      });
-        }
     }
 }
