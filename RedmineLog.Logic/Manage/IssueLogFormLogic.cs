@@ -24,7 +24,6 @@ namespace RedmineLog.Logic
         {
             view = inView;
             model = inModel;
-            model.Sync.Bind(SyncTarget.Source, this);
             dbIssue = inDbIssue;
             redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
@@ -35,7 +34,7 @@ namespace RedmineLog.Logic
         {
             RedmineIssueData tmp = null;
 
-            model.Issues.Clear();
+            model.Issues.Value.Clear();
 
             foreach (var item in dbIssue.GetList())
             {
@@ -45,15 +44,15 @@ namespace RedmineLog.Logic
                 tmp = dbRedmineIssue.Get(item.Id);
 
                 if (tmp.IdParent.HasValue)
-                    model.Issues.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
+                    model.Issues.Value.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
                 else
-                    model.Issues.Add(item, tmp, null);
+                    model.Issues.Value.Add(item, tmp, null);
 
-                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item.Id);
+                model.Issues.Value.Last().IssueUri = redmine.IssueUrl(item.Id);
             }
 
 
-            model.Sync.Value(SyncTarget.View, "Issues");
+            model.Issues.Update();
         }
 
         [EventSubscription(IssueLog.Events.Select, typeof(OnPublisher))]

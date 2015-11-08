@@ -12,14 +12,12 @@ namespace RedmineLog.Logic.Model
     {
         public WorkLogModel()
         {
-            WorkLogs = new WorkLogList();
-            Sync = new ModelSync<WorkLog.IModel>();
+            WorkLogs = new DataProperty<WorkLogList>();
+            LoadedTime = new DataProperty<DateTime>();
         }
 
-        public IModelSync Sync { get; private set; }
+        public DataProperty<WorkLogList> WorkLogs { get; private set; }
 
-        public WorkLogList WorkLogs { get; private set; }
-
-        public DateTime LoadedTime { get; set; }
+        public DataProperty<DateTime> LoadedTime { get; private set; }
     }
 }

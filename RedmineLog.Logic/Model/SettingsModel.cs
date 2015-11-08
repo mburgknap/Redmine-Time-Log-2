@@ -17,8 +17,6 @@ namespace RedmineLog.Model
 
         public DataProperty<StringBuilder> ApiKey { get; private set; }
 
-        public int IdUser { get; set; }
-
         public DataProperty<DisplayData> Display { get; private set; }
 
         public DataProperty<StringBuilder> Url { get; private set; }

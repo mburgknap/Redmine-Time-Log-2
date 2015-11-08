@@ -11,13 +11,15 @@ namespace RedmineLog.Logic.Model
     {
         public EditLogModel()
         {
-            WorkActivities = new WorkActivityList();
-            Sync = new ModelSync<EditLog.IModel>();
+            WorkActivities = new DataProperty<WorkActivityList>();
+            Activity = new DataProperty<WorkActivityType>();
+            EditItem = new DataProperty<WorkLogItem>();
+            Time = new DataProperty<TimeSpan>();
         }
-        public IModelSync Sync { get; private set; }
-        public WorkActivityList WorkActivities { get; private set; }
-        public WorkActivityType Activity { get; set; }
-        public WorkLogItem EditItem { get; set; }
-        public TimeSpan Time { get; set; }
+
+        public DataProperty<WorkActivityList> WorkActivities { get; private set; }
+        public DataProperty<WorkActivityType> Activity { get; private set; }
+        public DataProperty<WorkLogItem> EditItem { get; private set; }
+        public DataProperty<TimeSpan> Time { get; private set; }
     }
 }

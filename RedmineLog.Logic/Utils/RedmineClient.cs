@@ -135,6 +135,7 @@ namespace RedmineLog.Logic
                             Id = item2.Id,
                             IdIssue = item2.Issue.Id,
                             ProjectName = item2.Project.Name,
+                            IdActivity = item2.Activity.Id,
                             Hours = item2.Hours,
                             Comment = item2.Comments,
                             ActivityName = item2.Activity.Name,

@@ -46,7 +46,89 @@ namespace RedmineLog
         public WorkLogView(WorkLog.IModel inModel)
         {
             model = inModel;
-            model.Sync.Bind(SyncTarget.View, this);
+            model.WorkLogs.OnUpdate.Subscribe(OnUpdateWorkLogs);
+            model.LoadedTime.OnUpdate.Subscribe(OnUpdateLoadedTime);
+        }
+
+        private void OnUpdateLoadedTime(DateTime obj)
+        {
+            System.Diagnostics.Debug.WriteLine("OnUpdateLoadedTime Not Supported");
+        }
+
+        private void OnUpdateWorkLogs(WorkLogList obj)
+        {
+            var list = new List<Control>();
+
+            WorkLogGroupItemView dayItem = null;
+
+            foreach (var workItem in (from p in obj
+                                      group p by p.Date.Date into g
+                                      select new { Date = g.Key, Issues = g.ToList() }))
+            {
+
+                var dayTime = new TimeSpan(0);
+
+                dayItem = new WorkLogGroupItemView();
+                dayItem.Set(workItem.Date);
+                list.Add(dayItem);
+                KeyHelpers.BindKey(dayItem, OnKeyDown);
+
+                foreach (var parentIssue in (from p in workItem.Issues
+                                             group p by p.ProjectName into g
+                                             orderby g.Key ascending
+                                             select new { Project = g.Key, Issues = g.ToList() }))
+                {
+
+                    var projectTime = new TimeSpan(0);
+                    var projectItem = new WorkLogGroupItemView();
+                    projectItem.Set(parentIssue.Project);
+                    list.Add(projectItem);
+                    KeyHelpers.BindKey(projectItem, OnKeyDown);
+
+                    foreach (var issue in (from i in parentIssue.Issues
+                                           group i by i.ParentIssue into g
+                                           orderby (String.IsNullOrWhiteSpace(g.Key) ? "aa" : g.Key) ascending
+                                           select new { ParentIssue = g.Key, Issues = g.ToList() }))
+                    {
+                        WorkLogGroupItemView parentIssueItem = null;
+                        var parentIssueTime = new TimeSpan(0);
+
+                        if (!string.IsNullOrWhiteSpace(issue.ParentIssue))
+                        {
+                            parentIssueItem = new WorkLogGroupItemView();
+                            parentIssueItem.Set(issue.ParentIssue);
+                            list.Add(parentIssueItem);
+                        }
+
+                        foreach (var subIssue in issue.Issues.OrderBy(x => x.Id))
+                        {
+                            projectTime = projectTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
+                            parentIssueTime = parentIssueTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
+
+                            list.Add(new WorkLogItemView().Set(subIssue));
+                            KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                            KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                            KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                        }
+
+                        if (parentIssueItem != null)
+                            parentIssueItem.Update(parentIssueTime);
+                    }
+
+                    dayTime = dayTime.Add(projectTime);
+                    projectItem.Update(projectTime);
+                }
+
+                dayItem.Update(dayTime);
+            }
+
+            Form.fpWokLogList.Set(model,
+                       (ui, data) =>
+                       {
+                           ui.Controls.Clear();
+                           ui.Controls.AddRange(list.ToArray());
+                           ui.ScrollControlIntoView(dayItem);
+                       });
         }
 
         [EventPublication(WorkLog.Events.Load, typeof(Publish<WorkLog.IView>))]
@@ -125,82 +207,6 @@ namespace RedmineLog
                 });
         }
 
-
-        private void OnWorkLogsChange()
-        {
-            var list = new List<Control>();
-
-            WorkLogGroupItemView dayItem = null;
-
-            foreach (var workItem in (from p in model.WorkLogs
-                                      group p by p.Date.Date into g
-                                      select new { Date = g.Key, Issues = g.ToList() }))
-            {
-
-                var dayTime = new TimeSpan(0);
-
-                dayItem = new WorkLogGroupItemView();
-                dayItem.Set(workItem.Date);
-                list.Add(dayItem);
-                KeyHelpers.BindKey(dayItem, OnKeyDown);
-
-                foreach (var parentIssue in (from p in workItem.Issues
-                                             group p by p.ProjectName into g
-                                             orderby g.Key ascending
-                                             select new { Project = g.Key, Issues = g.ToList() }))
-                {
-
-                    var projectTime = new TimeSpan(0);
-                    var projectItem = new WorkLogGroupItemView();
-                    projectItem.Set(parentIssue.Project);
-                    list.Add(projectItem);
-                    KeyHelpers.BindKey(projectItem, OnKeyDown);
-
-                    foreach (var issue in (from i in parentIssue.Issues
-                                           group i by i.ParentIssue into g
-                                           orderby (String.IsNullOrWhiteSpace(g.Key) ? "aa" : g.Key) ascending
-                                           select new { ParentIssue = g.Key, Issues = g.ToList() }))
-                    {
-                        WorkLogGroupItemView parentIssueItem = null;
-                        var parentIssueTime = new TimeSpan(0);
-
-                        if (!string.IsNullOrWhiteSpace(issue.ParentIssue))
-                        {
-                            parentIssueItem = new WorkLogGroupItemView();
-                            parentIssueItem.Set(issue.ParentIssue);
-                            list.Add(parentIssueItem);
-                        }
-
-                        foreach (var subIssue in issue.Issues.OrderBy(x => x.Id))
-                        {
-                            projectTime = projectTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
-                            parentIssueTime = parentIssueTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
-
-                            list.Add(new WorkLogItemView().Set(subIssue));
-                            KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
-                            KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
-                            KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
-                        }
-
-                        if (parentIssueItem != null)
-                            parentIssueItem.Update(parentIssueTime);
-                    }
-
-                    dayTime = dayTime.Add(projectTime);
-                    projectItem.Update(projectTime);
-                }
-
-                dayItem.Update(dayTime);
-            }
-
-            Form.fpWokLogList.Set(model,
-                       (ui, data) =>
-                       {
-                           ui.Controls.Clear();
-                           ui.Controls.AddRange(list.ToArray());
-                           ui.ScrollControlIntoView(dayItem);
-                       });
-        }
 
         private void OnSpecialClick(string action, object data)
         {

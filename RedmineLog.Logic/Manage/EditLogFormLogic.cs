@@ -16,20 +16,22 @@ namespace RedmineLog.Logic
         private EditLog.IModel model;
         private IRedmineClient redmine;
         private EditLog.IView view;
+        private IDbCache dbCache;
         [Inject]
-        public EditLogFormLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient)
+        public EditLogFormLogic(EditLog.IView inView, EditLog.IModel inModel, IRedmineClient inClient, IDbCache inDbCache)
         {
             view = inView;
             model = inModel;
             redmine = inClient;
+            dbCache = inDbCache;
         }
 
 
         [EventSubscription(EditLog.Events.Save, typeof(Subscribe<EditLog.IView>))]
         public void OnSaveEvent(object sender, EventArgs arg)
         {
-            model.EditItem.Hours = Math.Round(Convert.ToDecimal(model.Time.Hours) + Convert.ToDecimal(model.Time.Minutes) / 60m, 2, MidpointRounding.ToEven);
-            redmine.UpdateLog(model.EditItem);
+            model.EditItem.Value.Hours = Math.Round(Convert.ToDecimal(model.Time.Value.Hours) + Convert.ToDecimal(model.Time.Value.Minutes) / 60m, 2, MidpointRounding.ToEven);
+            redmine.UpdateLog(model.EditItem.Value);
         }
 
         [EventSubscription(WorkLog.Events.Edit, typeof(OnPublisher))]
@@ -38,15 +40,26 @@ namespace RedmineLog.Logic
             LoadData(arg.Data);
         }
 
+        [EventSubscription(EditLog.Events.Load, typeof(Subscribe<EditLog.IView>))]
+        public void OnLoadEvent(object sender, EventArgs arg)
+        {
+        }
+
         private void LoadData(WorkLogItem workLogItem)
         {
-            model.EditItem = workLogItem;
-            model.Time = new TimeSpan((int)workLogItem.Hours, (int)((workLogItem.Hours % 1) * 60), 0);
+            model.EditItem.Update(workLogItem);
+            model.Time.Update(new TimeSpan((int)workLogItem.Hours, (int)((workLogItem.Hours % 1) * 60), 0));
 
-            model.WorkActivities.Clear();
-            model.WorkActivities.AddRange(redmine.GetWorkActivityTypes());
 
-            view.Load();
+            model.WorkActivities.Value.Clear();
+            model.WorkActivities.Value.AddRange(dbCache.GetWorkActivityTypes());
+
+            var item = model.WorkActivities.Value.Where(x => x.Id == model.EditItem.Value.IdActivity).FirstOrDefault();
+
+            if (item != null)
+                model.Activity.Update(item, false);
+
+            model.WorkActivities.Update();
         }
     }
 }

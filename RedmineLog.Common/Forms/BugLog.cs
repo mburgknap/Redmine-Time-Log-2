@@ -21,8 +21,7 @@ namespace RedmineLog.Common.Forms
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-            BugLogList Bugs { get; }
+            DataProperty<BugLogList> Bugs { get; }
         }
     }
 }

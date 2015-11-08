@@ -11,20 +11,19 @@ namespace RedmineLog.Common
         public static class Events
         {
             public const string Save = "topic://EditLogTime/Save";
+            public const string Load = "topic://EditLogTime/Load";
         }
 
         public interface IView
         {
-            void Load();
         }
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-            WorkActivityList WorkActivities { get; }
-            WorkActivityType Activity { get; set; }
-            WorkLogItem EditItem { get; set; }
-            TimeSpan Time { get; set; }
+            DataProperty<WorkActivityList> WorkActivities { get; }
+            DataProperty<WorkActivityType> Activity { get; }
+            DataProperty<WorkLogItem> EditItem { get; }
+            DataProperty<TimeSpan> Time { get; }
         }
     }
 }

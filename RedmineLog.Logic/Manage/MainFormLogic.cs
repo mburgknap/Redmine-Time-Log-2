@@ -305,7 +305,7 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.Submit, typeof(Subscribe<Main.IView>))]
         public void OnSubmitEvent(object sender, Args<Main.Actions> arg)
         {
-            if (model.Comment == null)
+            if (model.Comment.Value == null)
             {
                 view.Info("Write comment to the task");
                 return;

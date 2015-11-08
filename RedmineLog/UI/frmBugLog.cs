@@ -47,7 +47,36 @@ namespace RedmineLog.UI
         public BugLogView(BugLog.IModel inModel)
         {
             model = inModel;
-            model.Sync.Bind(SyncTarget.View, this);
+            model.Bugs.OnUpdate.Subscribe(OnUpdateBugs);
+        }
+
+        private void OnUpdateBugs(BugLogList obj)
+        {
+            var list = new List<Control>();
+
+            foreach (var item in (from p in obj
+                                  group p by p.Project into g
+                                  select new { Project = g.Key, Issues = g.ToList() }))
+            {
+                list.Add(new BugLogGroupItemView().Set(item.Project));
+                KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+
+                foreach (var issue in item.Issues)
+                {
+                    list.Add(new BugLogItemView().Set(issue));
+                    KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
+                    KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
+                    KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
+                }
+            }
+
+
+            Form.fpBugList.Set(obj,
+              (ui, data) =>
+              {
+                  ui.Controls.Clear();
+                  Form.fpBugList.Controls.AddRange(list.ToArray());
+              });
         }
 
 
@@ -71,35 +100,6 @@ namespace RedmineLog.UI
             Form = inView;
             KeyHelpers.BindKey(Form, OnKeyDown);
             Load();
-        }
-
-        private void OnBugsChange()
-        {
-            var list = new List<Control>();
-
-            foreach (var item in (from p in model.Bugs
-                                  group p by p.Project into g
-                                  select new { Project = g.Key, Issues = g.ToList() }))
-            {
-                list.Add(new BugLogGroupItemView().Set(item.Project));
-                KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
-
-                foreach (var issue in item.Issues)
-                {
-                    list.Add(new BugLogItemView().Set(issue));
-                    KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
-                    KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
-                    KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);
-                }
-            }
-
-
-            Form.fpBugList.Set(model,
-              (ui, data) =>
-              {
-                  ui.Controls.Clear();
-                  Form.fpBugList.Controls.AddRange(list.ToArray());
-              });
         }
 
         private void OnSpecialClick(string action, object data)
