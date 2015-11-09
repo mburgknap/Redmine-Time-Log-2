@@ -16,6 +16,7 @@ namespace RedmineLog.UI
         private Action action;
         private Form form;
         private Action finish;
+        private Control control;
         public frmProcessing()
         {
             InitializeComponent();
@@ -28,13 +29,19 @@ namespace RedmineLog.UI
 
         public void Show(Form inForm, Action inAction, Action inFinish = null)
         {
+            Show(inForm, null, inAction, inFinish);
+        }
+
+        public void Show(Form inForm, Control inControl, Action inAction, Action inFinish = null)
+        {
             action = inAction;
             finish = inFinish;
             form = inForm;
+            control = inControl;
 
             if (inForm.Visible)
             {
-                SetupLocation(inForm);
+                SetupLocation();
                 ShowProgress();
             }
             else
@@ -83,15 +90,30 @@ namespace RedmineLog.UI
 
         void OnFormShown(object sender, EventArgs e)
         {
-            SetupLocation((Form)sender);
+            SetupLocation();
             ShowProgress();
         }
 
-        private void SetupLocation(Form form)
+        private void SetupLocation()
+        {
+            if (control != null)
+                SetupLocation(form, control);
+            else
+                SetupLocation(form);
+        }
+
+        private void SetupLocation(Control form)
         {
             this.Width = form.Width;
             this.Height = form.Height;
             Location = new Point(form.Location.X, form.Location.Y);
+        }
+
+        private void SetupLocation(Form form, Control control)
+        {
+            this.Width = control.Width;
+            this.Height = control.Height;
+            Location = new Point(form.Location.X + control.Location.X, form.Location.Y + control.Location.Y);
         }
 
     }

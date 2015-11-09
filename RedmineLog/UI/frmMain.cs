@@ -159,6 +159,53 @@ namespace RedmineLog
             model.WorkTime.OnUpdate.Subscribe(OnUpdateWorkTime);
             model.LastIssues.OnUpdate.Subscribe(OnUpdateLastIssues);
             model.WorkActivities.OnUpdate.Subscribe(OnUpdateWorkActivities);
+            model.WorkReport.OnUpdate.Subscribe(OnUpdateWorkReport);
+        }
+
+        private void OnUpdateWorkReport(WorkReportData obj)
+        {
+            Form.Set(obj,
+                  (ui, data) =>
+                  {
+                      Action<LinkLabel, TimeSpan, bool, bool> action = (label, time, isFutureDay, isFreeDay) =>
+                      {
+
+                          if (isFreeDay)
+                          {
+                              if (time.TotalMinutes > 0)
+                                  label.BackColor = Color.Green;
+                              else
+                                  label.BackColor = SystemColors.ActiveCaption;
+                          }
+                          else
+                              if (model.WorkReport.Value.ReportType == WorkReportType.LastWeek || !isFutureDay)
+                              {
+                                  if (time.Hours > model.WorkReport.Value.MinimalHours)
+                                      label.BackColor = Color.Green;
+                                  else if (time.Hours > model.WorkReport.Value.MinimalHours - 2)
+                                      label.BackColor = Color.Yellow;
+                                  else
+                                      label.BackColor = Color.Red;
+                              }
+                              else
+                                  label.BackColor = SystemColors.ActiveCaption;
+
+                          label.Text = time.ToString(@"hh\:mm");
+                      };
+
+                      if (model.WorkReport.Value.ReportType == WorkReportType.Week)
+                          ui.btnWorkReportMode.BackColor = Color.Green;
+                      else
+                          ui.btnWorkReportMode.BackColor = Color.Gray;
+
+                      action(ui.llDay1, obj.Day1, DateTime.Now.DayOfWeek <= DayOfWeek.Monday, false);
+                      action(ui.llDay2, obj.Day2, DateTime.Now.DayOfWeek <= DayOfWeek.Tuesday, false);
+                      action(ui.llDay3, obj.Day3, DateTime.Now.DayOfWeek <= DayOfWeek.Wednesday, false);
+                      action(ui.llDay4, obj.Day4, DateTime.Now.DayOfWeek <= DayOfWeek.Thursday, false);
+                      action(ui.llDay5, obj.Day5, DateTime.Now.DayOfWeek <= DayOfWeek.Friday, false);
+                      action(ui.llDay6, obj.Day6, false, true);
+                      action(ui.llDay7, obj.Day7, false, true);
+                  });
         }
 
         private void OnUpdateActivity(WorkActivityType obj)
@@ -372,6 +419,12 @@ namespace RedmineLog
         [EventPublication(Main.Events.Update)]
         public event EventHandler UpdateEvent;
 
+        [EventPublication(Main.Events.WorkReportSync)]
+        public event EventHandler WorkReportSyncEvent;
+
+        [EventPublication(Main.Events.WorkReportMode)]
+        public event EventHandler WorkReportModeEvent;
+
         [EventPublication(IssueLog.Events.Delete)]
         public event EventHandler<Args<WorkingIssue>> DeleteEvent;
 
@@ -417,6 +470,8 @@ namespace RedmineLog
             Observable.FromEventPattern<EventArgs>(Form.btnStopWork, "Click").Subscribe(OnActionSetupClock);
             Observable.FromEventPattern<EventArgs>(Form.lblClockIdle, "Click").Subscribe(OnActionIdleMode);
             Observable.FromEventPattern<EventArgs>(Form.lblClockActive, "Click").Subscribe(OnActionWorkMode);
+            Observable.FromEventPattern<EventArgs>(Form.btnWorkReportSync, "Click").Subscribe(OnActionWorkReportSync);
+            Observable.FromEventPattern<EventArgs>(Form.btnWorkReportMode, "Click").Subscribe(OnActionWorkReportMode);
 
             KeyHelpers.BindMouseClick(Form.cHeader, OnClick);
             Form.tsmMyBugs.Click += SearchBugClick;
@@ -444,9 +499,25 @@ namespace RedmineLog
             Form.Resize += OnResize;
             Form.lblParentIssue.MouseClick += OnParentIssueMouseClick;
             Form.lblIssue.MouseClick += OnIssueMouseClick;
-
-
             Load();
+        }
+
+        private void OnActionWorkReportMode(EventPattern<EventArgs> obj)
+        {
+            new frmProcessing().Show(Form, Form.tableLayoutPanel1,
+                       () =>
+                       {
+                           WorkReportModeEvent.Fire(this);
+                       });
+        }
+
+        private void OnActionWorkReportSync(EventPattern<EventArgs> obj)
+        {
+            new frmProcessing().Show(Form, Form.tableLayoutPanel1,
+                        () =>
+                        {
+                            WorkReportSyncEvent.Fire(this);
+                        });
         }
 
         private void OnActionWorkMode(EventPattern<EventArgs> obj)
@@ -593,12 +664,14 @@ namespace RedmineLog
 
         public void Load()
         {
-
             new frmProcessing().Show(Form,
                 () =>
                 {
                     OnActionWorkMode(null);
                     LoadEvent.Fire(this);
+                }, () =>
+                {
+                    OnActionWorkReportSync(null);
                 });
         }
 
@@ -773,6 +846,9 @@ namespace RedmineLog
                 {
                     UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                     SubmitEvent.Fire(this, Main.Actions.All);
+                }, () =>
+                {
+                    OnActionWorkReportSync(null);
                 });
         }
 
@@ -783,6 +859,9 @@ namespace RedmineLog
                 {
                     UpdateCommentEvent.Fire(this, Form.tbComment.Text);
                     SubmitEvent.Fire(this, currentMode);
+                }, () =>
+                {
+                    OnActionWorkReportSync(null);
                 });
         }
 

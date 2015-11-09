@@ -13,6 +13,24 @@ using System.Threading.Tasks;
 namespace RedmineLog.Common
 {
 
+    public enum WorkReportType
+    {
+        Week,
+        LastWeek
+    }
+
+    public class WorkReportData
+    {
+        public TimeSpan Day1 { get; set; }
+        public TimeSpan Day2 { get; set; }
+        public TimeSpan Day3 { get; set; }
+        public TimeSpan Day4 { get; set; }
+        public TimeSpan Day5 { get; set; }
+        public TimeSpan Day6 { get; set; }
+        public TimeSpan Day7 { get; set; }
+        public int MinimalHours { get; set; }
+        public WorkReportType ReportType { get; set; }
+    }
 
     public static class Main
     {
@@ -39,6 +57,8 @@ namespace RedmineLog.Common
             public const string DelComment = "topic://Main/DelComment";
             public const string AddSubIssue = "topic://Main/AddSubIssue";
             public const string IssueResolve = "topic://Main/IssueResolve";
+            public const string WorkReportSync = "topic://Main/WorkReportSync";
+            public const string WorkReportMode = "topic://Main/WorkReportMode";
         }
 
         public interface IView
@@ -62,6 +82,7 @@ namespace RedmineLog.Common
             DataProperty<RedmineIssueData> IssueParentInfo { get; }
             DataProperty<RedmineIssueData> IssueInfo { get; }
             DataProperty<WorkingIssueList> LastIssues { get; }
+            DataProperty<WorkReportData> WorkReport { get; }
         }
     }
 }

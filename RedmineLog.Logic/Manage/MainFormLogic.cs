@@ -129,6 +129,19 @@ namespace RedmineLog.Logic
             else if (arg.Data.Equals("Issue"))
             { view.GoLink(new Uri(redmine.IssueUrl(model.Issue.Value.Id))); }
         }
+        [EventSubscription(Main.Events.WorkReportSync, typeof(OnPublisher))]
+        public void OnWorkReportSyncEvent(object sender, EventArgs arg)
+        {
+            LoadWorkReport(model.WorkReport.Value.ReportType);
+        }
+        [EventSubscription(Main.Events.WorkReportMode, typeof(OnPublisher))]
+        public void OnWorkReportModeEvent(object sender, EventArgs arg)
+        {
+            if (model.WorkReport.Value.ReportType == WorkReportType.Week)
+                LoadWorkReport(WorkReportType.LastWeek);
+            else
+                LoadWorkReport(WorkReportType.Week);
+        }
 
         [EventSubscription(Main.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
@@ -152,6 +165,27 @@ namespace RedmineLog.Logic
             LoadLastIssues();
 
         }
+
+        private void LoadWorkReport(WorkReportType inMode)
+        {
+            model.WorkReport.Value.ReportType = inMode;
+            model.WorkReport.Value.MinimalHours = 8;
+
+            var tmp = redmine.GetWorkReport(dbConfig.GetIdUser(), inMode);
+
+            if (tmp != null)
+            {
+                model.WorkReport.Value.Day1 = tmp.Day1;
+                model.WorkReport.Value.Day2 = tmp.Day2;
+                model.WorkReport.Value.Day3 = tmp.Day3;
+                model.WorkReport.Value.Day4 = tmp.Day4;
+                model.WorkReport.Value.Day5 = tmp.Day5;
+                model.WorkReport.Value.Day6 = tmp.Day6;
+                model.WorkReport.Value.Day7 = tmp.Day7;
+                model.WorkReport.Update();
+            }
+        }
+
 
         private void LoadLastIssues()
         {

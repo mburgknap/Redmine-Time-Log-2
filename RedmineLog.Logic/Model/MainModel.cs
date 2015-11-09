@@ -29,6 +29,7 @@ namespace RedmineLog.Logic.Model
             Issue = new DataProperty<IssueData>();
             IssueParentInfo = new DataProperty<RedmineIssueData>();
             IssueInfo = new DataProperty<RedmineIssueData>();
+            WorkReport = new DataProperty<WorkReportData>();
         }
 
         public DataProperty<bool> Resolve { get; private set; }
@@ -54,6 +55,7 @@ namespace RedmineLog.Logic.Model
         public DataProperty<IssueCommentList> IssueComments { get; private set; }
 
         public DataProperty<WorkingIssueList> LastIssues { get; private set; }
+        public DataProperty<WorkReportData> WorkReport { get; private set; }
     }
 
 

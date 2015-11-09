@@ -308,4 +308,6 @@ namespace RedmineLog.Common
         public TrackerData Tracker { get; set; }
         public PriorityData Priority { get; set; }
     }
+
+   
 }
