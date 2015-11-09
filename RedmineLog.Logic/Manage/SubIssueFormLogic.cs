@@ -31,7 +31,7 @@ namespace RedmineLog.Logic.Manage
 
 
 
-        [EventSubscription(SubIssue.Events.Load, typeof(Subscribe<SubIssue.IView>))]
+        [EventSubscription(SubIssue.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             model.Priorities.Value.Clear();

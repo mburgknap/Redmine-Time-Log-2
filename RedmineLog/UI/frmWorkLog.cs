@@ -131,10 +131,10 @@ namespace RedmineLog
                        });
         }
 
-        [EventPublication(WorkLog.Events.Load, typeof(Publish<WorkLog.IView>))]
+        [EventPublication(WorkLog.Events.Load)]
         public event EventHandler LoadEvent;
 
-        [EventPublication(WorkLog.Events.LoadMore, typeof(Publish<WorkLog.IView>))]
+        [EventPublication(WorkLog.Events.LoadMore)]
         public event EventHandler LoadMoreEvent;
 
         [EventPublication(WorkLog.Events.Select)]

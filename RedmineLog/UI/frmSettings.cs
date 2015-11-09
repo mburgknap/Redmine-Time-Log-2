@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.UI;
@@ -107,13 +108,13 @@ namespace RedmineLog
                    });
         }
 
-        [EventPublication(Settings.Events.Connect, typeof(Publish<Settings.IView>))]
+        [EventPublication(Settings.Events.Connect, typeof(OnPublisher))]
         public event EventHandler ConnectEvent;
 
-        [EventPublication(Settings.Events.Load, typeof(Publish<Settings.IView>))]
+        [EventPublication(Settings.Events.Load, typeof(OnPublisher))]
         public event EventHandler LoadEvent;
 
-        [EventPublication(Settings.Events.ReloadCache, typeof(Publish<Settings.IView>))]
+        [EventPublication(Settings.Events.ReloadCache, typeof(OnPublisher))]
         public event EventHandler ReloadCacheEvent;
 
         EventProperty<EventArgs> displayChanged = new EventProperty<EventArgs>();

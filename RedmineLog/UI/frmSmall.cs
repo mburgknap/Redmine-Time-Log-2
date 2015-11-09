@@ -198,7 +198,7 @@ namespace RedmineLog
         }
 
 
-        [EventPublication(Small.Events.Load, typeof(Publish<Small.IView>))]
+        [EventPublication(Small.Events.Load, typeof(OnPublisher))]
         public event EventHandler LoadEvent;
 
         [EventSubscription(AppTime.Events.WorkUpdate, typeof(OnPublisher))]

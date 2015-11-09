@@ -61,14 +61,12 @@
     <Compile Include="Forms\EditLog.cs" />
     <Compile Include="IAppSettings.cs" />
     <Compile Include="IAppTimer.cs" />
-    <Compile Include="IModelSync.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="AppLogger.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="IRedmineClient.cs" />
     <Compile Include="Forms\Main.cs" />
-    <Compile Include="MyMatchers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\IssueLog.cs" />
     <Compile Include="Forms\Settings.cs" />

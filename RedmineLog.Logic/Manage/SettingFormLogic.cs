@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
@@ -37,7 +38,7 @@ namespace RedmineLog.Logic
             dbConfig.SetDisplay(obj);
         }
 
-        [EventSubscription(Settings.Events.Connect, typeof(Subscribe<Settings.IView>))]
+        [EventSubscription(Settings.Events.Connect, typeof(OnPublisher))]
         public void OnConnectEvent(object sender, EventArgs arg)
         {
             dbRedmine.SetApiKey(model.ApiKey.Value.ToString());
@@ -45,7 +46,7 @@ namespace RedmineLog.Logic
             dbConfig.SetIdUser(redmine.GetCurrentUser().Id);
         }
 
-        [EventSubscription(Settings.Events.Load, typeof(Subscribe<Settings.IView>))]
+        [EventSubscription(Settings.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             model.ApiKey.Update(dbRedmine.GetApiKey());
@@ -53,7 +54,7 @@ namespace RedmineLog.Logic
             model.Display.Update(dbConfig.GetDisplay());
         }
 
-        [EventSubscription(Settings.Events.ReloadCache, typeof(Subscribe<Settings.IView>))]
+        [EventSubscription(Settings.Events.ReloadCache, typeof(OnPublisher))]
         public void OnReloadCacheEvent(object sender, EventArgs arg)
         {
             dbCache.InitWorkActivities(redmine.GetWorkActivityTypes());

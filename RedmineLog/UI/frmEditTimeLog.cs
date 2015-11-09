@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
@@ -115,10 +116,10 @@ namespace RedmineLog.UI
         EventProperty<EventArgs> messageChanged = new EventProperty<EventArgs>();
         EventProperty<DateRangeEventArgs> workDateChanged = new EventProperty<DateRangeEventArgs>();
 
-        [EventPublication(EditLog.Events.Save, typeof(Publish<EditLog.IView>))]
+        [EventPublication(EditLog.Events.Save, typeof(OnPublisher))]
         public event EventHandler SaveEvent;
 
-        [EventPublication(EditLog.Events.Load, typeof(Publish<EditLog.IView>))]
+        [EventPublication(EditLog.Events.Load, typeof(OnPublisher))]
         public event EventHandler LoadEvent;
 
         public void Init(frmEditTimeLog inView)

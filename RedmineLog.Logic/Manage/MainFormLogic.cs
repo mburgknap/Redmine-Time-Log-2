@@ -43,7 +43,7 @@ namespace RedmineLog.Logic
             });
         }
 
-        [EventSubscription(Main.Events.AddComment, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.AddComment, typeof(OnPublisher))]
         public void OnAddCommentEvent(object sender, Args<string> arg)
         {
             var comment = new CommentData()
@@ -65,7 +65,7 @@ namespace RedmineLog.Logic
             model.IssueComments.Update();
         }
 
-        [EventSubscription(Main.Events.AddIssue, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.AddIssue, typeof(OnPublisher))]
         public void OnAddIssueEvent(object sender, Args<string> arg)
         {
             int idIssue = 0;
@@ -82,7 +82,7 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Main.Events.DelComment, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.DelComment, typeof(OnPublisher))]
         public void OnDelCommentEvent(object sender, EventArgs arg)
         {
             if (model.Comment.Value != null)
@@ -100,7 +100,7 @@ namespace RedmineLog.Logic
 
         }
 
-        [EventSubscription(Main.Events.DelIssue, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.DelIssue, typeof(OnPublisher))]
         public void OnDelIssueEvent(object sender, EventArgs arg)
         {
             if (model.Issue.Value.Id > 0)
@@ -111,7 +111,7 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Main.Events.Exit, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.Exit, typeof(OnPublisher))]
         public void OnExitEvent(object sender, EventArgs arg)
         {
             var idleIssue = dbIssue.Get(-1);
@@ -122,7 +122,7 @@ namespace RedmineLog.Logic
             dbIssue.Update(model.Issue.Value);
         }
 
-        [EventSubscription(Main.Events.Link, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.Link, typeof(OnPublisher))]
         public void OnLinkEvent(object sender, Args<String> arg)
         {
             if (arg.Data.Equals("Redmine"))
@@ -131,7 +131,7 @@ namespace RedmineLog.Logic
             { view.GoLink(new Uri(redmine.IssueUrl(model.Issue.Value.Id))); }
         }
 
-        [EventSubscription(Main.Events.Load, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             SetupStartTime();
@@ -224,7 +224,7 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Main.Events.Reset, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.Reset, typeof(OnPublisher))]
         public void OnResetEvent(object sender, Args<Main.Actions> arg)
         {
             if (arg.Data == Main.Actions.Issue)
@@ -323,7 +323,7 @@ namespace RedmineLog.Logic
             OnAddIssueEvent(view, new Args<string>(newIssueId.ToString()));
         }
 
-        [EventSubscription(Main.Events.Submit, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.Submit, typeof(OnPublisher))]
         public void OnSubmitEvent(object sender, Args<Main.Actions> arg)
         {
             if (model.Comment.Value == null)
@@ -391,7 +391,7 @@ namespace RedmineLog.Logic
             }
         }
 
-        [EventSubscription(Main.Events.UpdateComment, typeof(Subscribe<Main.IView>))]
+        [EventSubscription(Main.Events.UpdateComment, typeof(OnPublisher))]
         public void OnUpdateCommentEvent(object sender, Args<string> arg)
         {
             if (model.Comment.Value != null)

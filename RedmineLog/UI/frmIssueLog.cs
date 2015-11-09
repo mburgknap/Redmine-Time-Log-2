@@ -95,7 +95,7 @@ namespace RedmineLog
               });
         }
 
-        [EventPublication(IssueLog.Events.Load, typeof(Publish<IssueLog.IView>))]
+        [EventPublication(IssueLog.Events.Load)]
         public event EventHandler LoadEvent;
 
         [EventPublication(IssueLog.Events.Select)]

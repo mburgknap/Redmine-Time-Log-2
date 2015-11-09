@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic.Common;
@@ -28,7 +29,7 @@ namespace RedmineLog.Logic
         }
 
 
-        [EventSubscription(WorkLog.Events.Load, typeof(Subscribe<WorkLog.IView>))]
+        [EventSubscription(WorkLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             model.LoadedTime.Update(DateTime.Now);
@@ -37,7 +38,7 @@ namespace RedmineLog.Logic
         }
 
 
-        [EventSubscription(WorkLog.Events.LoadMore, typeof(Subscribe<WorkLog.IView>))]
+        [EventSubscription(WorkLog.Events.LoadMore, typeof(OnPublisher))]
         public void OnLoadMoreEvent(object sender, EventArgs arg)
         {
             model.LoadedTime.Update(model.LoadedTime.Value.AddDays(-1));

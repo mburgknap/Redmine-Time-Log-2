@@ -15,6 +15,7 @@ using Ninject;
 using Appccelerate.Events;
 using System.Reactive.Linq;
 using System.Reactive;
+using Appccelerate.EventBroker.Handlers;
 
 namespace RedmineLog.UI
 {
@@ -45,7 +46,7 @@ namespace RedmineLog.UI
 
         private frmSubIssue Form;
 
-        [EventPublication(SubIssue.Events.Load, typeof(Publish<SubIssue.IView>))]
+        [EventPublication(SubIssue.Events.Load, typeof(OnPublisher))]
         public event EventHandler LoadEvent;
 
         [EventPublication(Main.Events.AddSubIssue)]

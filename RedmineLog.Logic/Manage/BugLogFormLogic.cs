@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
@@ -29,7 +30,7 @@ namespace RedmineLog.Logic.Manage
             dbRedmineIssue = inDbRedmineIssue;
         }
 
-        [EventSubscription(BugLog.Events.Load, typeof(Subscribe<BugLog.IView>))]
+        [EventSubscription(BugLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             model.Bugs.Value.Clear();

@@ -27,7 +27,7 @@ namespace RedmineLog.Logic
         }
 
 
-        [EventSubscription(EditLog.Events.Save, typeof(Subscribe<EditLog.IView>))]
+        [EventSubscription(EditLog.Events.Save, typeof(OnPublisher))]
         public void OnSaveEvent(object sender, EventArgs arg)
         {
             model.EditItem.Value.Hours = Math.Round(Convert.ToDecimal(model.Time.Value.Hours) + Convert.ToDecimal(model.Time.Value.Minutes) / 60m, 2, MidpointRounding.ToEven);
@@ -40,7 +40,7 @@ namespace RedmineLog.Logic
             LoadData(arg.Data);
         }
 
-        [EventSubscription(EditLog.Events.Load, typeof(Subscribe<EditLog.IView>))]
+        [EventSubscription(EditLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
         }

@@ -29,7 +29,7 @@ namespace RedmineLog.Logic
             dbRedmineIssue = inDbRedmineIssue;
         }
 
-        [EventSubscription(IssueLog.Events.Load, typeof(Subscribe<IssueLog.IView>))]
+        [EventSubscription(IssueLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             RedmineIssueData tmp = null;

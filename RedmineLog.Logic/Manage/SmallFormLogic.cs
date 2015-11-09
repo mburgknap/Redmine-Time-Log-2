@@ -1,4 +1,5 @@
 ﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic.Common;
@@ -25,7 +26,7 @@ namespace RedmineLog.Logic
         }
 
 
-        [EventSubscription(Small.Events.Load, typeof(Subscribe<Small.IView>))]
+        [EventSubscription(Small.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             if (!String.IsNullOrWhiteSpace(model.IssueInfo.Value.ToString()))

@@ -325,34 +325,34 @@ namespace RedmineLog
              });
         }
 
-        [EventPublication(Main.Events.AddComment, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.AddComment)]
         public event EventHandler<Args<string>> AddCommentEvent;
 
-        [EventPublication(Main.Events.AddIssue, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.AddIssue)]
         public event EventHandler<Args<string>> AddIssueEvent;
 
-        [EventPublication(Main.Events.DelComment, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.DelComment)]
         public event EventHandler DelCommentEvent;
 
-        [EventPublication(Main.Events.DelIssue, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.DelIssue)]
         public event EventHandler DelIssueEvent;
 
-        [EventPublication(Main.Events.Exit, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.Exit)]
         public event EventHandler ExitEvent;
 
-        [EventPublication(Main.Events.Link, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.Link)]
         public event EventHandler<Args<string>> GoLinkEvent;
 
-        [EventPublication(Main.Events.Load, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.Load)]
         public event EventHandler LoadEvent;
 
-        [EventPublication(Main.Events.Reset, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.Reset)]
         public event EventHandler<Args<Main.Actions>> ResetEvent;
 
-        [EventPublication(Main.Events.Submit, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.Submit)]
         public event EventHandler<Args<Main.Actions>> SubmitEvent;
 
-        [EventPublication(Main.Events.UpdateComment, typeof(Publish<Main.IView>))]
+        [EventPublication(Main.Events.UpdateComment)]
         public event EventHandler<Args<string>> UpdateCommentEvent;
 
         [EventPublication(Main.Events.SelectComment)]

@@ -80,7 +80,7 @@ namespace RedmineLog.UI
         }
 
 
-        [EventPublication(BugLog.Events.Load, typeof(Publish<BugLog.IView>))]
+        [EventPublication(BugLog.Events.Load)]
         public event EventHandler LoadEvent;
 
         [EventPublication(BugLog.Events.Select)]
