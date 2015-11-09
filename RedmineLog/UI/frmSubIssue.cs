@@ -15,7 +15,6 @@ using Ninject;
 using Appccelerate.Events;
 using System.Reactive.Linq;
 using System.Reactive;
-using Appccelerate.EventBroker.Handlers;
 
 namespace RedmineLog.UI
 {

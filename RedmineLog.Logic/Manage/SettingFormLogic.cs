@@ -1,5 +1,4 @@
 ﻿using Appccelerate.EventBroker;
-using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
@@ -18,12 +17,12 @@ namespace RedmineLog.Logic
         private IDbCache dbCache;
         private Settings.IModel model;
         private IRedmineClient redmine;
-        private Settings.IView View;
+        private Settings.IView view;
 
         [Inject]
         public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig, IDbCache inDbCache)
         {
-            View = inView;
+            view = inView;
             model = inModel;
             redmine = inClient;
             dbRedmine = inDbRedmine;

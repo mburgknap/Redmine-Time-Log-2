@@ -1,5 +1,4 @@
 ﻿using Appccelerate.EventBroker;
-using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;

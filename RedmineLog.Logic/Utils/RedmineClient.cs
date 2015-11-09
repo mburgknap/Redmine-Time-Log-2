@@ -397,7 +397,10 @@ namespace RedmineLog.Logic
 
         public string IssueUrl(int inIdIssue)
         {
-            return new Uri(dbRedmine.GetUrl() + "issues/" + inIdIssue).ToString();
+            if (!String.IsNullOrWhiteSpace(dbRedmine.GetUrl()))
+                return new Uri(dbRedmine.GetUrl() + "issues/" + inIdIssue).ToString();
+
+            return string.Empty;
         }
     }
 }
