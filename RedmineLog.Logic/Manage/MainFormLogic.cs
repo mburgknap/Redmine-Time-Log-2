@@ -410,27 +410,6 @@ namespace RedmineLog.Logic
             dbIssue.Update(model.Issue.Value);
         }
 
-        [EventSubscription(Main.Events.UpdateIssue, typeof(Subscribe<Main.IView>))]
-        public void OnUpdateIssueEvent(object sender, Args<string> arg)
-        {
-            int idIssue = -1;
-
-            if (Int32.TryParse(arg.Data, out idIssue))
-            {
-                if (model.Issue.Value.Id == idIssue)
-                {
-                    model.Issue.Value.SetWorkTime(model.WorkTime.Value);
-                    dbIssue.Update(model.Issue.Value);
-                }
-                else
-                {
-                    ReloadIssueData(idIssue);
-                }
-
-                LoadLastIssues();
-            }
-        }
-
         private void DownloadIssue(int idIssue)
         {
             var issue = redmine.GetIssue(idIssue);

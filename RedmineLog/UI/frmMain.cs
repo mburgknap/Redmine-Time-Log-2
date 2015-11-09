@@ -54,15 +54,15 @@ namespace RedmineLog
 
                         var version = File.ReadAllText(filename);
 
-                        if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(new Version(version.Split(';')[0])) == -1)
+                        if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(new Version(version.Split(';')[0])) < 0)
                         {
                             bool result = false;
 
-                            if (Boolean.TryParse(version.Split(';')[0], out result))
+                            if (Boolean.TryParse(version.Split(';')[1], out result))
                             {
                                 if (result)
                                 {
-                                    MessageBox.Show("New version availible " + version.Split(';')[0], "Information", MessageBoxButtons.OK);
+                                    NotifyBox.Show("New version available (" + version.Split(';')[0] + ")", "RedmineLog");
                                 }
                             }
                             else
@@ -147,7 +147,6 @@ namespace RedmineLog
         public MainView(Main.IModel inModel)
         {
             model = inModel;
-            Program.Kernel.Get<AppTime.IClock>().Start();
 
             model.Activity.OnUpdate.Subscribe(OnUpdateActivity);
             model.Comment.OnUpdate.Subscribe(OnUpdateComment);
@@ -196,7 +195,7 @@ namespace RedmineLog
 
         private void OnUpdateIdleTime(TimeSpan obj)
         {
-            Form.lblClockIndle.Set(obj,
+            Form.lblClockIdle.Set(obj,
                (ui, data) =>
                {
                    ui.Text = data.ToString();
@@ -359,8 +358,8 @@ namespace RedmineLog
         [EventPublication(Main.Events.SelectComment)]
         public event EventHandler<Args<CommentData>> SelectCommentEvent;
 
-        [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
-        public event EventHandler<Args<string>> UpdateIssueEvent;
+        [EventPublication(AppTime.Events.SetupClock)]
+        public event EventHandler<Args<AppTime.ClockMode>> SetupClockEvent;
 
         [EventPublication(SubIssue.Events.SetSubIssue)]
         public event EventHandler<Args<int>> SetSubIssueEvent;
@@ -376,6 +375,7 @@ namespace RedmineLog
 
         [EventPublication(IssueLog.Events.Delete)]
         public event EventHandler<Args<WorkingIssue>> DeleteEvent;
+
 
 
         private frmSmall smallForm;
@@ -407,12 +407,17 @@ namespace RedmineLog
         public void Init(frmMain inView)
         {
             Form = inView;
+            StartClock();
 
             activityTypeChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbActivity, "SelectedIndexChanged"));
             resolveChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbResolveIssue, "CheckedChanged"));
             resolveChanged.Subscribe(OnNotifyResolve);
             commentChanged.Build(Observable.FromEventPattern<EventArgs>(Form.tbComment, "TextChanged"));
             commentChanged.Subscribe(OnNotifyComment);
+
+            Observable.FromEventPattern<EventArgs>(Form.btnStopWork, "Click").Subscribe(OnActionSetupClock);
+            Observable.FromEventPattern<EventArgs>(Form.lblClockIdle, "Click").Subscribe(OnActionIdleMode);
+            Observable.FromEventPattern<EventArgs>(Form.lblClockActive, "Click").Subscribe(OnActionWorkMode);
 
             KeyHelpers.BindMouseClick(Form.cHeader, OnClick);
             Form.tsmMyBugs.Click += SearchBugClick;
@@ -429,8 +434,6 @@ namespace RedmineLog
             Form.btnResetIdle.Click += OnResetClockClick;
             Form.lHide.Click += OnHideClick;
             Form.lnkExit.Click += OnExitClick;
-            Form.lblClockActive.Click += OnWorkMode;
-            Form.lblClockIndle.Click += OnIdleMode;
             Form.lnkSettings.Click += OnSettingClick;
             Form.lnkIssues.Click += OnRedmineIssuesLink;
             Form.lblIssue.MouseClick += OnRedmineIssueLink;
@@ -445,6 +448,52 @@ namespace RedmineLog
 
 
             Load();
+        }
+
+        private void OnActionWorkMode(EventPattern<EventArgs> obj)
+        {
+            Form.pManage.BackColor = Color.Wheat;
+            currentMode = Main.Actions.Issue;
+        }
+
+        private void OnActionIdleMode(EventPattern<EventArgs> obj)
+        {
+            Form.pManage.BackColor = Color.LightBlue;
+            currentMode = Main.Actions.Idle;
+        }
+
+        private void StartClock()
+        {
+            Form.btnStopWork.Tag = AppTime.ClockMode.Standard;
+            SetupClockEvent.Fire(this, AppTime.ClockMode.Standard);
+            Program.Kernel.Get<AppTime.IClock>().Start();
+        }
+
+        private void OnActionSetupClock(EventPattern<EventArgs> obj)
+        {
+            Form.btnStopWork.Tag.Is<AppTime.ClockMode>(x =>
+            {
+                switch (x)
+                {
+                    case AppTime.ClockMode.Standard:
+                        {
+                            Form.btnStopWork.Tag = AppTime.ClockMode.AlwaysIdle;
+                            Form.btnStopWork.Text = "Idle";
+                            OnActionIdleMode(obj);
+                            break;
+                        }
+                    case AppTime.ClockMode.AlwaysIdle:
+                        {
+                            Form.btnStopWork.Tag = AppTime.ClockMode.Standard;
+                            Form.btnStopWork.Text = "Stop";
+                            OnActionWorkMode(obj);
+                            break;
+                        }
+                }
+
+                SetupClockEvent.Fire(this, (AppTime.ClockMode)Form.btnStopWork.Tag);
+            });
+
         }
 
         private void OnNotifyComment(EventPattern<EventArgs> obj)
@@ -549,7 +598,7 @@ namespace RedmineLog
             new frmProcessing().Show(Form,
                 () =>
                 {
-                    OnWorkMode(this, EventArgs.Empty);
+                    OnActionWorkMode(null);
                     LoadEvent.Fire(this);
                 });
         }
@@ -667,7 +716,8 @@ namespace RedmineLog
             new frmProcessing().Show(Form,
                 () =>
                 {
-                    UpdateEvent.Fire(this, EventArgs.Empty);
+                    UpdateEvent.Fire(this);
+                    ExitEvent.Fire(this);
                 }, () =>
                 {
                     Form.Close();
@@ -683,12 +733,6 @@ namespace RedmineLog
             });
 
             Form.WindowState = FormWindowState.Minimized;
-        }
-
-        private void OnIdleMode(object sender, EventArgs e)
-        {
-            Form.pManage.BackColor = Color.Azure;
-            currentMode = Main.Actions.Idle;
         }
 
         private void OnRedmineIssueLink(object sender, MouseEventArgs e)
@@ -750,11 +794,6 @@ namespace RedmineLog
             form.ShowDialog();
         }
 
-        private void OnWorkMode(object sender, EventArgs e)
-        {
-            Form.pManage.BackColor = Color.Wheat;
-            currentMode = Main.Actions.Issue;
-        }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {

@@ -32,7 +32,6 @@ namespace RedmineLog.Common
             public const string Submit = "topic://Main/Submit";
             public const string Update = "topic://Main/Update";
             public const string AddIssue = "topic://Main/AddIssue";
-            public const string UpdateIssue = "topic://Main/UpdateIssue";
             public const string DelIssue = "topic://Main/DelIssue";
             public const string AddComment = "topic://Main/AddComment";
             public const string SelectComment = "topic://Main/SelectComment";

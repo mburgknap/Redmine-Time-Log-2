@@ -12,13 +12,6 @@ namespace RedmineLog.UI
 
     public class AppTimer : AppTime.IClock
     {
-
-        public enum ClockMode
-        {
-            Work,
-            Idle
-        }
-
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -33,7 +26,7 @@ namespace RedmineLog.UI
 
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-        
+
         private System.Timers.Timer workTimer;
 
         [EventPublication(AppTime.Events.WorkUpdate)]
@@ -44,6 +37,8 @@ namespace RedmineLog.UI
 
         [EventPublication(AppTime.Events.TimeUpdate)]
         public event EventHandler TimeUpdateEvent;
+
+        private AppTime.ClockMode clockMode;
 
         private System.Timers.Timer WorkTimer
         {
@@ -77,16 +72,28 @@ namespace RedmineLog.UI
 
         private void OnWorkElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            uint totalIdleTimeInSeconds = GetLastInputTime();
+            if (clockMode == AppTime.ClockMode.Standard)
+            {
+                uint totalIdleTimeInSeconds = GetLastInputTime();
 
-            if (totalIdleTimeInSeconds > 120)
+                if (totalIdleTimeInSeconds > 120)
+                    IdleUpdateEvent.Fire(this, 1);
+                else
+                    WorkUpdateEvent.Fire(this, 1);
+            }
+            else if (clockMode == AppTime.ClockMode.AlwaysIdle)
+            {
                 IdleUpdateEvent.Fire(this, 1);
-            else
-                WorkUpdateEvent.Fire(this, 1);
+            }
 
             TimeUpdateEvent.Fire(this, EventArgs.Empty);
         }
 
+        [EventSubscription(AppTime.Events.SetupClock, typeof(OnPublisher))]
+        public void OnSelectCommentEvent(object sender, Args<AppTime.ClockMode> arg)
+        {
+            clockMode = arg.Data;
+        }
 
         [Inject]
         public AppTimer()
