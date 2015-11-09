@@ -4,6 +4,15 @@ using System.Text;
 
 namespace RedmineLog.Common
 {
+
+    public static class CastExtension
+    {
+        public static void Is<T>(this Object inThis, Action<T> inDo)
+        {
+            if (inThis is T && inDo != null) inDo((T)inThis);
+        }
+    }
+
     public static class StringBuilderExtension
     {
 

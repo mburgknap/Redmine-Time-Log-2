@@ -144,7 +144,7 @@ namespace RedmineLog.UI
 
         private void SelectBug(BugLogItem item)
         {
-            if (item.Id == 0)
+            if (item.IsGlobal())
                 return;
 
             new frmProcessing().Show(Form,

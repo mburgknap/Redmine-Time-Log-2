@@ -24,8 +24,8 @@ namespace RedmineLog.Logic.Model
             Activity = new DataProperty<WorkActivityType>();
             WorkActivities = new DataProperty<WorkActivityList>();
             LastIssues = new DataProperty<WorkingIssueList>();
-            IssueComments = new DataProperty<IssueCommentList>();
             Comment = new DataProperty<CommentData>();
+            Comment.Update(null);
             Issue = new DataProperty<IssueData>();
             IssueParentInfo = new DataProperty<RedmineIssueData>();
             IssueInfo = new DataProperty<RedmineIssueData>();

@@ -20,22 +20,12 @@ namespace RedmineLog.Common.Forms
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-            int ParentId { get; set; }
+            DataProperty<UserDataList> Users { get; }
+            DataProperty<TrackerDataList> Trackers { get; }
 
-            String Subject { get; set; }
-            String Description { get; set; }
+            DataProperty<PriorityDataList> Priorities { get; }
 
-            UserDataList Users { get; }
-            UserData User { get; set; }
-
-            TrackerDataList Trackers { get; }
-            TrackerData Tracker { get; set; }
-
-            PriorityDataList Priorities { get; }
-            PriorityData Priority { get; set; }
-
-            SubIssueData ToSubIssueData();
+            DataProperty<SubIssueData> SubIssueData { get; }
 
         }
     }

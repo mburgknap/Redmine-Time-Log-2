@@ -52,7 +52,7 @@ namespace RedmineLog
 
             foreach (var item in (from p in obj
                                   group p by p.Issue.Project into g
-                                  orderby (g.FirstOrDefault().Issue.Id == 0
+                                  orderby (g.FirstOrDefault().Issue.IsGlobal()
                                            ? Int32.MaxValue
                                            : g.FirstOrDefault().Data.UsedCount) descending
                                   select new { Project = g.Key, Issues = g.ToList() }))

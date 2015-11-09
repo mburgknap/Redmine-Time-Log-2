@@ -57,7 +57,7 @@ namespace RedmineLog.Logic
             var item = model.WorkActivities.Value.Where(x => x.Id == model.EditItem.Value.IdActivity).FirstOrDefault();
 
             if (item != null)
-                model.Activity.Update(item, false);
+                model.Activity.Invoke(item, ActionType.Set);
 
             model.WorkActivities.Update();
         }

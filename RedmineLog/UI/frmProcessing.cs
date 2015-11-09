@@ -39,8 +39,8 @@ namespace RedmineLog.UI
             }
             else
             {
-                inForm.Shown -= inFormShown;
-                inForm.Shown += inFormShown;
+                inForm.Shown -= OnFormShown;
+                inForm.Shown += OnFormShown;
             }
         }
 
@@ -48,11 +48,14 @@ namespace RedmineLog.UI
         {
             this.Load += (s, e) =>
             {
-                new Task(() =>
-                {
-                    DoWork();
-
-                }).Start();
+                Task tmpTask = null;
+                tmpTask = new Task(() =>
+                  {
+                      tmpTask.Wait(50);
+                      DoWork();
+                      tmpTask.Wait(50);
+                  });
+                tmpTask.Start();
             };
 
             Show();
@@ -78,7 +81,7 @@ namespace RedmineLog.UI
 
         }
 
-        void inFormShown(object sender, EventArgs e)
+        void OnFormShown(object sender, EventArgs e)
         {
             SetupLocation((Form)sender);
             ShowProgress();

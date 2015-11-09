@@ -54,6 +54,21 @@ namespace RedmineLog.Common
             return subscriptions.Last();
         }
     }
+    public enum ActionType
+    {
+        /// <summary>
+        /// Set property value
+        /// </summary>
+        Set,
+        /// <summary>
+        /// Notify about value changes by view
+        /// </summary>
+        Notify,
+        /// <summary>
+        /// Notify view about value changes
+        /// </summary>
+        Update
+    }
 
     public class DataProperty<T> where T : new()
     {
@@ -67,45 +82,42 @@ namespace RedmineLog.Common
         public DataProperty()
         {
             Value = new T();
-
-            onViewChanged.Subscribe(x =>
-            {
-                Value = x;
-            });
-
-            onViewUpdate.Subscribe(x =>
-            {
-                Value = x;
-            });
         }
-        public void Update(bool inNotifyInvoke = true)
+
+        public void Update()
         {
-            if (inNotifyInvoke)
+            Invoke(Value, ActionType.Update);
+        }
+
+        public void Update(T inValue)
+        {
+            Invoke(inValue, ActionType.Set, ActionType.Update);
+        }
+
+        public void Notify()
+        {
+            Invoke(Value, ActionType.Notify);
+        }
+
+        public void Notify(T inValue)
+        {
+            Invoke(inValue, ActionType.Set, ActionType.Notify);
+        }
+
+        public void Invoke(T inValue, params ActionType[] inActions)
+        {
+            foreach (var action in inActions)
             {
-                onViewUpdate.OnNext(Value);
+                switch (action)
+                {
+                    case ActionType.Update:
+                        onViewUpdate.OnNext(Value); break;
+                    case ActionType.Notify:
+                        onViewChanged.OnNext(Value); break;
+                    case ActionType.Set:
+                        Value = inValue; break;
+                }
             }
-        }
-
-        public void Update(T inValue, bool inNotifyInvoke = true)
-        {
-            onViewChanged.OnNext(inValue);
-
-            Update(inNotifyInvoke);
-        }
-
-        public void Notify(bool inUpdateInvoke = true)
-        {
-            if (inUpdateInvoke)
-            {
-                onViewChanged.OnNext(Value);
-            }
-        }
-
-        public void Notify(T inValue, bool inUpdateInvoke = true)
-        {
-            onViewUpdate.OnNext(inValue);
-
-            Notify(inUpdateInvoke);
         }
     }
 

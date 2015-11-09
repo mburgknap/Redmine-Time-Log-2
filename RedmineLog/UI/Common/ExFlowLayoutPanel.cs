@@ -89,11 +89,21 @@ namespace RedmineLog.UI.Common
                 Focus();
             }
 
+            async public override void AddRange(Control[] controls)
+            {
+                foreach (var item in controls)
+                {
+                    Add(item);
+                    await Task.Delay(30);
+                }
+            }
+
 
             public override void Add(Control value)
             {
                 base.Add(value);
                 Focus();
+                value.GotFocus -= ItemGotFocus;
                 value.GotFocus += ItemGotFocus;
             }
 

@@ -8,6 +8,7 @@ using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -34,7 +35,7 @@ namespace RedmineLog
         void OnFormLoad(object sender, EventArgs e)
         {
             UnwrapForm();
-            timer.Start();
+            WrapForm();
             Load -= OnFormLoad;
         }
 
@@ -78,6 +79,7 @@ namespace RedmineLog
 
         private void WrapForm()
         {
+            timer.Stop();
             isHide = true;
             flowPanelWidth = flowLayoutPanel1.Width;
             this.Location = new Point(this.Location.X + flowLayoutPanel1.Width, this.Location.Y);
@@ -176,7 +178,7 @@ namespace RedmineLog
             Form.Set(obj,
                (ui, data) =>
                {
-                   ui.lbComment.Visible = data.Id == 0;
+                   ui.lbComment.Visible = data.IsGlobal();
 
                    ui.lbIssue.Text = data.Id > 0 ? "#" + data.Id.ToString() : "";
 
@@ -230,11 +232,10 @@ namespace RedmineLog
         }
         public void Load()
         {
-            new frmProcessing().Show(Form,
-              () =>
-              {
-                  LoadEvent.Fire(this);
-              });
+            Task.Run(() =>
+            {
+                LoadEvent.Fire(this);
+            });
         }
 
 

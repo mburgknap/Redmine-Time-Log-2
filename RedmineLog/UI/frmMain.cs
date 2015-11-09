@@ -18,6 +18,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -251,8 +252,15 @@ namespace RedmineLog
             Form.cbResolveIssue.Set(obj,
                   (ui, data) =>
                   {
+                      resolveChanged.Dispose();
                       ui.Checked = data;
+                      resolveChanged.Subscribe(OnNotifyResolve);
                   });
+        }
+
+        private void OnNotifyResolve(EventPattern<EventArgs> obj)
+        {
+            model.Resolve.Notify(Form.cbResolveIssue.Checked);
         }
 
         private void OnUpdateStartTime(DateTime obj)
@@ -303,8 +311,6 @@ namespace RedmineLog
         {
             var list = new List<Control>();
 
-            KeyHelpers.BindMouseClick(Form.cHeader, OnClick);
-
             foreach (var issue in value)
             {
                 list.Add(new IssueItemView().Set(issue));
@@ -313,11 +319,11 @@ namespace RedmineLog
             }
 
             Form.fpIssueList.Set(model,
-              (ui, data) =>
-              {
-                  ui.Controls.Clear();
-                  ui.Controls.AddRange(list.ToArray());
-              });
+             (ui, data) =>
+             {
+                 ui.Controls.Clear();
+                 ui.Controls.AddRange(list.ToArray());
+             });
         }
 
         [EventPublication(Main.Events.AddComment, typeof(Publish<Main.IView>))]
@@ -350,6 +356,9 @@ namespace RedmineLog
         [EventPublication(Main.Events.UpdateComment, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateCommentEvent;
 
+        [EventPublication(Main.Events.SelectComment)]
+        public event EventHandler<Args<CommentData>> SelectCommentEvent;
+
         [EventPublication(Main.Events.UpdateIssue, typeof(Publish<Main.IView>))]
         public event EventHandler<Args<string>> UpdateIssueEvent;
 
@@ -361,6 +370,9 @@ namespace RedmineLog
 
         [EventPublication(Main.Events.IssueResolve)]
         public event EventHandler<Args<WorkingIssue>> ResolveEvent;
+
+        [EventPublication(Main.Events.Update)]
+        public event EventHandler UpdateEvent;
 
         [EventPublication(IssueLog.Events.Delete)]
         public event EventHandler<Args<WorkingIssue>> DeleteEvent;
@@ -389,14 +401,20 @@ namespace RedmineLog
         }
 
         EventProperty<EventArgs> activityTypeChanged = new EventProperty<EventArgs>();
+        EventProperty<EventArgs> resolveChanged = new EventProperty<EventArgs>();
+        EventProperty<EventArgs> commentChanged = new EventProperty<EventArgs>();
 
         public void Init(frmMain inView)
         {
             Form = inView;
 
-
             activityTypeChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbActivity, "SelectedIndexChanged"));
+            resolveChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbResolveIssue, "CheckedChanged"));
+            resolveChanged.Subscribe(OnNotifyResolve);
+            commentChanged.Build(Observable.FromEventPattern<EventArgs>(Form.tbComment, "TextChanged"));
+            commentChanged.Subscribe(OnNotifyComment);
 
+            KeyHelpers.BindMouseClick(Form.cHeader, OnClick);
             Form.tsmMyBugs.Click += SearchBugClick;
             Form.tbIssue.KeyDown += SaveIssue;
             Form.btnRemoveItem.Click += DelIssue;
@@ -413,7 +431,6 @@ namespace RedmineLog
             Form.lnkExit.Click += OnExitClick;
             Form.lblClockActive.Click += OnWorkMode;
             Form.lblClockIndle.Click += OnIdleMode;
-            Form.cbResolveIssue.CheckedChanged += OnResolveIssueChange;
             Form.lnkSettings.Click += OnSettingClick;
             Form.lnkIssues.Click += OnRedmineIssuesLink;
             Form.lblIssue.MouseClick += OnRedmineIssueLink;
@@ -428,6 +445,15 @@ namespace RedmineLog
 
 
             Load();
+        }
+
+        private void OnNotifyComment(EventPattern<EventArgs> obj)
+        {
+            if (model.Comment.Value != null)
+            {
+                model.Comment.Value.Text = Form.tbComment.Text;
+                model.Comment.Notify();
+            }
         }
 
 
@@ -452,18 +478,12 @@ namespace RedmineLog
         {
             if (action == "AddSubIssue" && data is RedmineIssueData)
             {
-                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                UpdateEvent.Fire(this, EventArgs.Empty);
                 addIssueForm = new frmSubIssue();
                 SetSubIssueEvent.Fire(this, ((RedmineIssueData)data).Id);
                 addIssueForm.ShowDialog();
 
             }
-        }
-
-        private void OnResolveIssueChange(object sender, EventArgs e)
-        {
-            model.Resolve.Notify(Form.cbResolveIssue.Checked);
         }
 
         private void OnResize(object sender, EventArgs e)
@@ -495,8 +515,8 @@ namespace RedmineLog
 
         private void SearchBugClick(object sender, EventArgs e)
         {
-            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-            UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+            UpdateEvent.Fire(this, EventArgs.Empty);
+            model.LastIssues.Update();
             new frmBugLog().ShowDialog();
         }
 
@@ -517,8 +537,8 @@ namespace RedmineLog
                 new frmProcessing().Show(Form,
                        () =>
                        {
-                           UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                           UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                           UpdateEvent.Fire(this, EventArgs.Empty);
+                           model.LastIssues.Update();
                        });
             }
         }
@@ -647,9 +667,7 @@ namespace RedmineLog
             new frmProcessing().Show(Form,
                 () =>
                 {
-                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                    UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
-                    ExitEvent.Fire(this);
+                    UpdateEvent.Fire(this, EventArgs.Empty);
                 }, () =>
                 {
                     Form.Close();
@@ -658,15 +676,13 @@ namespace RedmineLog
 
         private void OnHideClick(object sender, EventArgs e)
         {
-            new frmProcessing().Show(Form,
-                       () =>
-                       {
-                           UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                           UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
-                       }, () =>
-                       {
-                           Form.WindowState = FormWindowState.Minimized;
-                       });
+            Task.Run(() =>
+            {
+                UpdateEvent.Fire(this, EventArgs.Empty);
+                model.LastIssues.Update();
+            });
+
+            Form.WindowState = FormWindowState.Minimized;
         }
 
         private void OnIdleMode(object sender, EventArgs e)
@@ -697,8 +713,8 @@ namespace RedmineLog
 
         private void OnSearchIssueClick(object sender, EventArgs e)
         {
-            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-            UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+            UpdateEvent.Fire(this, EventArgs.Empty);
+            model.LastIssues.Update();
             new frmIssueLog().ShowDialog();
         }
 
@@ -753,8 +769,7 @@ namespace RedmineLog
         {
             if (sender is ICustomItem)
             {
-                UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                UpdateEvent.Fire(this, EventArgs.Empty);
 
                 var tmp = ((ICustomItem)sender).Data as WorkingIssue;
 
@@ -763,7 +778,12 @@ namespace RedmineLog
                 else
                 {
                     Form.tbIssue.Text = string.Empty;
-                    AddIssueEvent.Fire(this, string.Empty);
+                    new frmProcessing().Show(Form,
+                       () =>
+                       {
+                           AddIssueEvent.Fire(this, string.Empty);
+                       });
+
                 }
 
                 return;
@@ -823,8 +843,8 @@ namespace RedmineLog
                 new frmProcessing().Show(Form,
                     () =>
                     {
-                        UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                        UpdateIssueEvent.Fire(this, Form.tbIssue.Text);
+                        UpdateEvent.Fire(this, EventArgs.Empty);
+                        model.LastIssues.Update();
                     });
             }
         }
@@ -834,19 +854,16 @@ namespace RedmineLog
             new frmProcessing().Show(Form,
                 () =>
                 {
-                    var comment = e.ClickedItem.Tag as CommentData;
-                    if (comment != null)
-                    {
+                    UpdateCommentEvent.Fire(this, Form.tbComment.Text);
 
-                        if (comment.IsGlobal && model.Issue.Value.Id > 0)
-                            AddCommentEvent.Fire(this, comment.Text);
+                    e.ClickedItem.Tag.Is<CommentData>(obj =>
+                    {
+                        if (obj.IsGlobal && !model.Issue.Value.IsGlobal())
+                            AddCommentEvent.Fire(this, obj.Text);
                         else
-                        {
-                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                            model.Comment.Notify(e.ClickedItem.Tag as CommentData);
-                            UpdateCommentEvent.Fire(this, Form.tbComment.Text);
-                        }
-                    }
+                            SelectCommentEvent.Fire(this, obj);
+                    });
+
                 });
         }
     }

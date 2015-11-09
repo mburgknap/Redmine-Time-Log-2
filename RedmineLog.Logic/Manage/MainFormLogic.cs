@@ -50,15 +50,14 @@ namespace RedmineLog.Logic
             {
                 Id = Guid.NewGuid().ToString(),
                 Text = arg.Data,
-                IsGlobal = model.Issue.Value.Id == 0
+                IsGlobal = model.Issue.Value.IsGlobal()
             };
 
             model.Comment.Update(comment);
             dbComment.Update(comment);
 
             model.Issue.Value.Comments.Add(comment.Id);
-            if (model.Issue.Value.Id > 0)
-                model.Issue.Value.IdComment = comment.Id;
+            model.Issue.Value.IdComment = comment.Id;
 
             dbIssue.Update(model.Issue.Value);
 
@@ -78,7 +77,7 @@ namespace RedmineLog.Logic
             }
             else
             {
-                model.Comment.Update(null, false);
+                model.Comment.Invoke(null, ActionType.Set);
                 LoadIssue(dbIssue.Get(0));
             }
         }
@@ -86,7 +85,7 @@ namespace RedmineLog.Logic
         [EventSubscription(Main.Events.DelComment, typeof(Subscribe<Main.IView>))]
         public void OnDelCommentEvent(object sender, EventArgs arg)
         {
-            if (model.Comment != null)
+            if (model.Comment.Value != null)
             {
                 model.Issue.Value.IdComment = null;
                 model.Issue.Value.Comments.Remove(model.Comment.Value.Id);
@@ -95,7 +94,7 @@ namespace RedmineLog.Logic
                 dbIssue.Update(model.Issue.Value);
                 dbComment.Delete(model.Comment.Value);
 
-                model.Comment.Update();
+                model.Comment.Update(null);
                 model.IssueComments.Update();
             }
 
@@ -200,6 +199,28 @@ namespace RedmineLog.Logic
             {
                 model.StartTime.Update(DateTime.Now);
                 dbConfig.SetStartTime(model.StartTime.Value);
+            }
+        }
+
+        [EventSubscription(Main.Events.Update, typeof(OnPublisher))]
+        public void OnUpdateEvent(object sender, EventArgs arg)
+        {
+            if (model.Comment.Value != null)
+                dbComment.Update(model.Comment.Value);
+
+            model.Issue.Value.SetWorkTime(model.WorkTime.Value);
+            dbIssue.Update(model.Issue.Value);
+
+            foreach (var item in model.LastIssues.Value)
+            {
+                if (item.Data.Id == model.Issue.Value.Id)
+                {
+                    item.Data = model.Issue.Value;
+                    item.Comment = model.Comment.Value != null ? model.Comment.Value.Text : string.Empty;
+                    item.Parent = model.IssueParentInfo.Value;
+                    item.Issue = model.IssueInfo.Value;
+                    break;
+                }
             }
         }
 
@@ -349,6 +370,7 @@ namespace RedmineLog.Logic
                 dbLastIssue.Delete(model.Issue.Value.Id);
                 LoadIssue(dbIssue.Get(0));
                 model.Resolve.Update(false);
+                LoadLastIssues();
             }
             else
             {
@@ -375,13 +397,17 @@ namespace RedmineLog.Logic
             if (model.Comment.Value != null)
             {
                 model.Comment.Value.Text = arg.Data;
-
-                if (model.Issue.Value.Id > 0)
-                    model.Issue.Value.IdComment = model.Comment.Value.Id;
-
-                dbIssue.Update(model.Issue.Value);
                 dbComment.Update(model.Comment.Value);
             }
+        }
+
+        [EventSubscription(Main.Events.SelectComment, typeof(OnPublisher))]
+        public void OnSelectCommentEvent(object sender, Args<CommentData> arg)
+        {
+            model.Comment.Update(arg.Data);
+            model.Issue.Value.IdComment = arg.Data.Id;
+
+            dbIssue.Update(model.Issue.Value);
         }
 
         [EventSubscription(Main.Events.UpdateIssue, typeof(Subscribe<Main.IView>))]
@@ -515,7 +541,11 @@ namespace RedmineLog.Logic
                 if (model.Comment.Value != null
                     && model.Comment.Value.IsGlobal)
                 {
-                    var comment = new CommentData() { Id = Guid.NewGuid().ToString(), Text = model.Comment.Value.Text };
+                    var comment = new CommentData()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Text = model.Comment.Value.Text
+                    };
                     issue.IdComment = comment.Id;
                     issue.Comments.Add(issue.IdComment);
                     dbComment.Update(comment);

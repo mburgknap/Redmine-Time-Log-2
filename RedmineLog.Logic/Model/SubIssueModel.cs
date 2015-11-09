@@ -8,27 +8,25 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Logic.Model
 {
-    class SubIssueModel : SubIssueData, SubIssue.IModel
+    class SubIssueModel : DataProperty<SubIssueData>, SubIssue.IModel
     {
         public SubIssueModel()
         {
-            Sync = new ModelSync<SubIssue.IModel>();
-            Users = new UserDataList();
-            Trackers = new TrackerDataList();
-            Priorities = new PriorityDataList();
+            Users = new DataProperty<UserDataList>();
+            Trackers = new DataProperty<TrackerDataList>();
+            Priorities = new DataProperty<PriorityDataList>();
         }
 
-        public IModelSync Sync { get; private set; }
+        public DataProperty<UserDataList> Users { get; private set; }
 
-        public UserDataList Users { get; private set; }
+        public DataProperty<TrackerDataList> Trackers { get; private set; }
 
-        public TrackerDataList Trackers { get; private set; }
+        public DataProperty<PriorityDataList> Priorities { get; private set; }
 
-        public PriorityDataList Priorities { get; private set; }
-
-        public SubIssueData ToSubIssueData()
+        public DataProperty<SubIssueData> SubIssueData
         {
-            return this;
+            get { return this; }
         }
+
     }
 }
