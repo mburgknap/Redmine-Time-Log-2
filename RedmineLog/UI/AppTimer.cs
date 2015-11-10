@@ -1,4 +1,6 @@
 ﻿using Appccelerate.EventBroker;
+using Ninject;
+using NLog;
 using RedmineLog.Common;
 using System;
 using System.Runtime.InteropServices;
@@ -6,18 +8,9 @@ using System.Timers;
 
 namespace RedmineLog.UI
 {
-    internal class AppTimers
+
+    public class AppTimer : AppTime.IClock
     {
-        public const string WorkUpdate = "topic://Timer/Work/Update";
-        public const string IdleUpdate = "topic://Timer/Idle/Update";
-        public const string TimeUpdate = "topic://Timer/Time/Update";
-
-        public enum ClockMode
-        {
-            Work,
-            Idle
-        }
-
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -33,18 +26,18 @@ namespace RedmineLog.UI
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
-        private static AppTimers instance = new AppTimers();
-
         private System.Timers.Timer workTimer;
 
-        [EventPublication(WorkUpdate)]
+        [EventPublication(AppTime.Events.WorkUpdate)]
         public event EventHandler<Args<int>> WorkUpdateEvent;
 
-        [EventPublication(IdleUpdate)]
+        [EventPublication(AppTime.Events.IdleUpdate)]
         public event EventHandler<Args<int>> IdleUpdateEvent;
 
-        [EventPublication(TimeUpdate)]
+        [EventPublication(AppTime.Events.TimeUpdate)]
         public event EventHandler TimeUpdateEvent;
+
+        private AppTime.ClockMode clockMode;
 
         private System.Timers.Timer WorkTimer
         {
@@ -78,26 +71,41 @@ namespace RedmineLog.UI
 
         private void OnWorkElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            uint totalIdleTimeInSeconds = GetLastInputTime();
+            if (clockMode == AppTime.ClockMode.Standard)
+            {
+                uint totalIdleTimeInSeconds = GetLastInputTime();
 
-            if (totalIdleTimeInSeconds > 120)
+                if (totalIdleTimeInSeconds > 120)
+                    IdleUpdateEvent.Fire(this, 1);
+                else
+                    WorkUpdateEvent.Fire(this, 1);
+            }
+            else if (clockMode == AppTime.ClockMode.AlwaysIdle)
+            {
                 IdleUpdateEvent.Fire(this, 1);
-            else
-                WorkUpdateEvent.Fire(this, 1);
+            }
 
             TimeUpdateEvent.Fire(this, EventArgs.Empty);
         }
 
-        internal static void Init(IEventBroker inGlobalEvent)
+        [EventSubscription(AppTime.Events.SetupClock, typeof(OnPublisher))]
+        public void OnSelectCommentEvent(object sender, Args<AppTime.ClockMode> arg)
         {
-            instance.WorkTimer = new System.Timers.Timer(1000);
-            inGlobalEvent.Register(instance);
+            clockMode = arg.Data;
         }
 
-        internal static void Start()
+        [Inject]
+        public AppTimer()
         {
-            if (!instance.workTimer.Enabled)
-                instance.WorkTimer.Start();
+        }
+
+        public void Start()
+        {
+            if (workTimer == null)
+            {
+                WorkTimer = new System.Timers.Timer(1000);
+                WorkTimer.Start();
+            }
         }
     }
 }

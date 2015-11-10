@@ -22,9 +22,8 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-            DateTime LoadedTime { get; set; }
-            WorkLogList WorkLogs { get; }
+            DataProperty<DateTime> LoadedTime { get; }
+            DataProperty<WorkLogList> WorkLogs { get; }
         }
     }
 }

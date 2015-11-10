@@ -7,15 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using RedmineLog.Common;
 using RedmineLog.UI.Common;
 using RedmineLog.Properties;
+using RedmineLog.Common;
 
 namespace RedmineLog.UI.Items
 {
-    public partial class IssueLogItemView : UserControl, ICustomItem, ISpecialAction
+    public partial class IssueItemView : UserControl, ICustomItem, ISpecialAction
     {
-
         class ExContextMenu : ContextMenuStrip
         {
             private ICustomItem item;
@@ -38,13 +37,13 @@ namespace RedmineLog.UI.Items
 
         static ExContextMenu menu = new ExContextMenu();
 
-        public IssueLogItemView()
+        public IssueItemView()
         {
             InitializeComponent();
-            lblIssue.SetLinkMouseClick(IssueLinkGo, this.OnMouseClick);
+            lkIssue.SetLinkMouseClick(IssueLinkGo, this.OnMouseClick);
         }
 
-        void IssueLinkGo()
+        private void IssueLinkGo()
         {
             try
             {
@@ -57,36 +56,14 @@ namespace RedmineLog.UI.Items
             }
         }
 
-
         internal void SetDescription()
         {
-            lblIdIssue.Text = "#ID";
-            lblIssue.Text = "Issue Subject";
-            lblTime.Text = "Time";
-            lblActivityType.Text = "Activity type";
-        }
-
-        private void lblIssue_DragEnter(object sender, DragEventArgs e)
-        {
-            this.BackColor = Color.Azure;
-        }
-
-        private void lblIssue_DragLeave(object sender, EventArgs e)
-        {
-            this.BackColor = Color.Wheat;
-        }
-
-        internal Control Set(WorkingIssue issue)
-        {
-            Data = issue;
-
-            lblIdIssue.Text = issue.Issue.Id > 0 ? "#" + issue.Issue.Id.ToString() : "";
-            lblIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : "";
-            lblTime.Text = issue.Data.GetWorkTime(new TimeSpan(0)).ToString();
-            lblTime.Visible = issue.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1;
-            lblActivityType.Text = issue.Issue.Tracker;
-
-            return this;
+            lbProject.Text = "Project";
+            lbParentIssue.Text = "Parent issue";
+            lkIssue.Text = "Issue subject";
+            lbTime.Text = "Time";
+            lbTracker.Text = "Activity type";
+            lbIssueId.Text = "#Id";
         }
 
         public object Data { get; set; }
@@ -95,8 +72,22 @@ namespace RedmineLog.UI.Items
         {
             menu.Set(this, inData);
             menu.Show(this, 0, 0);
-
         }
 
+        internal Control Set(WorkingIssue issue)
+        {
+            Data = issue;
+
+            lbIssueId.Text = issue.Issue.Id > 0 ? "#" + issue.Issue.Id.ToString() : "";
+            lbParentIssue.Text = issue.Parent != null ? issue.Parent.Subject + " :" : "";
+            lkIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : "";
+            lbTime.Text = issue.Data.GetWorkTime(new TimeSpan(0)).ToString();
+            lbTime.Visible = issue.Data.GetWorkTime(new TimeSpan(0)).TotalMinutes > 1;
+            lbTracker.Text = issue.Issue.Tracker;
+            lbProject.Text = issue.Issue.Project;
+            lbComment.Text = issue.Comment;
+
+            return this;
+        }
     }
 }

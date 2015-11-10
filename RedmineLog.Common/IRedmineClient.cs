@@ -38,5 +38,7 @@ namespace RedmineLog.Common
         IEnumerable<PriorityData> GetPriorites();
         
         string IssueUrl(int iniDIssue);
+
+        WorkReportData GetWorkReport(int idUser, WorkReportType inMode);
     }
 }

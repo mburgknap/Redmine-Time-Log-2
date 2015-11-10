@@ -1,12 +1,36 @@
-﻿using System;
+﻿using Appccelerate.EventBroker;
+using Appccelerate.EventBroker.Handlers;
+using Appccelerate.EventBroker.Matchers.Scope;
+using RedmineLog.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
 
+    public enum WorkReportType
+    {
+        Week,
+        LastWeek
+    }
+
+    public class WorkReportData
+    {
+        public TimeSpan Day1 { get; set; }
+        public TimeSpan Day2 { get; set; }
+        public TimeSpan Day3 { get; set; }
+        public TimeSpan Day4 { get; set; }
+        public TimeSpan Day5 { get; set; }
+        public TimeSpan Day6 { get; set; }
+        public TimeSpan Day7 { get; set; }
+        public int MinimalHours { get; set; }
+        public WorkReportType ReportType { get; set; }
+    }
 
     public static class Main
     {
@@ -24,14 +48,17 @@ namespace RedmineLog.Common
             public const string Exit = "topic://Main/Exit";
             public const string Reset = "topic://Main/Reset";
             public const string Submit = "topic://Main/Submit";
+            public const string Update = "topic://Main/Update";
             public const string AddIssue = "topic://Main/AddIssue";
-            public const string UpdateIssue = "topic://Main/UpdateIssue";
             public const string DelIssue = "topic://Main/DelIssue";
             public const string AddComment = "topic://Main/AddComment";
+            public const string SelectComment = "topic://Main/SelectComment";
             public const string UpdateComment = "topic://Main/UpdateComment";
             public const string DelComment = "topic://Main/DelComment";
             public const string AddSubIssue = "topic://Main/AddSubIssue";
             public const string IssueResolve = "topic://Main/IssueResolve";
+            public const string WorkReportSync = "topic://Main/WorkReportSync";
+            public const string WorkReportMode = "topic://Main/WorkReportMode";
         }
 
         public interface IView
@@ -43,18 +70,19 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-            bool Resolve { get; set; }
-            TimeSpan WorkTime { get; set; }
-            TimeSpan IdleTime { get; set; }
-            DateTime StartTime { get; set; }
-            WorkActivityList WorkActivities { get; }
-            WorkActivityType Activity { get; set; }
-            CommentData Comment { get; set; }
-            IssueData Issue { get; set; }
-            IssueCommentList IssueComments { get; }
-            RedmineIssueData IssueParentInfo { get; set; }
-            RedmineIssueData IssueInfo { get; set; }
+            DataProperty<bool> Resolve { get; }
+            DataProperty<TimeSpan> WorkTime { get; }
+            DataProperty<TimeSpan> IdleTime { get; }
+            DataProperty<DateTime> StartTime { get; }
+            DataProperty<WorkActivityList> WorkActivities { get; }
+            DataProperty<WorkActivityType> Activity { get; }
+            DataProperty<CommentData> Comment { get; }
+            DataProperty<IssueData> Issue { get; }
+            DataProperty<IssueCommentList> IssueComments { get; }
+            DataProperty<RedmineIssueData> IssueParentInfo { get; }
+            DataProperty<RedmineIssueData> IssueInfo { get; }
+            DataProperty<WorkingIssueList> LastIssues { get; }
+            DataProperty<WorkReportData> WorkReport { get; }
         }
     }
 }

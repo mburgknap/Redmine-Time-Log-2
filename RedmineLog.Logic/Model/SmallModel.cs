@@ -15,16 +15,14 @@ namespace RedmineLog.Logic.Model
         public SmallModel(Main.IModel inModel)
         {
             Model = inModel;
-            Sync = new ModelSync<Small.IModel>();
+            IssueUri = new DataProperty<StringBuilder>();
         }
-        public IModelSync Sync { get; private set; }
-        public TimeSpan WorkTime { get { return Model.WorkTime; } }
-        public TimeSpan IdleTime { get { return Model.IdleTime; } }
-        public CommentData Comment{ get { return Model.Comment; } }
-        public RedmineIssueData IssueParentInfo { get { return Model.IssueParentInfo; } }
-        public RedmineIssueData IssueInfo { get { return Model.IssueInfo; } }
 
-
-        public string IssueUri { get; set; }
+        public DataProperty<TimeSpan> WorkTime { get { return Model.WorkTime; } }
+        public DataProperty<TimeSpan> IdleTime { get { return Model.IdleTime; } }
+        public DataProperty<CommentData> Comment { get { return Model.Comment; } }
+        public DataProperty<RedmineIssueData> IssueParentInfo { get { return Model.IssueParentInfo; } }
+        public DataProperty<RedmineIssueData> IssueInfo { get { return Model.IssueInfo; } }
+        public DataProperty<StringBuilder> IssueUri { get; private set; }
     }
 }

@@ -20,30 +20,28 @@ namespace RedmineLog.Logic.Manage
         private IDbConfig dbConfig;
 
         [Inject]
-        public BugLogFormLogic(BugLog.IView inView, BugLog.IModel inModel, IEventBroker inEvents, IRedmineClient inClient, IDbConfig inDbConfig, IDbRedmineIssue inDbRedmineIssue)
+        public BugLogFormLogic(BugLog.IView inView, BugLog.IModel inModel, IRedmineClient inClient, IDbConfig inDbConfig, IDbRedmineIssue inDbRedmineIssue)
         {
             view = inView;
             model = inModel;
-            model.Sync.Bind(SyncTarget.Source, this);
             redmine = inClient;
             dbConfig = inDbConfig;
             dbRedmineIssue = inDbRedmineIssue;
-            inEvents.Register(this);
         }
 
-        [EventSubscription(BugLog.Events.Load, typeof(Subscribe<BugLog.IView>))]
+        [EventSubscription(BugLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            model.Bugs.Clear();
+            model.Bugs.Value.Clear();
 
             foreach (var bug in redmine.GetUserBugs(dbConfig.GetIdUser()))
             {
                 bug.Uri = redmine.IssueUrl(bug.Id);
-                model.Bugs.Add(bug);
+                model.Bugs.Value.Add(bug);
             }
 
-            if (model.Bugs.Count > 0)
-                model.Sync.Value(SyncTarget.View, "Bugs");
+            if (model.Bugs.Value.Count > 0)
+                model.Bugs.Update();
         }
     }
 }

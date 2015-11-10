@@ -1,4 +1,5 @@
-﻿namespace RedmineLog.Common
+﻿using System.Text;
+namespace RedmineLog.Common
 {
     public static class Settings
     {
@@ -15,13 +16,11 @@
 
         public interface IModel
         {
-            IModelSync Sync { get; }
+            DataProperty<StringBuilder> Url { get; }
 
-            string Url { get; set; }
+            DataProperty<StringBuilder> ApiKey { get; }
 
-            string ApiKey { get; set; }
-
-            DisplayData Display { get; set; }
+            DataProperty<DisplayData> Display { get; }
         }
     }
 }

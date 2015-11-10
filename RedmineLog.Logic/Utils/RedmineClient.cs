@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using FluentDateTime;
+using Ninject;
 using NLog;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
@@ -6,7 +7,9 @@ using RedmineLog.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -135,6 +138,7 @@ namespace RedmineLog.Logic
                             Id = item2.Id,
                             IdIssue = item2.Issue.Id,
                             ProjectName = item2.Project.Name,
+                            IdActivity = item2.Activity.Id,
                             Hours = item2.Hours,
                             Comment = item2.Comments,
                             ActivityName = item2.Activity.Name,
@@ -396,7 +400,71 @@ namespace RedmineLog.Logic
 
         public string IssueUrl(int inIdIssue)
         {
-            return new Uri(dbRedmine.GetUrl() + "issues/" + inIdIssue).ToString();
+            if (!String.IsNullOrWhiteSpace(dbRedmine.GetUrl()))
+                return new Uri(dbRedmine.GetUrl() + "issues/" + inIdIssue).ToString();
+
+            return string.Empty;
+        }
+
+
+        public WorkReportData GetWorkReport(int idUser, WorkReportType inMode)
+        {
+            try
+            {
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var parameters = new NameValueCollection { };
+                parameters.Add("limit", 100.ToString());
+                parameters.Add("user_id", idUser.ToString());
+
+                DateTime from = inMode == WorkReportType.Week ? DateTime.Now.FirstDayOfWeek() : DateTime.Now.AddDays(-7).FirstDayOfWeek();
+                DateTime to = inMode == WorkReportType.Week ? DateTime.Now.LastDayOfWeek() : DateTime.Now.AddDays(-7).LastDayOfWeek();
+
+                parameters.Add("spent_on", String.Format("><{0}|{1}", from.ToString("yyyy-MM-dd"), to.ToString("yyyy-MM-dd")));
+
+                WorkReportData result = new WorkReportData();
+
+                result.Day1 = new TimeSpan(0);
+                result.Day2 = new TimeSpan(0);
+                result.Day3 = new TimeSpan(0);
+                result.Day4 = new TimeSpan(0);
+                result.Day5 = new TimeSpan(0);
+                result.Day6 = new TimeSpan(0);
+                result.Day7 = new TimeSpan(0);
+
+                TimeSpan tmp = new TimeSpan(0);
+
+                foreach (var item in manager.GetObjectList<TimeEntry>(parameters))
+                {
+                    tmp = new TimeSpan((int)item.Hours, (int)((item.Hours % 1) * 60), 0);
+
+                    switch (item.CreatedOn.Value.DayOfWeek)
+                    {
+                        case DayOfWeek.Monday:
+                            result.Day1 = result.Day1 + tmp; break;
+                        case DayOfWeek.Tuesday:
+                            result.Day2 = result.Day2 + tmp; break;
+                        case DayOfWeek.Wednesday:
+                            result.Day3 = result.Day3 + tmp; break;
+                        case DayOfWeek.Thursday:
+                            result.Day4 = result.Day4 + tmp; break;
+                        case DayOfWeek.Friday:
+                            result.Day5 = result.Day5 + tmp; break;
+                        case DayOfWeek.Saturday:
+                            result.Day6 = result.Day6 + tmp; break;
+                        case DayOfWeek.Sunday:
+                            result.Day7 = result.Day7 + tmp; break;
+                    }
+
+                }
+
+                return result;
+
+            }
+            catch (Exception ex)
+            { logger.Error("GetWorkReport", ex); }
+
+            return null;
         }
     }
 }

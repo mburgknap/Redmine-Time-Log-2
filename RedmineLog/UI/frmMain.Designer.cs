@@ -44,8 +44,9 @@
             this.lblTracker = new System.Windows.Forms.Label();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
-            this.lblClockIndle = new System.Windows.Forms.Label();
+            this.lblClockIdle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.btnStopWork = new System.Windows.Forms.Button();
             this.lbClockTodayTime = new System.Windows.Forms.Label();
             this.cbResolveIssue = new System.Windows.Forms.CheckBox();
             this.btnIssueMode = new System.Windows.Forms.Button();
@@ -64,11 +65,24 @@
             this.tsmMyIssues = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmMyWork = new System.Windows.Forms.ToolStripMenuItem();
             this.ttStartTime = new System.Windows.Forms.ToolTip(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.llDay2 = new System.Windows.Forms.LinkLabel();
+            this.llDay1 = new System.Windows.Forms.LinkLabel();
+            this.llDay3 = new System.Windows.Forms.LinkLabel();
+            this.llDay4 = new System.Windows.Forms.LinkLabel();
+            this.llDay5 = new System.Windows.Forms.LinkLabel();
+            this.llDay6 = new System.Windows.Forms.LinkLabel();
+            this.llDay7 = new System.Windows.Forms.LinkLabel();
+            this.btnWorkReportSync = new System.Windows.Forms.Button();
+            this.btnWorkReportMode = new System.Windows.Forms.Button();
+            this.cHeader = new RedmineLog.UI.Items.IssueItemView();
+            this.fpIssueList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
             this.panel1.SuspendLayout();
             this.cmIssuesKind.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lnkExit
@@ -77,7 +91,7 @@
             this.lnkExit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkExit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkExit.ForeColor = System.Drawing.Color.Blue;
-            this.lnkExit.Location = new System.Drawing.Point(207, 7);
+            this.lnkExit.Location = new System.Drawing.Point(534, 7);
             this.lnkExit.Name = "lnkExit";
             this.lnkExit.Size = new System.Drawing.Size(29, 17);
             this.lnkExit.TabIndex = 31;
@@ -89,7 +103,7 @@
             this.lnkSettings.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkSettings.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkSettings.ForeColor = System.Drawing.Color.Blue;
-            this.lnkSettings.Location = new System.Drawing.Point(70, 7);
+            this.lnkSettings.Location = new System.Drawing.Point(397, 7);
             this.lnkSettings.Name = "lnkSettings";
             this.lnkSettings.Size = new System.Drawing.Size(57, 17);
             this.lnkSettings.TabIndex = 27;
@@ -101,7 +115,7 @@
             this.lnkIssues.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkIssues.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lnkIssues.ForeColor = System.Drawing.Color.Blue;
-            this.lnkIssues.Location = new System.Drawing.Point(138, 435);
+            this.lnkIssues.Location = new System.Drawing.Point(147, 447);
             this.lnkIssues.Name = "lnkIssues";
             this.lnkIssues.Size = new System.Drawing.Size(103, 17);
             this.lnkIssues.TabIndex = 24;
@@ -110,7 +124,7 @@
             // btnSubmit
             // 
             this.btnSubmit.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSubmit.Location = new System.Drawing.Point(141, 229);
+            this.btnSubmit.Location = new System.Drawing.Point(151, 231);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(61, 32);
             this.btnSubmit.TabIndex = 22;
@@ -119,25 +133,27 @@
             // 
             // tbComment
             // 
-            this.tbComment.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tbComment.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbComment.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbComment.Location = new System.Drawing.Point(0, 0);
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
             this.tbComment.ReadOnly = true;
-            this.tbComment.Size = new System.Drawing.Size(183, 92);
+            this.tbComment.Size = new System.Drawing.Size(219, 92);
             this.tbComment.TabIndex = 21;
             // 
             // lblClockActive
             // 
+            this.lblClockActive.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblClockActive.BackColor = System.Drawing.Color.Transparent;
-            this.lblClockActive.Font = new System.Drawing.Font("Segoe WP", 25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblClockActive.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblClockActive.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lblClockActive.Location = new System.Drawing.Point(20, 5);
+            this.lblClockActive.Location = new System.Drawing.Point(-3, -8);
             this.lblClockActive.Name = "lblClockActive";
-            this.lblClockActive.Size = new System.Drawing.Size(166, 45);
+            this.lblClockActive.Size = new System.Drawing.Size(183, 56);
             this.lblClockActive.TabIndex = 18;
             this.lblClockActive.Text = "00:00:00";
+            this.lblClockActive.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // cbActivity
             // 
@@ -147,7 +163,7 @@
             this.cbActivity.FormattingEnabled = true;
             this.cbActivity.Location = new System.Drawing.Point(111, 72);
             this.cbActivity.Name = "cbActivity";
-            this.cbActivity.Size = new System.Drawing.Size(124, 25);
+            this.cbActivity.Size = new System.Drawing.Size(139, 25);
             this.cbActivity.TabIndex = 17;
             // 
             // lblParentIssue
@@ -180,9 +196,9 @@
             this.issueInfoPanel.Controls.Add(this.lblTracker);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.issueInfoPanel.Location = new System.Drawing.Point(26, 267);
+            this.issueInfoPanel.Location = new System.Drawing.Point(6, 267);
             this.issueInfoPanel.Name = "issueInfoPanel";
-            this.issueInfoPanel.Size = new System.Drawing.Size(209, 153);
+            this.issueInfoPanel.Size = new System.Drawing.Size(244, 153);
             this.issueInfoPanel.TabIndex = 35;
             // 
             // lblProject
@@ -215,7 +231,7 @@
             this.btnRemoveItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnRemoveItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveItem.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveItem.Location = new System.Drawing.Point(111, 229);
+            this.btnRemoveItem.Location = new System.Drawing.Point(91, 231);
             this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(125, 0, 0, 0);
             this.btnRemoveItem.Name = "btnRemoveItem";
             this.btnRemoveItem.Size = new System.Drawing.Size(27, 32);
@@ -227,26 +243,27 @@
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.Font = new System.Drawing.Font("Segoe WP", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVersion.Location = new System.Drawing.Point(7, 7);
+            this.lblVersion.Location = new System.Drawing.Point(319, 7);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(0, 19);
             this.lblVersion.TabIndex = 37;
             // 
-            // lblClockIndle
+            // lblClockIdle
             // 
-            this.lblClockIndle.AutoSize = true;
-            this.lblClockIndle.BackColor = System.Drawing.Color.Transparent;
-            this.lblClockIndle.Font = new System.Drawing.Font("Segoe WP", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblClockIndle.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.lblClockIndle.Location = new System.Drawing.Point(86, 44);
-            this.lblClockIndle.Name = "lblClockIndle";
-            this.lblClockIndle.Size = new System.Drawing.Size(88, 25);
-            this.lblClockIndle.TabIndex = 38;
-            this.lblClockIndle.Text = "00:00:00";
+            this.lblClockIdle.AutoSize = true;
+            this.lblClockIdle.BackColor = System.Drawing.Color.Transparent;
+            this.lblClockIdle.Font = new System.Drawing.Font("Segoe WP", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblClockIdle.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.lblClockIdle.Location = new System.Drawing.Point(86, 44);
+            this.lblClockIdle.Name = "lblClockIdle";
+            this.lblClockIdle.Size = new System.Drawing.Size(88, 25);
+            this.lblClockIdle.TabIndex = 38;
+            this.lblClockIdle.Text = "00:00:00";
             // 
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.btnStopWork);
             this.pManage.Controls.Add(this.lbClockTodayTime);
             this.pManage.Controls.Add(this.cbResolveIssue);
             this.pManage.Controls.Add(this.btnIssueMode);
@@ -255,23 +272,33 @@
             this.pManage.Controls.Add(this.tbIssue);
             this.pManage.Controls.Add(this.pComments);
             this.pManage.Controls.Add(this.btnResetIdle);
-            this.pManage.Controls.Add(this.lblClockIndle);
+            this.pManage.Controls.Add(this.lblClockIdle);
             this.pManage.Controls.Add(this.btnRemoveItem);
             this.pManage.Controls.Add(this.lblClockActive);
             this.pManage.Controls.Add(this.cbActivity);
             this.pManage.Controls.Add(this.issueInfoPanel);
             this.pManage.Controls.Add(this.btnSubmit);
             this.pManage.Controls.Add(this.lnkIssues);
-            this.pManage.Location = new System.Drawing.Point(-5, 36);
+            this.pManage.Location = new System.Drawing.Point(322, 36);
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
+            // 
+            // btnStopWork
+            // 
+            this.btnStopWork.Font = new System.Drawing.Font("Century Gothic", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStopWork.Location = new System.Drawing.Point(180, 5);
+            this.btnStopWork.Name = "btnStopWork";
+            this.btnStopWork.Size = new System.Drawing.Size(70, 24);
+            this.btnStopWork.TabIndex = 50;
+            this.btnStopWork.Text = "Stop";
+            this.btnStopWork.UseVisualStyleBackColor = true;
             // 
             // lbClockTodayTime
             // 
             this.lbClockTodayTime.AutoSize = true;
             this.lbClockTodayTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbClockTodayTime.Location = new System.Drawing.Point(28, 53);
+            this.lbClockTodayTime.Location = new System.Drawing.Point(8, 53);
             this.lbClockTodayTime.Name = "lbClockTodayTime";
             this.lbClockTodayTime.Size = new System.Drawing.Size(57, 13);
             this.lbClockTodayTime.TabIndex = 49;
@@ -280,7 +307,7 @@
             // cbResolveIssue
             // 
             this.cbResolveIssue.AutoSize = true;
-            this.cbResolveIssue.Location = new System.Drawing.Point(141, 205);
+            this.cbResolveIssue.Location = new System.Drawing.Point(160, 205);
             this.cbResolveIssue.Name = "cbResolveIssue";
             this.cbResolveIssue.Size = new System.Drawing.Size(92, 17);
             this.cbResolveIssue.TabIndex = 48;
@@ -289,7 +316,7 @@
             // 
             // btnIssueMode
             // 
-            this.btnIssueMode.Location = new System.Drawing.Point(26, 201);
+            this.btnIssueMode.Location = new System.Drawing.Point(6, 201);
             this.btnIssueMode.Name = "btnIssueMode";
             this.btnIssueMode.Size = new System.Drawing.Size(79, 23);
             this.btnIssueMode.TabIndex = 47;
@@ -301,7 +328,7 @@
             // btnSubmitAll
             // 
             this.btnSubmitAll.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSubmitAll.Location = new System.Drawing.Point(203, 229);
+            this.btnSubmitAll.Location = new System.Drawing.Point(218, 231);
             this.btnSubmitAll.Name = "btnSubmitAll";
             this.btnSubmitAll.Size = new System.Drawing.Size(32, 32);
             this.btnSubmitAll.TabIndex = 45;
@@ -310,7 +337,7 @@
             // 
             // btnComments
             // 
-            this.btnComments.Location = new System.Drawing.Point(26, 72);
+            this.btnComments.Location = new System.Drawing.Point(6, 72);
             this.btnComments.Name = "btnComments";
             this.btnComments.Size = new System.Drawing.Size(75, 25);
             this.btnComments.TabIndex = 44;
@@ -320,7 +347,7 @@
             // tbIssue
             // 
             this.tbIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbIssue.Location = new System.Drawing.Point(26, 229);
+            this.tbIssue.Location = new System.Drawing.Point(6, 231);
             this.tbIssue.Name = "tbIssue";
             this.tbIssue.Size = new System.Drawing.Size(79, 32);
             this.tbIssue.TabIndex = 43;
@@ -328,11 +355,11 @@
             // 
             // pComments
             // 
-            this.pComments.Controls.Add(this.panel1);
             this.pComments.Controls.Add(this.tbComment);
-            this.pComments.Location = new System.Drawing.Point(26, 103);
+            this.pComments.Controls.Add(this.panel1);
+            this.pComments.Location = new System.Drawing.Point(6, 103);
             this.pComments.Name = "pComments";
-            this.pComments.Size = new System.Drawing.Size(209, 92);
+            this.pComments.Size = new System.Drawing.Size(244, 92);
             this.pComments.TabIndex = 40;
             // 
             // panel1
@@ -340,7 +367,7 @@
             this.panel1.Controls.Add(this.btnRemoveComment);
             this.panel1.Controls.Add(this.btnNewComment);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(184, 0);
+            this.panel1.Location = new System.Drawing.Point(219, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(25, 92);
             this.panel1.TabIndex = 22;
@@ -374,9 +401,9 @@
             // btnResetIdle
             // 
             this.btnResetIdle.Font = new System.Drawing.Font("Century Gothic", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnResetIdle.Location = new System.Drawing.Point(180, 13);
+            this.btnResetIdle.Location = new System.Drawing.Point(180, 35);
             this.btnResetIdle.Name = "btnResetIdle";
-            this.btnResetIdle.Size = new System.Drawing.Size(55, 53);
+            this.btnResetIdle.Size = new System.Drawing.Size(70, 31);
             this.btnResetIdle.TabIndex = 39;
             this.btnResetIdle.Text = "Reset";
             this.btnResetIdle.UseVisualStyleBackColor = true;
@@ -392,7 +419,7 @@
             this.lHide.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lHide.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lHide.ForeColor = System.Drawing.Color.Blue;
-            this.lHide.Location = new System.Drawing.Point(152, 7);
+            this.lHide.Location = new System.Drawing.Point(479, 7);
             this.lHide.Name = "lHide";
             this.lHide.Size = new System.Drawing.Size(37, 17);
             this.lHide.TabIndex = 40;
@@ -425,11 +452,188 @@
             this.tsmMyWork.Size = new System.Drawing.Size(125, 22);
             this.tsmMyWork.Text = "My work";
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.tableLayoutPanel1.ColumnCount = 9;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.985045F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.985045F));
+            this.tableLayoutPanel1.Controls.Add(this.llDay2, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llDay1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llDay3, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llDay4, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llDay5, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llDay6, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llDay7, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnWorkReportSync, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnWorkReportMode, 8, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 515);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(584, 23);
+            this.tableLayoutPanel1.TabIndex = 43;
+            // 
+            // llDay2
+            // 
+            this.llDay2.AutoSize = true;
+            this.llDay2.BackColor = System.Drawing.Color.Transparent;
+            this.llDay2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay2.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay2.LinkColor = System.Drawing.Color.Black;
+            this.llDay2.Location = new System.Drawing.Point(78, 0);
+            this.llDay2.Name = "llDay2";
+            this.llDay2.Size = new System.Drawing.Size(69, 23);
+            this.llDay2.TabIndex = 0;
+            this.llDay2.TabStop = true;
+            this.llDay2.Text = "00:00";
+            this.llDay2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // llDay1
+            // 
+            this.llDay1.AutoSize = true;
+            this.llDay1.BackColor = System.Drawing.Color.Transparent;
+            this.llDay1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay1.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay1.LinkColor = System.Drawing.Color.Black;
+            this.llDay1.Location = new System.Drawing.Point(3, 0);
+            this.llDay1.Name = "llDay1";
+            this.llDay1.Size = new System.Drawing.Size(69, 23);
+            this.llDay1.TabIndex = 7;
+            this.llDay1.TabStop = true;
+            this.llDay1.Text = "00:00";
+            this.llDay1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // llDay3
+            // 
+            this.llDay3.AutoSize = true;
+            this.llDay3.BackColor = System.Drawing.Color.Transparent;
+            this.llDay3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay3.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay3.LinkColor = System.Drawing.Color.Black;
+            this.llDay3.Location = new System.Drawing.Point(153, 0);
+            this.llDay3.Name = "llDay3";
+            this.llDay3.Size = new System.Drawing.Size(69, 23);
+            this.llDay3.TabIndex = 1;
+            this.llDay3.TabStop = true;
+            this.llDay3.Text = "00:00";
+            this.llDay3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // llDay4
+            // 
+            this.llDay4.AutoSize = true;
+            this.llDay4.BackColor = System.Drawing.Color.Transparent;
+            this.llDay4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay4.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay4.LinkColor = System.Drawing.Color.Black;
+            this.llDay4.Location = new System.Drawing.Point(228, 0);
+            this.llDay4.Name = "llDay4";
+            this.llDay4.Size = new System.Drawing.Size(69, 23);
+            this.llDay4.TabIndex = 2;
+            this.llDay4.TabStop = true;
+            this.llDay4.Text = "00:00";
+            this.llDay4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // llDay5
+            // 
+            this.llDay5.AutoSize = true;
+            this.llDay5.BackColor = System.Drawing.Color.Transparent;
+            this.llDay5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay5.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay5.LinkColor = System.Drawing.Color.Black;
+            this.llDay5.Location = new System.Drawing.Point(303, 0);
+            this.llDay5.Name = "llDay5";
+            this.llDay5.Size = new System.Drawing.Size(69, 23);
+            this.llDay5.TabIndex = 3;
+            this.llDay5.TabStop = true;
+            this.llDay5.Text = "00:00";
+            this.llDay5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // llDay6
+            // 
+            this.llDay6.AutoSize = true;
+            this.llDay6.BackColor = System.Drawing.Color.Transparent;
+            this.llDay6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay6.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay6.Location = new System.Drawing.Point(378, 0);
+            this.llDay6.Name = "llDay6";
+            this.llDay6.Size = new System.Drawing.Size(69, 23);
+            this.llDay6.TabIndex = 4;
+            this.llDay6.TabStop = true;
+            this.llDay6.Text = "00:00";
+            this.llDay6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // llDay7
+            // 
+            this.llDay7.AutoSize = true;
+            this.llDay7.BackColor = System.Drawing.Color.Transparent;
+            this.llDay7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llDay7.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llDay7.Location = new System.Drawing.Point(453, 0);
+            this.llDay7.Name = "llDay7";
+            this.llDay7.Size = new System.Drawing.Size(69, 23);
+            this.llDay7.TabIndex = 5;
+            this.llDay7.TabStop = true;
+            this.llDay7.Text = "00:00";
+            this.llDay7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnWorkReportSync
+            // 
+            this.btnWorkReportSync.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnWorkReportSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWorkReportSync.Image = global::RedmineLog.Properties.Resources.Refresh;
+            this.btnWorkReportSync.Location = new System.Drawing.Point(528, 3);
+            this.btnWorkReportSync.Name = "btnWorkReportSync";
+            this.btnWorkReportSync.Size = new System.Drawing.Size(23, 17);
+            this.btnWorkReportSync.TabIndex = 8;
+            this.btnWorkReportSync.Text = "button1";
+            this.btnWorkReportSync.UseVisualStyleBackColor = true;
+            // 
+            // btnWorkReportMode
+            // 
+            this.btnWorkReportMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnWorkReportMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWorkReportMode.Image = global::RedmineLog.Properties.Resources.Calendar;
+            this.btnWorkReportMode.Location = new System.Drawing.Point(557, 3);
+            this.btnWorkReportMode.Name = "btnWorkReportMode";
+            this.btnWorkReportMode.Size = new System.Drawing.Size(24, 17);
+            this.btnWorkReportMode.TabIndex = 9;
+            this.btnWorkReportMode.Text = "button2";
+            this.btnWorkReportMode.UseVisualStyleBackColor = true;
+            // 
+            // cHeader
+            // 
+            this.cHeader.BackColor = System.Drawing.Color.NavajoWhite;
+            this.cHeader.Data = null;
+            this.cHeader.Location = new System.Drawing.Point(3, 4);
+            this.cHeader.Name = "cHeader";
+            this.cHeader.Size = new System.Drawing.Size(310, 61);
+            this.cHeader.TabIndex = 42;
+            // 
+            // fpIssueList
+            // 
+            this.fpIssueList.AutoScroll = true;
+            this.fpIssueList.Location = new System.Drawing.Point(1, 71);
+            this.fpIssueList.Name = "fpIssueList";
+            this.fpIssueList.Size = new System.Drawing.Size(320, 438);
+            this.fpIssueList.TabIndex = 41;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(248, 509);
+            this.ClientSize = new System.Drawing.Size(584, 538);
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.cHeader);
+            this.Controls.Add(this.fpIssueList);
             this.Controls.Add(this.lHide);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.lnkExit);
@@ -451,6 +655,8 @@
             this.pComments.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.cmIssuesKind.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -481,7 +687,7 @@
         internal System.Windows.Forms.ContextMenuStrip cmComments;
         internal System.Windows.Forms.Button btnRemoveComment;
         internal System.Windows.Forms.Button btnNewComment;
-        internal System.Windows.Forms.Label lblClockIndle;
+        internal System.Windows.Forms.Label lblClockIdle;
         internal System.Windows.Forms.Panel pManage;
         protected internal System.Windows.Forms.Label lblTracker;
         private System.Windows.Forms.ContextMenuStrip cmIssuesKind;
@@ -492,5 +698,18 @@
         internal System.Windows.Forms.CheckBox cbResolveIssue;
         internal System.Windows.Forms.Label lbClockTodayTime;
         internal System.Windows.Forms.ToolTip ttStartTime;
+        internal UI.Common.ExFlowLayoutPanel fpIssueList;
+        internal UI.Items.IssueItemView cHeader;
+        internal System.Windows.Forms.Button btnStopWork;
+        internal System.Windows.Forms.LinkLabel llDay1;
+        internal System.Windows.Forms.LinkLabel llDay2;
+        internal System.Windows.Forms.LinkLabel llDay3;
+        internal System.Windows.Forms.LinkLabel llDay4;
+        internal System.Windows.Forms.LinkLabel llDay5;
+        internal System.Windows.Forms.LinkLabel llDay6;
+        internal System.Windows.Forms.LinkLabel llDay7;
+        internal System.Windows.Forms.Button btnWorkReportSync;
+        internal System.Windows.Forms.Button btnWorkReportMode;
+        internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

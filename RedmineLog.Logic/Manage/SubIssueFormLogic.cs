@@ -1,5 +1,4 @@
 ﻿using Appccelerate.EventBroker;
-using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
@@ -21,37 +20,36 @@ namespace RedmineLog.Logic.Manage
         private IRedmineClient redmine;
 
         [Inject]
-        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IEventBroker inEvents, IRedmineClient inClient)
+        public SubIssueFormLogic(SubIssue.IView inView, SubIssue.IModel inModel, IDbCache inDbCache, IRedmineClient inClient)
         {
             view = inView;
             model = inModel;
             dbCache = inDbCache;
             redmine = inClient;
-            inEvents.Register(this);
         }
 
 
 
-        [EventSubscription(SubIssue.Events.Load, typeof(Subscribe<SubIssue.IView>))]
+        [EventSubscription(SubIssue.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            model.Priorities.Clear();
-            model.Priorities.AddRange(dbCache.GetPriorities());
-            model.Sync.Value(SyncTarget.View, "Priorities");
+            model.Priorities.Value.Clear();
+            model.Priorities.Value.AddRange(dbCache.GetPriorities());
+            model.Priorities.Update();
 
-            model.Trackers.Clear();
-            model.Trackers.AddRange(dbCache.GetTrackers());
-            model.Sync.Value(SyncTarget.View, "Trackers");
+            model.Trackers.Value.Clear();
+            model.Trackers.Value.AddRange(dbCache.GetTrackers());
+            model.Trackers.Update();
 
-            model.Users.Clear();
-            model.Users.AddRange(dbCache.GetUsers());
-            model.Sync.Value(SyncTarget.View, "Users");
+            model.Users.Value.Clear();
+            model.Users.Value.AddRange(dbCache.GetUsers());
+            model.Users.Update();
         }
 
         [EventSubscription(SubIssue.Events.SetSubIssue, typeof(OnPublisher))]
         public void OnSetSubIssueEvent(object sender, Args<int> arg)
         {
-            model.ParentId = arg.Data;
+            model.SubIssueData.Value.ParentId = arg.Data;
         }
 
 

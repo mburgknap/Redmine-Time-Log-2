@@ -21,9 +21,7 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
-            IModelSync Sync { get; }
-
-            WorkingIssueList Issues { get; }
+            DataProperty<WorkingIssueList> Issues { get; }
         }
     }
 }

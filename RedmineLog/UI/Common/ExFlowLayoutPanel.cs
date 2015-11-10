@@ -14,18 +14,25 @@ namespace RedmineLog.UI.Common
         public ExFlowLayoutPanel()
         {
             InitializeComponent();
-            AutoScroll = true;
+            SetupScroll();
             Focus();
+        }
+
+        private void SetupScroll()
+        {
+            HorizontalScroll.Maximum = 0;
+            AutoScroll = false;
+            VerticalScroll.Visible = false;
+            AutoScroll = true;
         }
 
 
         public ExFlowLayoutPanel(IContainer container)
         {
-            AutoScroll = true;
-            Focus();
             container.Add(this);
-
             InitializeComponent();
+            SetupScroll();
+            Focus();
         }
 
 
@@ -82,11 +89,21 @@ namespace RedmineLog.UI.Common
                 Focus();
             }
 
+            async public override void AddRange(Control[] controls)
+            {
+                foreach (var item in controls)
+                {
+                    Add(item);
+                    await Task.Delay(30);
+                }
+            }
+
 
             public override void Add(Control value)
             {
                 base.Add(value);
                 Focus();
+                value.GotFocus -= ItemGotFocus;
                 value.GotFocus += ItemGotFocus;
             }
 

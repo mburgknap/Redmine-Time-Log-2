@@ -2,6 +2,7 @@
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
 using RedmineLog.Logic.Model;
+using Ninject.Extensions.AppccelerateEventBroker;
 
 namespace RedmineLog.Model
 {

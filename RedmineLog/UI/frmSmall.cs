@@ -1,5 +1,4 @@
 ﻿using Appccelerate.EventBroker;
-using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic;
@@ -8,6 +7,7 @@ using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedmineLog
@@ -34,7 +34,7 @@ namespace RedmineLog
         void OnFormLoad(object sender, EventArgs e)
         {
             UnwrapForm();
-            timer.Start();
+            WrapForm();
             Load -= OnFormLoad;
         }
 
@@ -78,6 +78,7 @@ namespace RedmineLog
 
         private void WrapForm()
         {
+            timer.Stop();
             isHide = true;
             flowPanelWidth = flowLayoutPanel1.Width;
             this.Location = new Point(this.Location.X + flowLayoutPanel1.Width, this.Location.Y);
@@ -128,27 +129,87 @@ namespace RedmineLog
         private frmSmall Form;
 
         [Inject]
-        public SmallView(Small.IModel inModel, IEventBroker inGlobalEvent)
+        public SmallView(Small.IModel inModel)
         {
             model = inModel;
-            model.Sync.Bind(SyncTarget.View, this);
-            inGlobalEvent.Register(this);
+            model.IdleTime.OnUpdate.Subscribe(OnUpdateIdleTime);
+            model.IssueInfo.OnUpdate.Subscribe(OnUpdateIssueInfo);
+            model.IssueParentInfo.OnUpdate.Subscribe(OnUpdateIssueParentInfo);
+            model.Comment.OnUpdate.Subscribe(OnUpdateComment);
+            model.WorkTime.OnUpdate.Subscribe(OnUpdateWorkTime);
+        }
+
+        private void OnUpdateComment(CommentData obj)
+        {
+            Form.lbComment.Set(obj,
+                  (ui, data) =>
+                  {
+                      if (data != null)
+                          ui.Text = "Comment : " + Environment.NewLine + " " + data.Text;
+                  });
+        }
+
+        private void OnUpdateWorkTime(TimeSpan obj)
+        {
+            Form.lbWorkTime.Set(obj, (ui, data) =>
+            {
+                ui.Text = data.ToString();
+            });
+        }
+
+        private void OnUpdateIssueParentInfo(RedmineIssueData obj)
+        {
+            Form.lbParentIssue.Set(obj,
+              (ui, data) =>
+              {
+                  if (data != null)
+                  {
+                      ui.Text = data.Subject + " :";
+                      ui.Visible = true;
+                  }
+                  else
+                      ui.Visible = false;
+              });
+        }
+
+        private void OnUpdateIssueInfo(RedmineIssueData obj)
+        {
+            Form.Set(obj,
+               (ui, data) =>
+               {
+                   ui.lbComment.Visible = data.IsGlobal();
+
+                   ui.lbIssue.Text = data.Id > 0 ? "#" + data.Id.ToString() : "";
+
+                   ui.lbProject.Text = data.Project;
+                   ui.lblTracker.Text = data.Id > 0 ? "(" + data.Tracker + ")" : "";
+                   ui.lbIssue.Text = data.Subject;
+               });
+        }
+
+        private void OnUpdateIdleTime(TimeSpan obj)
+        {
+            Form.lbIdleTime.Set(obj,
+                  (ui, data) =>
+                  {
+                      ui.Text = data.ToString();
+                  });
         }
 
 
-        [EventPublication(Small.Events.Load, typeof(Publish<Small.IView>))]
+        [EventPublication(Small.Events.Load, typeof(OnPublisher))]
         public event EventHandler LoadEvent;
 
-        [EventSubscription(AppTimers.WorkUpdate, typeof(OnPublisher))]
+        [EventSubscription(AppTime.Events.WorkUpdate, typeof(OnPublisher))]
         public void OnWorkUpdateEvent(object sender, Args<int> arg)
         {
-            model.Sync.Value(SyncTarget.View, "WorkTime");
+            model.WorkTime.Update();
         }
 
-        [EventSubscription(AppTimers.IdleUpdate, typeof(OnPublisher))]
+        [EventSubscription(AppTime.Events.IdleUpdate, typeof(OnPublisher))]
         public void OnIdleUpdateEvent(object sender, Args<int> arg)
         {
-            model.Sync.Value(SyncTarget.View, "IdleTime");
+            model.IdleTime.Update();
         }
 
 
@@ -170,74 +231,19 @@ namespace RedmineLog
         }
         public void Load()
         {
-            new frmProcessing().Show(Form,
-              () =>
-              {
-                  LoadEvent.Fire(this);
-              });
-        }
-        void OnWorkTimeChange()
-        {
-            Form.lbWorkTime.Set(model.WorkTime, (ui, data) =>
+            Task.Run(() =>
             {
-                ui.Text = data.ToString();
+                LoadEvent.Fire(this);
             });
         }
 
-        void OnIdleTimeChange()
-        {
-            Form.lbIdleTime.Set(model.IdleTime,
-                (ui, data) =>
-                {
-                    ui.Text = data.ToString();
-                });
-        }
-        void OnCommentChange()
-        {
-            Form.lbComment.Set(model,
-                (ui, data) =>
-                {
-                    if (model.Comment != null)
-                        ui.Text = "Comment : " + Environment.NewLine + " " + data.Comment.Text;
-                });
-        }
-
-        void OnIssueParentInfoChange()
-        {
-            Form.lbParentIssue.Set(model.IssueParentInfo,
-               (ui, data) =>
-               {
-                   if (data != null)
-                   {
-                       ui.Text = data.Subject + " :";
-                       ui.Visible = true;
-                   }
-                   else
-                       ui.Visible = false;
-               });
-
-        }
-        void OnIssueInfoChange()
-        {
-            Form.Set(model,
-              (ui, data) =>
-              {
-                  ui.lbComment.Visible = data.IssueInfo.Id == 0;
-
-                  ui.lbIssue.Text = data.IssueInfo.Id > 0 ? data.IssueInfo.Id.ToString() : "";
-
-                  ui.lbProject.Text = data.IssueInfo.Project;
-                  ui.lblTracker.Text = data.IssueInfo.Id > 0 ? "(" + data.IssueInfo.Tracker + ")" : "";
-                  ui.lbIssue.Text = data.IssueInfo.Subject;
-              });
-        }
 
         private void OnIssueClick(object sender, EventArgs e)
         {
-        
+
             try
             {
-                System.Diagnostics.Process.Start(model.IssueUri);
+                System.Diagnostics.Process.Start(model.IssueUri.Value.ToString());
             }
             catch (Exception ex)
             {

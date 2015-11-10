@@ -76,7 +76,7 @@ namespace RedmineLog.UI.Items
         {
             Data = bug;
 
-            lblIdIssue.Text = bug.Id > 0 ? bug.Id.ToString() : "";
+            lblIdIssue.Text = bug.Id > 0 ? "#" + bug.Id.ToString() : "";
             lblIssue.Text = !string.IsNullOrWhiteSpace(bug.Subject) ? bug.Subject : " Blank issue ";
             lblPriority.Text = bug.Priority;
 

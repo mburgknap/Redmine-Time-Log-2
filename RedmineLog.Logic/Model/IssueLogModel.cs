@@ -11,12 +11,9 @@ namespace RedmineLog.Logic.Model
     {
         public IssueLogModel()
         {
-            Issues = new WorkingIssueList();
-            Sync = new ModelSync<IssueLog.IModel>();
+            Issues = new DataProperty<WorkingIssueList>();
         }
-        public IModelSync Sync { get; private set; }
 
-
-        public WorkingIssueList Issues { get; private set; }
+        public DataProperty<WorkingIssueList> Issues { get; private set; }
     }
 }

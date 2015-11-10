@@ -80,6 +80,53 @@ namespace RedmineLog.Logic
             return result;
         }
     }
+
+    internal class LastIssuesTable : IDbLastIssue
+    {
+        private IDatabase database;
+
+        [Inject]
+        public LastIssuesTable(IDatabase inDatabase)
+        {
+            database = inDatabase;
+        }
+
+
+        public void Init()
+        {
+            if (database.Get<LastIssuesTable, int, DbCustomSerializer<List<int>>>(1, null) == null)
+                database.Set<LastIssuesTable, int, DbCustomSerializer<List<int>>>(1, new List<int>());
+        }
+
+        public void Update(List<int> inQueue)
+        {
+            database.Set<LastIssuesTable, int, DbCustomSerializer<List<int>>>(1, inQueue);
+        }
+
+        public List<int> GetList()
+        {
+            var result = database.Get<LastIssuesTable, int, DbCustomSerializer<List<int>>>(1, null);
+
+            if (result != null)
+                return result.Get;
+
+            return new List<int>();
+        }
+
+
+        public void Delete(int inId)
+        {
+            var result = database.Get<LastIssuesTable, int, DbCustomSerializer<List<int>>>(1, null);
+
+            if (result != null)
+            {
+                var tmp = result.Get;
+                tmp.Remove(inId);
+                database.Set<LastIssuesTable, int, DbCustomSerializer<List<int>>>(1, tmp);
+            }
+        }
+    }
+
     internal class CommentsTable : IDbComment
     {
         private IDatabase database;
@@ -111,6 +158,16 @@ namespace RedmineLog.Logic
         public void Delete(CommentData comment)
         {
             database.Delete<CommentsTable, string>(comment.Id);
+        }
+
+        public CommentData Get(IssueData inIssue)
+        {
+            var result = database.Get<CommentsTable, string, DbCustomSerializer<CommentData>>(inIssue.IdComment, null);
+
+            if (result != null)
+                return result.Get;
+
+            return null;
         }
     }
 

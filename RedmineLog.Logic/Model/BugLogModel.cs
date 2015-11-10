@@ -10,15 +10,11 @@ namespace RedmineLog.Logic.Model
 {
     class BugLogModel : BugLog.IModel
     {
-
         public BugLogModel()
         {
-            Bugs = new BugLogList();
-            Sync = new ModelSync<BugLog.IModel>();
+            Bugs = new DataProperty<BugLogList>();
         }
 
-        public IModelSync Sync { get; private set; }
-
-        public BugLogList Bugs { get; private set; }
+        public DataProperty<BugLogList> Bugs { get; private set; }
     }
 }

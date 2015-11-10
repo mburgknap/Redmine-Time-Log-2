@@ -17,6 +17,7 @@ namespace RedmineLog.Logic.Data
             Bind<IDbConfig>().To<AppConfig>().InSingletonScope();
             Bind<IDbIssue>().To<IssuesTable>().InSingletonScope();
             Bind<IDbCache>().To<CacheTable>().InSingletonScope();
+            Bind<IDbLastIssue>().To<LastIssuesTable>().InSingletonScope();
             Bind<IDbComment>().To<CommentsTable>().InSingletonScope();
             Bind<IDbRedmineIssue>().To<RedmineIssuesTable>().InSingletonScope();
         }

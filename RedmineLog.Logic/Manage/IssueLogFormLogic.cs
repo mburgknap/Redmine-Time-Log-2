@@ -1,5 +1,4 @@
 ﻿using Appccelerate.EventBroker;
-using Appccelerate.EventBroker.Handlers;
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Logic.Common;
@@ -20,23 +19,21 @@ namespace RedmineLog.Logic
         private IRedmineClient redmine;
 
         [Inject]
-        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IEventBroker inEvents, IDbIssue inDbIssue, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue)
+        public IssueLogFormLogic(IssueLog.IView inView, IssueLog.IModel inModel, IDbIssue inDbIssue, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue)
         {
             view = inView;
             model = inModel;
-            model.Sync.Bind(SyncTarget.Source, this);
             dbIssue = inDbIssue;
             redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
-            inEvents.Register(this);
         }
 
-        [EventSubscription(IssueLog.Events.Load, typeof(Subscribe<IssueLog.IView>))]
+        [EventSubscription(IssueLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             RedmineIssueData tmp = null;
 
-            model.Issues.Clear();
+            model.Issues.Value.Clear();
 
             foreach (var item in dbIssue.GetList())
             {
@@ -46,15 +43,15 @@ namespace RedmineLog.Logic
                 tmp = dbRedmineIssue.Get(item.Id);
 
                 if (tmp.IdParent.HasValue)
-                    model.Issues.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
+                    model.Issues.Value.Add(item, tmp, dbRedmineIssue.Get(tmp.IdParent.Value));
                 else
-                    model.Issues.Add(item, tmp, null);
+                    model.Issues.Value.Add(item, tmp, null);
 
-                model.Issues[model.Issues.Count - 1].IssueUri = redmine.IssueUrl(item.Id);
+                model.Issues.Value.Last().IssueUri = redmine.IssueUrl(item.Id);
             }
 
 
-            model.Sync.Value(SyncTarget.View, "Issues");
+            model.Issues.Update();
         }
 
         [EventSubscription(IssueLog.Events.Select, typeof(OnPublisher))]

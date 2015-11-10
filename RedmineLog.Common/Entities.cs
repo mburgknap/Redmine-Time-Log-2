@@ -6,6 +6,25 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
+    public static class EntityExtension
+    {
+        public static bool IsGlobal(this IssueData inThis)
+        {
+            return inThis.Id == 0;
+        }
+
+        public static bool IsGlobal(this BugLogItem inThis)
+        {
+            return inThis.Id == 0;
+        }
+
+        public static bool IsGlobal(this RedmineIssueData inThis)
+        {
+            return inThis.Id == 0;
+        }
+
+    }
+
     public class RedmineIssueData
     {
         public int Id { get; set; }
@@ -116,6 +135,7 @@ namespace RedmineLog.Common
         }
 
         public string IdComment { get; set; }
+
     }
 
     public class WorkTimeData
@@ -136,6 +156,8 @@ namespace RedmineLog.Common
     public class WorkingIssue
     {
         public IssueData Data { get; set; }
+
+        public String Comment { get; set; }
 
         public RedmineIssueData Issue { get; set; }
 
@@ -286,4 +308,6 @@ namespace RedmineLog.Common
         public TrackerData Tracker { get; set; }
         public PriorityData Priority { get; set; }
     }
+
+   
 }

@@ -32,7 +32,7 @@
             this.nHour = new System.Windows.Forms.NumericUpDown();
             this.nMinute = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.cbEventType = new System.Windows.Forms.ComboBox();
+            this.cbActivityType = new System.Windows.Forms.ComboBox();
             this.tbMessage = new System.Windows.Forms.TextBox();
             this.calWorkDate = new System.Windows.Forms.MonthCalendar();
             this.btnSave = new System.Windows.Forms.Button();
@@ -75,12 +75,12 @@
             // 
             // cbEventType
             // 
-            this.cbEventType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbEventType.FormattingEnabled = true;
-            this.cbEventType.Location = new System.Drawing.Point(170, 67);
-            this.cbEventType.Name = "cbEventType";
-            this.cbEventType.Size = new System.Drawing.Size(118, 21);
-            this.cbEventType.TabIndex = 3;
+            this.cbActivityType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbActivityType.FormattingEnabled = true;
+            this.cbActivityType.Location = new System.Drawing.Point(170, 67);
+            this.cbActivityType.Name = "cbEventType";
+            this.cbActivityType.Size = new System.Drawing.Size(118, 21);
+            this.cbActivityType.TabIndex = 3;
             // 
             // tbMessage
             // 
@@ -117,7 +117,7 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.calWorkDate);
             this.Controls.Add(this.tbMessage);
-            this.Controls.Add(this.cbEventType);
+            this.Controls.Add(this.cbActivityType);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.nMinute);
             this.Controls.Add(this.nHour);
@@ -139,7 +139,7 @@
 
         private System.Windows.Forms.Label label1;
         internal System.Windows.Forms.Button btnSave;
-        internal System.Windows.Forms.ComboBox cbEventType;
+        internal System.Windows.Forms.ComboBox cbActivityType;
         internal System.Windows.Forms.NumericUpDown nHour;
         internal System.Windows.Forms.NumericUpDown nMinute;
         internal System.Windows.Forms.TextBox tbMessage;

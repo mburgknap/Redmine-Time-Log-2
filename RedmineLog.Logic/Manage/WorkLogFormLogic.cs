@@ -18,30 +18,29 @@ namespace RedmineLog.Logic
         private IRedmineClient redmine;
         private WorkLog.IView view;
         [Inject]
-        public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue, IDbConfig inDbConfig, IEventBroker inEvents)
+        public WorkLogFormLogic(WorkLog.IView inView, WorkLog.IModel inModel, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue, IDbConfig inDbConfig)
         {
             view = inView;
             model = inModel;
             redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
             dbConfig = inDbConfig;
-            inEvents.Register(this);
         }
 
 
-        [EventSubscription(WorkLog.Events.Load, typeof(Subscribe<WorkLog.IView>))]
+        [EventSubscription(WorkLog.Events.Load, typeof(OnPublisher))]
         public void OnLoadEvent(object sender, EventArgs arg)
         {
-            model.LoadedTime = DateTime.Now;
-            model.WorkLogs.Clear();
+            model.LoadedTime.Update(DateTime.Now);
+            model.WorkLogs.Value.Clear();
             LoadItems();
         }
 
 
-        [EventSubscription(WorkLog.Events.LoadMore, typeof(Subscribe<WorkLog.IView>))]
+        [EventSubscription(WorkLog.Events.LoadMore, typeof(OnPublisher))]
         public void OnLoadMoreEvent(object sender, EventArgs arg)
         {
-            model.LoadedTime = model.LoadedTime.AddDays(-1);
+            model.LoadedTime.Update(model.LoadedTime.Value.AddDays(-1));
             LoadItems();
         }
         private void LoadItems()
@@ -49,7 +48,7 @@ namespace RedmineLog.Logic
             RedmineIssueData tmpIssue = null;
             RedmineIssueData tmpParent = null;
 
-            foreach (var workLog in redmine.GetWorkLogs(dbConfig.GetIdUser(), model.LoadedTime))
+            foreach (var workLog in redmine.GetWorkLogs(dbConfig.GetIdUser(), model.LoadedTime.Value))
             {
                 tmpIssue = dbRedmineIssue.Get(workLog.IdIssue);
 
@@ -81,12 +80,12 @@ namespace RedmineLog.Logic
                     workLog.ParentIssue = "";
 
                 workLog.IssueUri = redmine.IssueUrl(workLog.IdIssue);
-                model.WorkLogs.Add(workLog);
+                model.WorkLogs.Value.Add(workLog);
             }
 
 
-            if (model.WorkLogs.Count > 0)
-                model.Sync.Value(SyncTarget.View, "WorkLogs");
+            if (model.WorkLogs.Value.Count > 0)
+                model.WorkLogs.Update();
         }
     }
 }
