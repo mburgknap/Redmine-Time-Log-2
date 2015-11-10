@@ -104,6 +104,11 @@ namespace RedmineLog.Common
         DateTime? GetStartTime();
 
         void SetStartTime(DateTime inDateTime);
+
+        int GetWorkDayMinimalHours();
+        void SetWorkDayMinimalHours(int value);
+
+        void Init();
     }
 
     public interface IDatabase

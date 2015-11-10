@@ -31,17 +31,21 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSettings));
             this.Label2 = new System.Windows.Forms.Label();
             this.tbApiKey = new System.Windows.Forms.TextBox();
-            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.Label1 = new System.Windows.Forms.Label();
             this.tbRedmineURL = new System.Windows.Forms.TextBox();
             this.btnReloadCache = new System.Windows.Forms.Button();
             this.cbDisplay = new System.Windows.Forms.ComboBox();
+            this.tbWorkHours = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label2
             // 
             this.Label2.AutoSize = true;
-            this.Label2.Location = new System.Drawing.Point(13, 54);
+            this.Label2.Location = new System.Drawing.Point(13, 45);
             this.Label2.Name = "Label2";
             this.Label2.Size = new System.Drawing.Size(90, 13);
             this.Label2.TabIndex = 11;
@@ -49,24 +53,24 @@
             // 
             // tbApiKey
             // 
-            this.tbApiKey.Location = new System.Drawing.Point(16, 70);
+            this.tbApiKey.Location = new System.Drawing.Point(16, 61);
             this.tbApiKey.Name = "tbApiKey";
             this.tbApiKey.Size = new System.Drawing.Size(324, 20);
             this.tbApiKey.TabIndex = 10;
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(234, 96);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(106, 23);
-            this.btnConnect.TabIndex = 8;
-            this.btnConnect.Text = "Connect";
-            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnSave.Location = new System.Drawing.Point(234, 111);
+            this.btnSave.Name = "btnConnect";
+            this.btnSave.Size = new System.Drawing.Size(106, 23);
+            this.btnSave.TabIndex = 8;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
             // 
             // Label1
             // 
             this.Label1.AutoSize = true;
-            this.Label1.Location = new System.Drawing.Point(12, 18);
+            this.Label1.Location = new System.Drawing.Point(12, 9);
             this.Label1.Name = "Label1";
             this.Label1.Size = new System.Drawing.Size(74, 13);
             this.Label1.TabIndex = 7;
@@ -74,16 +78,16 @@
             // 
             // tbRedmineURL
             // 
-            this.tbRedmineURL.Location = new System.Drawing.Point(15, 34);
+            this.tbRedmineURL.Location = new System.Drawing.Point(15, 25);
             this.tbRedmineURL.Name = "tbRedmineURL";
             this.tbRedmineURL.Size = new System.Drawing.Size(325, 20);
             this.tbRedmineURL.TabIndex = 6;
             // 
             // btnReloadCache
             // 
-            this.btnReloadCache.Location = new System.Drawing.Point(16, 134);
+            this.btnReloadCache.Location = new System.Drawing.Point(16, 111);
             this.btnReloadCache.Name = "btnReloadCache";
-            this.btnReloadCache.Size = new System.Drawing.Size(106, 23);
+            this.btnReloadCache.Size = new System.Drawing.Size(89, 23);
             this.btnReloadCache.TabIndex = 12;
             this.btnReloadCache.Text = "Reload cache";
             this.btnReloadCache.UseVisualStyleBackColor = true;
@@ -92,21 +96,61 @@
             // 
             this.cbDisplay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDisplay.FormattingEnabled = true;
-            this.cbDisplay.Location = new System.Drawing.Point(128, 136);
+            this.cbDisplay.Location = new System.Drawing.Point(234, 84);
             this.cbDisplay.Name = "cbDisplay";
             this.cbDisplay.Size = new System.Drawing.Size(106, 21);
             this.cbDisplay.TabIndex = 13;
+            // 
+            // tbWorkHours
+            // 
+            this.tbWorkHours.Location = new System.Drawing.Point(71, 84);
+            this.tbWorkHours.Name = "tbWorkHours";
+            this.tbWorkHours.Size = new System.Drawing.Size(26, 20);
+            this.tbWorkHours.TabIndex = 14;
+            this.tbWorkHours.Text = "8";
+            this.tbWorkHours.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 87);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Work day :";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(180, 87);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 13);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Location";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(103, 87);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(33, 13);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "hours";
             // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(357, 162);
+            this.ClientSize = new System.Drawing.Size(352, 142);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.tbWorkHours);
             this.Controls.Add(this.cbDisplay);
             this.Controls.Add(this.btnReloadCache);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.tbApiKey);
-            this.Controls.Add(this.btnConnect);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.Label1);
             this.Controls.Add(this.tbRedmineURL);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -126,10 +170,14 @@
 
         internal System.Windows.Forms.Label Label2;
         internal System.Windows.Forms.TextBox tbApiKey;
-        internal System.Windows.Forms.Button btnConnect;
+        internal System.Windows.Forms.Button btnSave;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.TextBox tbRedmineURL;
         internal System.Windows.Forms.Button btnReloadCache;
         internal System.Windows.Forms.ComboBox cbDisplay;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label3;
+        internal System.Windows.Forms.TextBox tbWorkHours;
     }
 }

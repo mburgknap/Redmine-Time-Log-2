@@ -332,6 +332,12 @@ namespace RedmineLog.Logic
             database = inDatabase;
         }
 
+        public void Init()
+        {
+            if (database.Get<AppConfig, string, int>("WorkDayMinimalHours", -1) == -1)
+                database.Set<AppConfig, string, int>("WorkDayMinimalHours", 8);
+        }
+
         public int GetIdUser()
         {
             return database.Get<AppConfig, string, int>("IdUser", 0);
@@ -373,6 +379,17 @@ namespace RedmineLog.Logic
         public void SetStartTime(DateTime inDateTime)
         {
             database.Set<AppConfig, string, long>("StartTime", inDateTime.Ticks);
+        }
+
+
+        public int GetWorkDayMinimalHours()
+        {
+            return database.Get<AppConfig, string, int>("WorkDayMinimalHours", 0);
+        }
+
+        public void SetWorkDayMinimalHours(int value)
+        {
+            database.Set<AppConfig, string, int>("WorkDayMinimalHours", value);
         }
     }
 

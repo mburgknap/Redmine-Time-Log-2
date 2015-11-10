@@ -49,6 +49,12 @@ namespace RedmineLog
             inModel.ApiKey.OnUpdate.Subscribe(OnUpdateApiKey);
             inModel.Display.OnUpdate.Subscribe(OnUpdateDisplay);
             inModel.Url.OnUpdate.Subscribe(OnUpdateUrl);
+            inModel.WorkDayHours.OnUpdate.Subscribe(OnUpdateWorkDayHours);
+        }
+
+        private void OnUpdateWorkDayHours(int obj)
+        {
+            Form.tbWorkHours.Text = obj.ToString();
         }
 
         private void OnUpdateUrl(StringBuilder obj)
@@ -62,7 +68,7 @@ namespace RedmineLog
 
         private void OnUpdateDisplay(DisplayData obj)
         {
-        
+
             Form.cbDisplay.Set(obj,
                      (ui, data) =>
                      {
@@ -107,15 +113,15 @@ namespace RedmineLog
                    });
         }
 
-        [EventPublication(Settings.Events.Connect, typeof(OnPublisher))]
-        public event EventHandler ConnectEvent;
+        [EventPublication(Settings.Events.Save, typeof(OnPublisher))]
+        public event EventHandler SaveEvent;
 
         [EventPublication(Settings.Events.Load, typeof(OnPublisher))]
         public event EventHandler LoadEvent;
 
         [EventPublication(Settings.Events.ReloadCache, typeof(OnPublisher))]
         public event EventHandler ReloadCacheEvent;
-
+        
         EventProperty<EventArgs> displayChanged = new EventProperty<EventArgs>();
 
         public void Init(frmSettings frmSettings)
@@ -124,23 +130,47 @@ namespace RedmineLog
 
             displayChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbDisplay, "SelectedIndexChanged"));
 
-            Form.btnConnect.Click += OnConnectClick;
-            Form.btnReloadCache.Click += OnReloadCacheClick;
+            Observable.FromEventPattern<EventArgs>(Form.btnSave, "Click").Subscribe(OnActionSave);
+            Observable.FromEventPattern<EventArgs>(Form.btnReloadCache, "Click").Subscribe(OnActionReloadCache);
+ 
             Load();
         }
 
 
-        private void OnReloadCacheClick(object sender, EventArgs e)
+        private void OnActionReloadCache(EventPattern<EventArgs> obj)
         {
             new frmProcessing().Show(Form,
-                 () =>
-                 {
-                     ReloadCacheEvent.Fire(this);
-                 }, () =>
-                 {
-                     NotifyBox.Show("Cache reloaded.", "Info");
-                 });
+                   () =>
+                   {
+                       ReloadCacheEvent.Fire(this);
+                   }, () =>
+                   {
+                       NotifyBox.Show("Cache reloaded.", "Info");
+                   });
         }
+
+        private void OnActionSave(EventPattern<EventArgs> obj)
+        {
+            model.Url.Notify(Form.tbRedmineURL.Text);
+            model.ApiKey.Notify(Form.tbApiKey.Text);
+
+            int tmp = 0;
+            if (Int32.TryParse(Form.tbWorkHours.Text, out tmp))
+                model.WorkDayHours.Notify(tmp);
+
+            new frmProcessing().Show(Form,
+              () =>
+              {
+                  SaveEvent.Fire(this);
+
+                  Form.Set(model,
+                     (ui, data) =>
+                     {
+                         ui.DialogResult = System.Windows.Forms.DialogResult.OK;
+                     });
+              });
+        }
+
 
         public void Load()
         {
@@ -149,24 +179,6 @@ namespace RedmineLog
                {
                    LoadEvent.Fire(this);
                });
-        }
-
-        private void OnConnectClick(System.Object sender, System.EventArgs e)
-        {
-            model.Url.Notify(Form.tbRedmineURL.Text);
-            model.ApiKey.Notify(Form.tbApiKey.Text);
-
-            new frmProcessing().Show(Form,
-              () =>
-              {
-                  ConnectEvent.Fire(this);
-
-                  Form.Set(model,
-                     (ui, data) =>
-                     {
-                         ui.DialogResult = System.Windows.Forms.DialogResult.OK;
-                     });
-              });
         }
 
     }

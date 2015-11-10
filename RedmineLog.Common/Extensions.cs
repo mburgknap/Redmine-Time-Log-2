@@ -5,6 +5,19 @@ using System.Text;
 namespace RedmineLog.Common
 {
 
+    public static class TimeSpanExtension
+    {
+        public static String ToWorkTime(this TimeSpan inThis)
+        {
+            return ((inThis.Days * 24) + inThis.Hours) + ":" + inThis.Minutes.ToString("00");
+        }
+
+        public static int WorkHours(this TimeSpan inThis)
+        {
+            return ((inThis.Days * 24) + inThis.Hours);
+        }
+    }
+
     public static class CastExtension
     {
         public static void Is<T>(this Object inThis, Action<T> inDo)

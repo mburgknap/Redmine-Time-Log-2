@@ -75,6 +75,7 @@
             this.llDay7 = new System.Windows.Forms.LinkLabel();
             this.btnWorkReportSync = new System.Windows.Forms.Button();
             this.btnWorkReportMode = new System.Windows.Forms.Button();
+            this.lbSummaryTime = new System.Windows.Forms.Label();
             this.cHeader = new RedmineLog.UI.Items.IssueItemView();
             this.fpIssueList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
             this.issueInfoPanel.SuspendLayout();
@@ -455,16 +456,17 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.tableLayoutPanel1.ColumnCount = 9;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.86141F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.985045F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.985045F));
+            this.tableLayoutPanel1.ColumnCount = 10;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tableLayoutPanel1.Controls.Add(this.llDay2, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.llDay1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.llDay3, 1, 0);
@@ -472,8 +474,9 @@
             this.tableLayoutPanel1.Controls.Add(this.llDay5, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.llDay6, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.llDay7, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnWorkReportSync, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnWorkReportMode, 8, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnWorkReportSync, 8, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnWorkReportMode, 9, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lbSummaryTime, 7, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 515);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -489,9 +492,9 @@
             this.llDay2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llDay2.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.llDay2.LinkColor = System.Drawing.Color.Black;
-            this.llDay2.Location = new System.Drawing.Point(78, 0);
+            this.llDay2.Location = new System.Drawing.Point(68, 0);
             this.llDay2.Name = "llDay2";
-            this.llDay2.Size = new System.Drawing.Size(69, 23);
+            this.llDay2.Size = new System.Drawing.Size(59, 23);
             this.llDay2.TabIndex = 0;
             this.llDay2.TabStop = true;
             this.llDay2.Text = "00:00";
@@ -506,7 +509,7 @@
             this.llDay1.LinkColor = System.Drawing.Color.Black;
             this.llDay1.Location = new System.Drawing.Point(3, 0);
             this.llDay1.Name = "llDay1";
-            this.llDay1.Size = new System.Drawing.Size(69, 23);
+            this.llDay1.Size = new System.Drawing.Size(59, 23);
             this.llDay1.TabIndex = 7;
             this.llDay1.TabStop = true;
             this.llDay1.Text = "00:00";
@@ -519,9 +522,9 @@
             this.llDay3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llDay3.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.llDay3.LinkColor = System.Drawing.Color.Black;
-            this.llDay3.Location = new System.Drawing.Point(153, 0);
+            this.llDay3.Location = new System.Drawing.Point(133, 0);
             this.llDay3.Name = "llDay3";
-            this.llDay3.Size = new System.Drawing.Size(69, 23);
+            this.llDay3.Size = new System.Drawing.Size(59, 23);
             this.llDay3.TabIndex = 1;
             this.llDay3.TabStop = true;
             this.llDay3.Text = "00:00";
@@ -534,9 +537,9 @@
             this.llDay4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llDay4.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.llDay4.LinkColor = System.Drawing.Color.Black;
-            this.llDay4.Location = new System.Drawing.Point(228, 0);
+            this.llDay4.Location = new System.Drawing.Point(198, 0);
             this.llDay4.Name = "llDay4";
-            this.llDay4.Size = new System.Drawing.Size(69, 23);
+            this.llDay4.Size = new System.Drawing.Size(59, 23);
             this.llDay4.TabIndex = 2;
             this.llDay4.TabStop = true;
             this.llDay4.Text = "00:00";
@@ -549,9 +552,9 @@
             this.llDay5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llDay5.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.llDay5.LinkColor = System.Drawing.Color.Black;
-            this.llDay5.Location = new System.Drawing.Point(303, 0);
+            this.llDay5.Location = new System.Drawing.Point(263, 0);
             this.llDay5.Name = "llDay5";
-            this.llDay5.Size = new System.Drawing.Size(69, 23);
+            this.llDay5.Size = new System.Drawing.Size(59, 23);
             this.llDay5.TabIndex = 3;
             this.llDay5.TabStop = true;
             this.llDay5.Text = "00:00";
@@ -563,9 +566,9 @@
             this.llDay6.BackColor = System.Drawing.Color.Transparent;
             this.llDay6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llDay6.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.llDay6.Location = new System.Drawing.Point(378, 0);
+            this.llDay6.Location = new System.Drawing.Point(328, 0);
             this.llDay6.Name = "llDay6";
-            this.llDay6.Size = new System.Drawing.Size(69, 23);
+            this.llDay6.Size = new System.Drawing.Size(59, 23);
             this.llDay6.TabIndex = 4;
             this.llDay6.TabStop = true;
             this.llDay6.Text = "00:00";
@@ -577,9 +580,9 @@
             this.llDay7.BackColor = System.Drawing.Color.Transparent;
             this.llDay7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llDay7.Font = new System.Drawing.Font("Segoe UI Black", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.llDay7.Location = new System.Drawing.Point(453, 0);
+            this.llDay7.Location = new System.Drawing.Point(393, 0);
             this.llDay7.Name = "llDay7";
-            this.llDay7.Size = new System.Drawing.Size(69, 23);
+            this.llDay7.Size = new System.Drawing.Size(59, 23);
             this.llDay7.TabIndex = 5;
             this.llDay7.TabStop = true;
             this.llDay7.Text = "00:00";
@@ -590,7 +593,7 @@
             this.btnWorkReportSync.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnWorkReportSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnWorkReportSync.Image = global::RedmineLog.Properties.Resources.Refresh;
-            this.btnWorkReportSync.Location = new System.Drawing.Point(528, 3);
+            this.btnWorkReportSync.Location = new System.Drawing.Point(523, 3);
             this.btnWorkReportSync.Name = "btnWorkReportSync";
             this.btnWorkReportSync.Size = new System.Drawing.Size(23, 17);
             this.btnWorkReportSync.TabIndex = 8;
@@ -602,12 +605,24 @@
             this.btnWorkReportMode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnWorkReportMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnWorkReportMode.Image = global::RedmineLog.Properties.Resources.Calendar;
-            this.btnWorkReportMode.Location = new System.Drawing.Point(557, 3);
+            this.btnWorkReportMode.Location = new System.Drawing.Point(552, 3);
             this.btnWorkReportMode.Name = "btnWorkReportMode";
-            this.btnWorkReportMode.Size = new System.Drawing.Size(24, 17);
+            this.btnWorkReportMode.Size = new System.Drawing.Size(29, 17);
             this.btnWorkReportMode.TabIndex = 9;
             this.btnWorkReportMode.Text = "button2";
             this.btnWorkReportMode.UseVisualStyleBackColor = true;
+            // 
+            // lbSummaryTime
+            // 
+            this.lbSummaryTime.AutoSize = true;
+            this.lbSummaryTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbSummaryTime.Font = new System.Drawing.Font("Segoe UI", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lbSummaryTime.Location = new System.Drawing.Point(458, 0);
+            this.lbSummaryTime.Name = "lbSummaryTime";
+            this.lbSummaryTime.Size = new System.Drawing.Size(59, 23);
+            this.lbSummaryTime.TabIndex = 10;
+            this.lbSummaryTime.Text = "00:00";
+            this.lbSummaryTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cHeader
             // 
@@ -711,5 +726,6 @@
         internal System.Windows.Forms.Button btnWorkReportSync;
         internal System.Windows.Forms.Button btnWorkReportMode;
         internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        internal System.Windows.Forms.Label lbSummaryTime;
     }
 }

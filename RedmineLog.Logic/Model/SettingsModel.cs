@@ -13,6 +13,7 @@ namespace RedmineLog.Model
             ApiKey = new DataProperty<StringBuilder>();
             Display = new DataProperty<DisplayData>();
             Url = new DataProperty<StringBuilder>();
+            WorkDayHours = new DataProperty<int>();
         }
 
         public DataProperty<StringBuilder> ApiKey { get; private set; }
@@ -20,5 +21,6 @@ namespace RedmineLog.Model
         public DataProperty<DisplayData> Display { get; private set; }
 
         public DataProperty<StringBuilder> Url { get; private set; }
+        public DataProperty<int> WorkDayHours { get; private set; }
     }
 }

@@ -167,30 +167,35 @@ namespace RedmineLog
             Form.Set(obj,
                   (ui, data) =>
                   {
+                      int workBuffer = 1;
+
+                      TimeSpan summary = new TimeSpan(0);
+
                       Action<LinkLabel, TimeSpan, bool, bool> action = (label, time, isFutureDay, isFreeDay) =>
                       {
+                          summary = summary + time;
 
                           if (isFreeDay)
                           {
                               if (time.TotalMinutes > 0)
                                   label.BackColor = Color.Green;
                               else
-                                  label.BackColor = SystemColors.ActiveCaption;
+                                  label.BackColor = isFreeDay ? Color.LightGray : SystemColors.ActiveCaption;
                           }
                           else
                               if (model.WorkReport.Value.ReportType == WorkReportType.LastWeek || !isFutureDay)
                               {
-                                  if (time.Hours > model.WorkReport.Value.MinimalHours)
+                                  if (time.Hours >= model.WorkReport.Value.MinimalHours)
                                       label.BackColor = Color.Green;
-                                  else if (time.Hours > model.WorkReport.Value.MinimalHours - 2)
+                                  else if (time.Hours >= model.WorkReport.Value.MinimalHours - workBuffer)
                                       label.BackColor = Color.Yellow;
                                   else
                                       label.BackColor = Color.Red;
                               }
                               else
-                                  label.BackColor = SystemColors.ActiveCaption;
+                                  label.BackColor = isFreeDay ? Color.LightGray : SystemColors.ActiveCaption;
 
-                          label.Text = time.ToString(@"hh\:mm");
+                          label.Text = time.ToWorkTime();
                       };
 
                       if (model.WorkReport.Value.ReportType == WorkReportType.Week)
@@ -205,6 +210,16 @@ namespace RedmineLog
                       action(ui.llDay5, obj.Day5, DateTime.Now.DayOfWeek <= DayOfWeek.Friday, false);
                       action(ui.llDay6, obj.Day6, false, true);
                       action(ui.llDay7, obj.Day7, false, true);
+
+                      if (summary.WorkHours() >= 5 * obj.MinimalHours)
+                          ui.lbSummaryTime.BackColor = Color.Green;
+                      else if (summary.WorkHours() >= (5 * obj.MinimalHours) - (2 * workBuffer))
+                          ui.lbSummaryTime.BackColor = Color.Yellow;
+                      else
+                          ui.lbSummaryTime.BackColor = SystemColors.ActiveCaption;
+
+                      ui.lbSummaryTime.Text = summary.ToWorkTime();
+
                   });
         }
 

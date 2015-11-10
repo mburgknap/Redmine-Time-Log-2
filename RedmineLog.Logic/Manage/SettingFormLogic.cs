@@ -37,12 +37,13 @@ namespace RedmineLog.Logic
             dbConfig.SetDisplay(obj);
         }
 
-        [EventSubscription(Settings.Events.Connect, typeof(OnPublisher))]
-        public void OnConnectEvent(object sender, EventArgs arg)
+        [EventSubscription(Settings.Events.Save, typeof(OnPublisher))]
+        public void OnSaveEvent(object sender, EventArgs arg)
         {
             dbRedmine.SetApiKey(model.ApiKey.Value.ToString());
             dbRedmine.SetUrl(model.Url.Value.ToString());
             dbConfig.SetIdUser(redmine.GetCurrentUser().Id);
+            dbConfig.SetWorkDayMinimalHours(model.WorkDayHours.Value);
         }
 
         [EventSubscription(Settings.Events.Load, typeof(OnPublisher))]
@@ -51,6 +52,7 @@ namespace RedmineLog.Logic
             model.ApiKey.Update(dbRedmine.GetApiKey());
             model.Url.Update(dbRedmine.GetUrl());
             model.Display.Update(dbConfig.GetDisplay());
+            model.WorkDayHours.Update(dbConfig.GetWorkDayMinimalHours());
         }
 
         [EventSubscription(Settings.Events.ReloadCache, typeof(OnPublisher))]

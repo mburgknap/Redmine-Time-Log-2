@@ -155,6 +155,7 @@ namespace RedmineLog.Logic
 
             model.WorkActivities.Update();
 
+            dbConfig.Init();
             dbIssue.Init();
             dbLastIssue.Init();
             dbComment.Init();
@@ -169,7 +170,7 @@ namespace RedmineLog.Logic
         private void LoadWorkReport(WorkReportType inMode)
         {
             model.WorkReport.Value.ReportType = inMode;
-            model.WorkReport.Value.MinimalHours = 8;
+            model.WorkReport.Value.MinimalHours = dbConfig.GetWorkDayMinimalHours();
 
             var tmp = redmine.GetWorkReport(dbConfig.GetIdUser(), inMode);
 

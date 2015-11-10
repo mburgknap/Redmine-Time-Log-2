@@ -438,7 +438,7 @@ namespace RedmineLog.Logic
                 {
                     tmp = new TimeSpan((int)item.Hours, (int)((item.Hours % 1) * 60), 0);
 
-                    switch (item.CreatedOn.Value.DayOfWeek)
+                    switch (item.SpentOn.Value.DayOfWeek)
                     {
                         case DayOfWeek.Monday:
                             result.Day1 = result.Day1 + tmp; break;
