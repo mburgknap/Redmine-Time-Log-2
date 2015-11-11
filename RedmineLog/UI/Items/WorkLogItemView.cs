@@ -79,7 +79,7 @@ namespace RedmineLog.UI.Items
             lblComment.Text = item.Comment;
             lblActivityType.Text = item.ActivityName;
 
-            var time = new TimeSpan(0, (int)(item.Hours * 60), 0);
+            var time = new TimeSpan(0, (int)Math.Round(item.Hours * 60, MidpointRounding.AwayFromZero), 0);
 
             lblTime.Text = time.ToString(@"hh\:mm");
 

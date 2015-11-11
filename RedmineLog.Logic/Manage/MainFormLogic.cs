@@ -36,10 +36,21 @@ namespace RedmineLog.Logic
             dbLastIssue = inDbLastIssue;
             dbRedmineIssue = inDbRedmineIssue;
 
-            model.Activity.OnNotify.Subscribe(x =>
-            {
-                System.Diagnostics.Debug.WriteLine(x.Name);
-            });
+            model.WorkReport.Value.Uri = WorkReportUri;
+            model.WorkReport.Value.UriSummary = WorkReportUriSummary;
+        }
+
+        private string WorkReportUriSummary(WorkReportType inReportType)
+        {
+            return redmine.WorkReportUrl(dbConfig.GetIdUser(), inReportType);
+        }
+
+        private string WorkReportUri(DayOfWeek inDay)
+        {
+            if (inDay == DayOfWeek.Sunday)
+                return redmine.WorkReportUrl(dbConfig.GetIdUser(), model.WorkReport.Value.WeekStart.AddDays(6));
+
+            return redmine.WorkReportUrl(dbConfig.GetIdUser(), model.WorkReport.Value.WeekStart.AddDays((int)inDay - 1));
         }
 
         [EventSubscription(Main.Events.AddComment, typeof(OnPublisher))]
@@ -176,6 +187,7 @@ namespace RedmineLog.Logic
 
             if (tmp != null)
             {
+                model.WorkReport.Value.WeekStart = tmp.WeekStart;
                 model.WorkReport.Value.Day1 = tmp.Day1;
                 model.WorkReport.Value.Day2 = tmp.Day2;
                 model.WorkReport.Value.Day3 = tmp.Day3;

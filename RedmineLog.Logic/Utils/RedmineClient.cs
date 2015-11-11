@@ -231,7 +231,7 @@ namespace RedmineLog.Logic
             var result = new List<BugLogItem>();
             try
             {
-                List<Issue> bugs = new List<Issue>();
+                var bugs = new List<Issue>();
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
                 var parameters = new NameValueCollection { };
@@ -425,6 +425,7 @@ namespace RedmineLog.Logic
 
                 WorkReportData result = new WorkReportData();
 
+                result.WeekStart = from;
                 result.Day1 = new TimeSpan(0);
                 result.Day2 = new TimeSpan(0);
                 result.Day3 = new TimeSpan(0);
@@ -437,7 +438,9 @@ namespace RedmineLog.Logic
 
                 foreach (var item in manager.GetObjectList<TimeEntry>(parameters))
                 {
-                    tmp = new TimeSpan((int)item.Hours, (int)((item.Hours % 1) * 60), 0);
+                    int h = (int)item.Hours;
+                    int m = (int)Math.Round((item.Hours % 1) * 60, MidpointRounding.AwayFromZero);
+                    tmp = new TimeSpan(h, m, 0);
 
                     switch (item.SpentOn.Value.DayOfWeek)
                     {
@@ -466,6 +469,20 @@ namespace RedmineLog.Logic
             { logger.Error("GetWorkReport", ex); }
 
             return null;
+        }
+
+
+        public string WorkReportUrl(int idUser, DateTime inDate)
+        {
+            return string.Format("{0}time_entries/report?utf8=%E2%9C%93&criteria[]=project&criteria[]=issue&f[]=spent_on&op[spent_on]=%3D&v[spent_on][]={2}&f[]=user_id&op[user_id]=%3D&v[user_id][]={1}&f[]=&c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&columns=day&criteria[]=",
+                                 dbRedmine.GetUrl(), idUser, inDate.ToString("yyyy-MM-dd"));
+        }
+
+
+        public string WorkReportUrl(int idUser, WorkReportType inReportType)
+        {
+            return string.Format("{0}time_entries/report?utf8=%E2%9C%93&criteria[]=project&criteria[]=issue&f[]=spent_on&op[spent_on]={2}&f[]=user_id&op[user_id]=%3D&v[user_id][]={1}&f[]=&c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&columns=day&criteria[]=",
+                                dbRedmine.GetUrl(), idUser, inReportType == WorkReportType.Week ? "w" : "lw");
         }
     }
 }

@@ -102,8 +102,10 @@ namespace RedmineLog
 
                         foreach (var subIssue in issue.Issues.OrderBy(x => x.Id))
                         {
-                            projectTime = projectTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
-                            parentIssueTime = parentIssueTime.Add(new TimeSpan(0, (int)(subIssue.Hours * 60), 0));
+                            var tmp = new TimeSpan(0, (int)Math.Round(subIssue.Hours * 60, MidpointRounding.AwayFromZero), 0);
+
+                            projectTime = projectTime.Add(tmp);
+                            parentIssueTime = parentIssueTime.Add(tmp);
 
                             list.Add(new WorkLogItemView().Set(subIssue));
                             KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);

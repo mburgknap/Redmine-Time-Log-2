@@ -75,7 +75,7 @@
             this.llDay7 = new System.Windows.Forms.LinkLabel();
             this.btnWorkReportSync = new System.Windows.Forms.Button();
             this.btnWorkReportMode = new System.Windows.Forms.Button();
-            this.lbSummaryTime = new System.Windows.Forms.Label();
+            this.llSummaryTime = new System.Windows.Forms.LinkLabel();
             this.cHeader = new RedmineLog.UI.Items.IssueItemView();
             this.fpIssueList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
             this.issueInfoPanel.SuspendLayout();
@@ -476,7 +476,7 @@
             this.tableLayoutPanel1.Controls.Add(this.llDay7, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnWorkReportSync, 8, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnWorkReportMode, 9, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lbSummaryTime, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.llSummaryTime, 7, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 515);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -614,15 +614,15 @@
             // 
             // lbSummaryTime
             // 
-            this.lbSummaryTime.AutoSize = true;
-            this.lbSummaryTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbSummaryTime.Font = new System.Drawing.Font("Segoe UI", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lbSummaryTime.Location = new System.Drawing.Point(458, 0);
-            this.lbSummaryTime.Name = "lbSummaryTime";
-            this.lbSummaryTime.Size = new System.Drawing.Size(59, 23);
-            this.lbSummaryTime.TabIndex = 10;
-            this.lbSummaryTime.Text = "00:00";
-            this.lbSummaryTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.llSummaryTime.AutoSize = true;
+            this.llSummaryTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.llSummaryTime.Font = new System.Drawing.Font("Segoe UI", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.llSummaryTime.Location = new System.Drawing.Point(458, 0);
+            this.llSummaryTime.Name = "lbSummaryTime";
+            this.llSummaryTime.Size = new System.Drawing.Size(59, 23);
+            this.llSummaryTime.TabIndex = 10;
+            this.llSummaryTime.Text = "00:00";
+            this.llSummaryTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cHeader
             // 
@@ -726,6 +726,6 @@
         internal System.Windows.Forms.Button btnWorkReportSync;
         internal System.Windows.Forms.Button btnWorkReportMode;
         internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        internal System.Windows.Forms.Label lbSummaryTime;
+        internal System.Windows.Forms.LinkLabel llSummaryTime;
     }
 }

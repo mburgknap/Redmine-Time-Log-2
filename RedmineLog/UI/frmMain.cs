@@ -212,13 +212,13 @@ namespace RedmineLog
                       action(ui.llDay7, obj.Day7, false, true);
 
                       if (summary.WorkHours() >= 5 * obj.MinimalHours)
-                          ui.lbSummaryTime.BackColor = Color.Green;
+                          ui.llSummaryTime.BackColor = Color.Green;
                       else if (summary.WorkHours() >= (5 * obj.MinimalHours) - (2 * workBuffer))
-                          ui.lbSummaryTime.BackColor = Color.Yellow;
+                          ui.llSummaryTime.BackColor = Color.Yellow;
                       else
-                          ui.lbSummaryTime.BackColor = SystemColors.ActiveCaption;
+                          ui.llSummaryTime.BackColor = SystemColors.ActiveCaption;
 
-                      ui.lbSummaryTime.Text = summary.ToWorkTime();
+                      ui.llSummaryTime.Text = summary.ToWorkTime();
 
                   });
         }
@@ -488,6 +488,15 @@ namespace RedmineLog
             Observable.FromEventPattern<EventArgs>(Form.btnWorkReportSync, "Click").Subscribe(OnActionWorkReportSync);
             Observable.FromEventPattern<EventArgs>(Form.btnWorkReportMode, "Click").Subscribe(OnActionWorkReportMode);
 
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay1, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Monday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay2, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Tuesday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay3, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Wednesday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay4, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Thursday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay5, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Friday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay6, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Saturday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llDay7, "LinkClicked").Subscribe(obj => OnActionDayWork(DayOfWeek.Sunday));
+            Observable.FromEventPattern<LinkLabelLinkClickedEventArgs>(Form.llSummaryTime, "LinkClicked").Subscribe(obj => OnActionDayWorkSummary());
+
             KeyHelpers.BindMouseClick(Form.cHeader, OnClick);
             Form.tsmMyBugs.Click += SearchBugClick;
             Form.tbIssue.KeyDown += SaveIssue;
@@ -515,6 +524,32 @@ namespace RedmineLog
             Form.lblParentIssue.MouseClick += OnParentIssueMouseClick;
             Form.lblIssue.MouseClick += OnIssueMouseClick;
             Load();
+        }
+
+        private void OnActionDayWorkSummary()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(model.WorkReport.Value.UriSummary(model.WorkReport.Value.ReportType));
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("OnActionDayWork", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
+        }
+
+        private void OnActionDayWork(DayOfWeek inDay)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(model.WorkReport.Value.Uri(inDay));
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log.Error("OnActionDayWork", ex);
+                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+            }
         }
 
         private void OnActionWorkReportMode(EventPattern<EventArgs> obj)

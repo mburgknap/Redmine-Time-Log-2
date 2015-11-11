@@ -29,7 +29,7 @@ namespace RedmineLog.Logic
         [EventSubscription(EditLog.Events.Save, typeof(OnPublisher))]
         public void OnSaveEvent(object sender, EventArgs arg)
         {
-            model.EditItem.Value.Hours = Math.Round(Convert.ToDecimal(model.Time.Value.Hours) + Convert.ToDecimal(model.Time.Value.Minutes) / 60m, 2, MidpointRounding.ToEven);
+            model.EditItem.Value.Hours = Math.Round(Convert.ToDecimal(model.Time.Value.Hours) + (Convert.ToDecimal(model.Time.Value.Minutes) / 60m), 2, MidpointRounding.AwayFromZero);
             redmine.UpdateLog(model.EditItem.Value);
         }
 
@@ -47,7 +47,7 @@ namespace RedmineLog.Logic
         private void LoadData(WorkLogItem workLogItem)
         {
             model.EditItem.Update(workLogItem);
-            model.Time.Update(new TimeSpan((int)workLogItem.Hours, (int)((workLogItem.Hours % 1) * 60), 0));
+            model.Time.Update(new TimeSpan((int)workLogItem.Hours, (int)Math.Round((workLogItem.Hours % 1) * 60, MidpointRounding.AwayFromZero), 0));
 
 
             model.WorkActivities.Value.Clear();

@@ -21,6 +21,7 @@ namespace RedmineLog.Common
 
     public class WorkReportData
     {
+        public DateTime WeekStart { get; set; }
         public TimeSpan Day1 { get; set; }
         public TimeSpan Day2 { get; set; }
         public TimeSpan Day3 { get; set; }
@@ -30,6 +31,8 @@ namespace RedmineLog.Common
         public TimeSpan Day7 { get; set; }
         public int MinimalHours { get; set; }
         public WorkReportType ReportType { get; set; }
+        public Func<DayOfWeek, string> Uri { get; set; }
+        public Func<WorkReportType, string> UriSummary { get; set; }
     }
 
     public static class Main
@@ -63,7 +66,7 @@ namespace RedmineLog.Common
 
         public interface IView
         {
-            void Info(string p);
+            void Info(string inMessage);
 
             void GoLink(Uri inUri);
         }

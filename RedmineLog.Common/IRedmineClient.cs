@@ -36,9 +36,13 @@ namespace RedmineLog.Common
         IEnumerable<TrackerData> GetTrackers();
 
         IEnumerable<PriorityData> GetPriorites();
-        
-        string IssueUrl(int iniDIssue);
+
+        string IssueUrl(int inIdIssue);
 
         WorkReportData GetWorkReport(int idUser, WorkReportType inMode);
+
+        string WorkReportUrl(int idUser, DateTime inDate);
+
+        string WorkReportUrl(int idUser, WorkReportType inReportType);
     }
 }
