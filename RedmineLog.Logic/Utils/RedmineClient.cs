@@ -231,23 +231,24 @@ namespace RedmineLog.Logic
             var result = new List<BugLogItem>();
             try
             {
+                List<Issue> bugs = new List<Issue>();
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
-                foreach (var priority in new int[] { 5, 4, 3, 2, 1 })
-                {
-                    foreach (var status in new int[] { 2, 1 })
-                    {
-                        var parameters = new NameValueCollection { };
+                var parameters = new NameValueCollection { };
 
-                        parameters.Add("assigned_to_id", idUser.ToString());
-                        parameters.Add("tracker_id", "1");
-                        parameters.Add("priority_id", priority.ToString());
-                        parameters.Add("status_id", status.ToString());
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("tracker_id", "1");
+                parameters.Add("status_id", 1.ToString());
+                bugs.AddRange(manager.GetObjectList<Issue>(parameters));
 
-                        result.AddRange(manager.GetObjectList<Issue>(parameters).Select(x => ToBugItem(x)));
-                    }
-                }
+                parameters = new NameValueCollection { };
 
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("tracker_id", "1");
+                parameters.Add("status_id", 2.ToString());
+                bugs.AddRange(manager.GetObjectList<Issue>(parameters));
+
+                result = bugs.OrderByDescending(x => x.Priority.Id).Select(x => ToBugItem(x)).ToList();
 
             }
             catch (Exception ex)
