@@ -50,14 +50,14 @@
             this.fpBugList.Dock = System.Windows.Forms.DockStyle.Top;
             this.fpBugList.Location = new System.Drawing.Point(0, 43);
             this.fpBugList.Name = "fpBugList";
-            this.fpBugList.Size = new System.Drawing.Size(347, 460);
+            this.fpBugList.Size = new System.Drawing.Size(347, 494);
             this.fpBugList.TabIndex = 2;
             // 
             // frmBugLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(347, 509);
+            this.ClientSize = new System.Drawing.Size(347, 538);
             this.Controls.Add(this.fpBugList);
             this.Controls.Add(this.cHeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

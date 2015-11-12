@@ -39,7 +39,7 @@
             // 
             this.blLoadMore.AutoEllipsis = true;
             this.blLoadMore.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.blLoadMore.Location = new System.Drawing.Point(0, 486);
+            this.blLoadMore.Location = new System.Drawing.Point(0, 515);
             this.blLoadMore.Name = "blLoadMore";
             this.blLoadMore.Size = new System.Drawing.Size(343, 23);
             this.blLoadMore.TabIndex = 3;
@@ -52,7 +52,7 @@
             this.fpWokLogList.Dock = System.Windows.Forms.DockStyle.Top;
             this.fpWokLogList.Location = new System.Drawing.Point(0, 53);
             this.fpWokLogList.Name = "fpWokLogList";
-            this.fpWokLogList.Size = new System.Drawing.Size(343, 418);
+            this.fpWokLogList.Size = new System.Drawing.Size(343, 456);
             this.fpWokLogList.TabIndex = 4;
             // 
             // cHeader
@@ -69,7 +69,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 509);
+            this.ClientSize = new System.Drawing.Size(343, 538);
             this.Controls.Add(this.fpWokLogList);
             this.Controls.Add(this.cHeader);
             this.Controls.Add(this.blLoadMore);

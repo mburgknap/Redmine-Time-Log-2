@@ -40,7 +40,7 @@
             this.fpLogItemList.Dock = System.Windows.Forms.DockStyle.Top;
             this.fpLogItemList.Location = new System.Drawing.Point(0, 43);
             this.fpLogItemList.Name = "fpLogItemList";
-            this.fpLogItemList.Size = new System.Drawing.Size(343, 460);
+            this.fpLogItemList.Size = new System.Drawing.Size(343, 494);
             this.fpLogItemList.TabIndex = 3;
             // 
             // cHeader
@@ -57,7 +57,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 509);
+            this.ClientSize = new System.Drawing.Size(343, 538);
             this.Controls.Add(this.fpLogItemList);
             this.Controls.Add(this.cHeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

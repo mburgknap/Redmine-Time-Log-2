@@ -612,15 +612,16 @@
             this.btnWorkReportMode.Text = "button2";
             this.btnWorkReportMode.UseVisualStyleBackColor = true;
             // 
-            // lbSummaryTime
+            // llSummaryTime
             // 
             this.llSummaryTime.AutoSize = true;
             this.llSummaryTime.Dock = System.Windows.Forms.DockStyle.Fill;
             this.llSummaryTime.Font = new System.Drawing.Font("Segoe UI", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.llSummaryTime.Location = new System.Drawing.Point(458, 0);
-            this.llSummaryTime.Name = "lbSummaryTime";
+            this.llSummaryTime.Name = "llSummaryTime";
             this.llSummaryTime.Size = new System.Drawing.Size(59, 23);
             this.llSummaryTime.TabIndex = 10;
+            this.llSummaryTime.TabStop = true;
             this.llSummaryTime.Text = "00:00";
             this.llSummaryTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
