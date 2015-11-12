@@ -728,6 +728,7 @@ namespace RedmineLog
         [EventSubscription(AppTime.Events.TimeUpdate, typeof(OnPublisher))]
         public void OnTimeUpdateEvent(object sender, EventArgs arg)
         {
+            model.StartTime.Update();
         }
 
         [EventSubscription(AppTime.Events.IdleUpdate, typeof(OnPublisher))]
