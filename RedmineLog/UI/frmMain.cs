@@ -373,7 +373,7 @@ namespace RedmineLog
 
             foreach (var issue in value)
             {
-                list.Add(new IssueItemView().Set(issue));
+                list.Add(Program.Kernel.Get<IssueItemView>().Set(issue));
                 KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
                 KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick2);
             }
@@ -457,8 +457,7 @@ namespace RedmineLog
             }
             catch (Exception ex)
             {
-                AppLogger.Log.Error("GoLink", ex);
-                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+                Program.Kernel.Get<ILog>().Error("GoLink", ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
 
@@ -534,8 +533,7 @@ namespace RedmineLog
             }
             catch (Exception ex)
             {
-                AppLogger.Log.Error("OnActionDayWork", ex);
-                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+                Program.Kernel.Get<ILog>().Error("OnActionDayWork", ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
 
@@ -547,8 +545,7 @@ namespace RedmineLog
             }
             catch (Exception ex)
             {
-                AppLogger.Log.Error("OnActionDayWork", ex);
-                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+                Program.Kernel.Get<ILog>().Error("OnActionDayWork", ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
 

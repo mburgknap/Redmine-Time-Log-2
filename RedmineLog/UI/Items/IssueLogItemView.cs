@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using RedmineLog.Common;
 using RedmineLog.UI.Common;
 using RedmineLog.Properties;
+using Ninject;
+using Appccelerate.EventBroker;
 
 namespace RedmineLog.UI.Items
 {
@@ -26,6 +28,7 @@ namespace RedmineLog.UI.Items
                 Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
                 Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve, (s, e) => { data("Resolve", item); }));
                 Items.Add(new ToolStripMenuItem("Add issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
+                Items.Add(new ToolStripMenuItem("Edit issue", Resources.Edit, (s, e) => { data("EditSubIssue", item); }));
                 Items.Add(new ToolStripMenuItem("Delete", Resources.Remove, (s, e) => { data("Delete", item); }));
             }
 
@@ -41,21 +44,14 @@ namespace RedmineLog.UI.Items
         public IssueLogItemView()
         {
             InitializeComponent();
-            lblIssue.SetLinkMouseClick(IssueLinkGo, this.OnMouseClick);
+            lblIssue.SetLinkMouseClick(() => { IssueShowEvent.Fire(this, ((WorkingIssue)Data).Issue.Id); }, this.OnMouseClick);
         }
 
-        void IssueLinkGo()
-        {
-            try
-            {
-                System.Diagnostics.Process.Start(((WorkingIssue)Data).IssueUri);
-            }
-            catch (Exception ex)
-            {
-                AppLogger.Log.Error("GoLink", ex);
-                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
-            }
-        }
+        [EventPublication(WwwRedmineEvent.IssueShow)]
+        public event EventHandler<Args<int>> IssueShowEvent;
+
+        [EventPublication(WwwRedmineEvent.IssueEdit)]
+        public event EventHandler<Args<int>> IssueEditEvent;
 
 
         internal void SetDescription()
@@ -93,7 +89,13 @@ namespace RedmineLog.UI.Items
 
         public void Show(Action<string, object> inData)
         {
-            menu.Set(this, inData);
+            menu.Set(this, (tag, obj) =>
+            {
+                if (tag == "EditSubIssue")
+                { IssueEditEvent.Fire(this, ((WorkingIssue)Data).Issue.Id); }
+                else
+                    inData(tag, obj);
+            });
             menu.Show(this, 0, 0);
 
         }

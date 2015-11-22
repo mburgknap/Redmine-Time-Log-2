@@ -95,6 +95,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppLog.cs" />
+    <Compile Include="WwwRedmine.cs" />
     <Compile Include="UI\Common\ExFlowLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>

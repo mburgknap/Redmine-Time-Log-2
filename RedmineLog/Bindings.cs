@@ -14,7 +14,8 @@ namespace RedmineLog
         {
             Kernel.AddGlobalEventBroker(Global.Events.Brocker);
             Bind<IAppSettings>().To<AppSettings>().InSingletonScope();
-            Bind<Logger>().ToConstant(AppLogger.Log).InSingletonScope();
+            Bind<ILog>().To<AppLog>().InSingletonScope();
+            Bind<WebRedmine>().To<WebRedmine>().InSingletonScope().RegisterOnGlobalEventBroker();
             Bind<AppTime.IClock>().To<AppTimer>().InSingletonScope().RegisterOnGlobalEventBroker();
         }
     }

@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using RedmineLog.Common;
 using RedmineLog.UI.Common;
 using RedmineLog.Properties;
+using Ninject;
+using Appccelerate.EventBroker;
 
 namespace RedmineLog.UI.Items
 {
@@ -24,6 +26,7 @@ namespace RedmineLog.UI.Items
             {
                 Items.Add(new ToolStripMenuItem("Select", Resources.Select, (s, e) => { data("Select", item); }));
                 Items.Add(new ToolStripMenuItem("Add issue", Resources.Add, (s, e) => { data("AddSubIssue", item); }));
+                Items.Add(new ToolStripMenuItem("Edit bug", Resources.Edit, (s, e) => { data("EditBug", item); }));
                 Items.Add(new ToolStripMenuItem("Resolve", Resources.Resolve, (s, e) => { data("Resolve", item); }));
             }
 
@@ -39,21 +42,14 @@ namespace RedmineLog.UI.Items
         public BugLogItemView()
         {
             InitializeComponent();
-            lblIssue.SetLinkMouseClick(BugLinkGo, this.OnMouseClick);
+            lblIssue.SetLinkMouseClick(() => { IssueShowEvent.Fire(this, ((BugLogItem)Data).Id); }, this.OnMouseClick);
         }
 
-        void BugLinkGo()
-        {
-            try
-            {
-                System.Diagnostics.Process.Start(((BugLogItem)Data).Uri);
-            }
-            catch (Exception ex)
-            {
-                AppLogger.Log.Error("GoLink", ex);
-                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
-            }
-        }
+        [EventPublication(WwwRedmineEvent.IssueShow)]
+        public event EventHandler<Args<int>> IssueShowEvent;
+
+        [EventPublication(WwwRedmineEvent.IssueEdit)]
+        public event EventHandler<Args<int>> IssueEditEvent;
 
         internal void SetDescription()
         {
@@ -87,7 +83,13 @@ namespace RedmineLog.UI.Items
 
         public void Show(Action<string, object> inData)
         {
-            menu.Set(this, inData);
+            menu.Set(this, (tag, obj) =>
+            {
+                if (tag == "EditBug")
+                { IssueEditEvent.Fire(this, ((BugLogItem)Data).Id); }
+                else
+                    inData(tag, obj);
+            });
             menu.Show(lblIssue, new Point(0, 0));
         }
 

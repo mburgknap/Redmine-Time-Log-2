@@ -63,7 +63,7 @@ namespace RedmineLog.UI
 
                 foreach (var issue in item.Issues)
                 {
-                    list.Add(new BugLogItemView().Set(issue));
+                    list.Add(Program.Kernel.Get<BugLogItemView>().Set(issue));
                     KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
                     KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
                     KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);

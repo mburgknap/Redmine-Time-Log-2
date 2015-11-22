@@ -77,7 +77,7 @@ namespace RedmineLog
 
                     foreach (var issue in issueParent.Issues.OrderByDescending(x => x.Data.UsedCount))
                     {
-                        list.Add(new IssueLogItemView().Set(issue));
+                        list.Add(Program.Kernel.Get<IssueLogItemView>().Set(issue));
                         KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
                         KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
                         KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);

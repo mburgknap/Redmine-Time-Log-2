@@ -19,10 +19,10 @@ namespace RedmineLog.Logic
     internal class RedmineClient : IRedmineClient
     {
         private IDbRedmine dbRedmine;
-        private Logger logger;
+        private ILog logger;
 
         [Inject]
-        public RedmineClient(IDbRedmine inDbRedmine, Logger inLogger)
+        public RedmineClient(IDbRedmine inDbRedmine, ILog inLogger)
         {
             dbRedmine = inDbRedmine;
             logger = inLogger;
@@ -44,7 +44,7 @@ namespace RedmineLog.Logic
                 };
             }
             catch (Exception ex)
-            { logger.Error("GetCurrentUser", ex); }
+            { logger.Error("GetCurrentUser", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return new UserData() { Id = 0, Name = "Unknown" };
         }
@@ -74,7 +74,7 @@ namespace RedmineLog.Logic
                 };
             }
             catch (Exception ex)
-            { logger.Error("GetIssue", ex); }
+            { logger.Error("GetIssue", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return null;
         }
@@ -100,7 +100,7 @@ namespace RedmineLog.Logic
                     return true;
             }
             catch (Exception ex)
-            { logger.Error("AddWorkTime", ex); }
+            { logger.Error("AddWorkTime", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return false;
         }
@@ -150,7 +150,7 @@ namespace RedmineLog.Logic
 
             }
             catch (Exception ex)
-            { logger.Error("GetWorkLogs", ex); }
+            { logger.Error("GetWorkLogs", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return list;
         }
@@ -172,7 +172,7 @@ namespace RedmineLog.Logic
                 manager.UpdateObject<TimeEntry>(workLogItem.Id.ToString(), timeEntry);
             }
             catch (Exception ex)
-            { logger.Error("UpdateLog", ex); }
+            { logger.Error("UpdateLog", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
         }
 
         public void Resolve(WorkingIssue workingIssue)
@@ -189,7 +189,7 @@ namespace RedmineLog.Logic
                 manager.UpdateObject<Issue>(workingIssue.Data.Id.ToString(), issue);
             }
             catch (Exception ex)
-            { logger.Error("Resolve IssueData", ex); }
+            { logger.Error("Resolve IssueData", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
         }
 
         public void Resolve(BugLogItem bugLogItem)
@@ -206,7 +206,7 @@ namespace RedmineLog.Logic
                 manager.UpdateObject<Issue>(bugLogItem.Id.ToString(), issue);
             }
             catch (Exception ex)
-            { logger.Error("Resolve BugLogItem", ex); }
+            { logger.Error("Resolve BugLogItem", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
         }
         public void Resolve(IssueData issueData)
         {
@@ -252,7 +252,7 @@ namespace RedmineLog.Logic
 
             }
             catch (Exception ex)
-            { logger.Error("GetUserBugs", ex); }
+            { logger.Error("GetUserBugs", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return result;
         }
@@ -305,7 +305,7 @@ namespace RedmineLog.Logic
                 return newIssue.Id;
             }
             catch (Exception ex)
-            { logger.Error("AddSubIssue ", ex); }
+            { logger.Error("AddSubIssue ", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return 0;
         }
@@ -326,7 +326,7 @@ namespace RedmineLog.Logic
                 });
             }
             catch (Exception ex)
-            { logger.Error("GetWorkActivityTypes", ex); }
+            { logger.Error("GetWorkActivityTypes", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return new List<WorkActivityType>(); ;
         }
@@ -348,7 +348,7 @@ namespace RedmineLog.Logic
                 });
             }
             catch (Exception ex)
-            { logger.Error("GetUsers", ex); }
+            { logger.Error("GetUsers", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return new List<UserData>(); ;
         }
@@ -370,7 +370,7 @@ namespace RedmineLog.Logic
                 });
             }
             catch (Exception ex)
-            { logger.Error("GetTrackers", ex); }
+            { logger.Error("GetTrackers", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return new List<TrackerData>(); ;
         }
@@ -393,7 +393,7 @@ namespace RedmineLog.Logic
                 });
             }
             catch (Exception ex)
-            { logger.Error("GetPriorites", ex); }
+            { logger.Error("GetPriorites", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return new List<PriorityData>(); ;
         }
@@ -466,7 +466,7 @@ namespace RedmineLog.Logic
 
             }
             catch (Exception ex)
-            { logger.Error("GetWorkReport", ex); }
+            { logger.Error("GetWorkReport", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
             return null;
         }

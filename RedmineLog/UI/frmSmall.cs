@@ -247,8 +247,7 @@ namespace RedmineLog
             }
             catch (Exception ex)
             {
-                AppLogger.Log.Error("GoLink", ex);
-                MessageBox.Show("Error occured, error detail saved in application logs ", "Warrnig");
+                Program.Kernel.Get<ILog>().Error("GoLink", ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
 

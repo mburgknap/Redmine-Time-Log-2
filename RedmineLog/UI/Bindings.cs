@@ -2,6 +2,7 @@
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
 using Ninject.Extensions.AppccelerateEventBroker;
+using RedmineLog.UI.Items;
 
 namespace RedmineLog.UI
 {
@@ -33,6 +34,11 @@ namespace RedmineLog.UI
 
             Bind<WorkLog.IView>().To<WorkLogView>().InSingletonScope().RegisterOnGlobalEventBroker();
             Bind<WorkLogView>().ToSelf();
+
+            Bind<IssueLogItemView>().To<IssueLogItemView>().RegisterOnGlobalEventBroker();
+            Bind<BugLogItemView>().To<BugLogItemView>().RegisterOnGlobalEventBroker();
+            Bind<IssueItemView>().To<IssueItemView>().RegisterOnGlobalEventBroker();
+            Bind<WorkLogItemView>().To<WorkLogItemView>().RegisterOnGlobalEventBroker();
 
         }
     }

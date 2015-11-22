@@ -36,6 +36,8 @@ namespace RedmineLog
                              new Logic.Bindings(),
                              new Logic.Data.Bindings());
 
+            Init();
+
             Application.ThreadException += OnUnhandledException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -46,9 +48,14 @@ namespace RedmineLog
 
         }
 
+        private static void Init()
+        {
+            Kernel.Get<WebRedmine>();
+        }
+
         private static void OnUnhandledException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            Program.Kernel.Get<Logger>().Error("Unhandled Exception ", e.Exception);
+            Program.Kernel.Get<Logger>().Error("Unhandled Exception ", e.Exception, "Unhandled Exception", "Error");
         }
 
 

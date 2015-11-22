@@ -107,7 +107,7 @@ namespace RedmineLog
                             projectTime = projectTime.Add(tmp);
                             parentIssueTime = parentIssueTime.Add(tmp);
 
-                            list.Add(new WorkLogItemView().Set(subIssue));
+                            list.Add(Program.Kernel.Get<WorkLogItemView>().Set(subIssue));
                             KeyHelpers.BindKey(list[list.Count - 1], OnKeyDown);
                             KeyHelpers.BindMouseClick(list[list.Count - 1], OnClick);
                             KeyHelpers.BindSpecialClick(list[list.Count - 1], OnSpecialClick);

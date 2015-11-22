@@ -395,11 +395,11 @@ namespace RedmineLog.Logic
 
     internal class Database : IDatabase
     {
-        private Logger logger;
+        private ILog logger;
         private DBreezeEngine engine;
 
         [Inject]
-        public Database(Logger inLogger)
+        public Database(ILog inLogger)
         {
             logger = inLogger;
 
@@ -432,7 +432,7 @@ namespace RedmineLog.Logic
                 }
             }
             catch (Exception ex)
-            { logger.Error("AppDatabase", ex); }
+            { logger.Error("AppDatabase", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
         }
 
         public TValue Get<Table, TKey, TValue>(TKey inKey, TValue inDefault)
@@ -450,7 +450,7 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             {
                 logger.Error("Get " + typeof(Table).Name
-                          + " Key (" + typeof(TKey).Name + ") =" + inKey, ex);
+                          + " Key (" + typeof(TKey).Name + ") =" + inKey, ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
 
             return inDefault;
@@ -471,7 +471,7 @@ namespace RedmineLog.Logic
             {
                 logger.Error("Set " + typeof(Table).Name
                           + " Key (" + typeof(TKey).Name + ") =" + inKey
-                          + " Value (" + typeof(TValue).Name + ") =" + inValue, ex);
+                          + " Value (" + typeof(TValue).Name + ") =" + inValue, ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
 
@@ -488,7 +488,7 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             {
                 logger.Error("Delete " + typeof(Table).Name
-                          + " Key (" + typeof(TKey).Name + ") =" + inKey, ex);
+                          + " Key (" + typeof(TKey).Name + ") =" + inKey, ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
 
@@ -514,7 +514,7 @@ namespace RedmineLog.Logic
             }
             catch (Exception ex)
             {
-                logger.Error("Get " + typeof(Table).Name, ex);
+                logger.Error("Get " + typeof(Table).Name, ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
 
             return new List<TValue>();
@@ -536,7 +536,7 @@ namespace RedmineLog.Logic
             }
             catch (Exception ex)
             {
-                logger.Error("ForEach " + typeof(Table).Name, ex);
+                logger.Error("ForEach " + typeof(Table).Name, ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
         }
     }
