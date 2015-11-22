@@ -47,6 +47,9 @@
     <Reference Include="Appccelerate.Fundamentals">
       <HintPath>..\Lib\Appccelerate.Fundamentals.dll</HintPath>
     </Reference>
+    <Reference Include="AutoUpdater.NET">
+      <HintPath>..\Lib\AutoUpdater.NET.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator.NinjectAdapter">
       <HintPath>..\Lib\CommonServiceLocator.NinjectAdapter.dll</HintPath>
     </Reference>

@@ -5,7 +5,9 @@ using RedmineLog.Logic.Data;
 using RedmineLog.UI;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace RedmineLog
 {
@@ -20,7 +22,7 @@ namespace RedmineLog
         private static void Main()
         {
             bool result;
-            var mutex = new System.Threading.Mutex(true, "UniqueAppId", out result);
+            var mutex = new System.Threading.Mutex(true, "RedmineLog", out result);
 
             if (!result)
             {
