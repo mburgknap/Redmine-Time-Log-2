@@ -66,6 +66,8 @@ namespace RedmineLog.Logic
             model.Comment.Update(comment);
             dbComment.Update(comment);
 
+            CleanOldCommants(model.Issue.Value, model.IssueComments.Value);
+
             model.Issue.Value.Comments.Add(comment.Id);
             model.Issue.Value.IdComment = comment.Id;
 
@@ -73,6 +75,28 @@ namespace RedmineLog.Logic
 
             model.IssueComments.Value.Add(comment);
             model.IssueComments.Update();
+        }
+
+        private void CleanOldCommants(IssueData inIssue, IssueCommentList inIssueComments = null)
+        {
+            if (inIssue.Comments.Count > 10)
+            {
+                var tmp = inIssue.Comments.Skip(10).ToList();
+
+                tmp.ForEach(x =>
+                {
+                    inIssue.Comments.Remove(x);
+                    dbComment.Delete(new CommentData() { Id = x });
+
+                });
+
+                if (inIssueComments != null)
+                    inIssueComments.RemoveAll(item =>
+                    {
+                        return tmp.Contains(item.Id);
+                    });
+
+            }
         }
 
         [EventSubscription(Main.Events.AddIssue, typeof(OnPublisher))]
@@ -572,6 +596,9 @@ namespace RedmineLog.Logic
                         Text = model.Comment.Value.Text
                     };
                     issue.IdComment = comment.Id;
+
+                    CleanOldCommants(issue, null);
+
                     issue.Comments.Add(issue.IdComment);
                     dbComment.Update(comment);
                     dbIssue.Update(model.Issue.Value);
