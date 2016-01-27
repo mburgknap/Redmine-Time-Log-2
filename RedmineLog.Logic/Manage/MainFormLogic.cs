@@ -77,11 +77,14 @@ namespace RedmineLog.Logic
             model.IssueComments.Update();
         }
 
-        private void CleanOldCommants(IssueData inIssue, IssueCommentList inIssueComments = null)
+        private bool CleanOldCommants(IssueData inIssue, IssueCommentList inIssueComments = null)
         {
-            if (inIssue.Comments.Count > 10)
+            if (inIssue.Comments.Count > 7)
             {
-                var tmp = inIssue.Comments.Skip(10).ToList();
+                var count = inIssue.Comments.Count;
+                count = count - 7;
+
+                var tmp = inIssue.Comments.Take(count).ToList();
 
                 tmp.ForEach(x =>
                 {
@@ -96,7 +99,10 @@ namespace RedmineLog.Logic
                         return tmp.Contains(item.Id);
                     });
 
+                return true;
             }
+
+            return false;
         }
 
         [EventSubscription(Main.Events.AddIssue, typeof(OnPublisher))]
