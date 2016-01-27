@@ -44,5 +44,7 @@ namespace RedmineLog.Common
         string WorkReportUrl(int idUser, DateTime inDate);
 
         string WorkReportUrl(int idUser, WorkReportType inReportType);
+
+        IEnumerable<ProjectData> GetProjects();
     }
 }

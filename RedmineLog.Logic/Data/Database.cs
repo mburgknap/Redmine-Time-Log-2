@@ -257,6 +257,32 @@ namespace RedmineLog.Logic
         {
             database.Set<CacheTable, String, DbCustomSerializer<List<PriorityData>>>(typeof(PriorityData).ToString(), new List<PriorityData>(inData));
         }
+
+
+        public bool HasProjects
+        {
+            get
+            {
+                var result = database.Get<CacheTable, String, DbCustomSerializer<List<ProjectData>>>(typeof(ProjectData).ToString(), null);
+
+                return result != null;
+            }
+        }
+
+        public void InitProjects(IEnumerable<ProjectData> inData)
+        {
+            database.Set<CacheTable, String, DbCustomSerializer<List<ProjectData>>>(typeof(ProjectData).ToString(), new List<ProjectData>(inData));
+        }
+
+        public IEnumerable<ProjectData> GetProjects()
+        {
+            var result = database.Get<CacheTable, String, DbCustomSerializer<List<ProjectData>>>(typeof(ProjectData).ToString(), null);
+
+            if (result != null)
+                return result.Get;
+
+            return new List<ProjectData>();
+        }
     }
 
     internal class RedmineIssuesTable : IDbRedmineIssue

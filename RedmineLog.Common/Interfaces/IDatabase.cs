@@ -66,6 +66,12 @@ namespace RedmineLog.Common
         IEnumerable<UserData> GetUsers();
 
         IEnumerable<TrackerData> GetTrackers();
+
+        bool HasProjects { get; }
+
+        void InitProjects(IEnumerable<ProjectData> enumerable);
+
+        IEnumerable<ProjectData> GetProjects();
     }
 
 

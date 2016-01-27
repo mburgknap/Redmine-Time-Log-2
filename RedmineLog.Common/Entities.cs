@@ -76,7 +76,19 @@ namespace RedmineLog.Common
         }
     }
 
+    public class ProjectData
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 
+    public class ProjectList : List<ProjectData>
+    {
+        public void Add(int inId, string inName)
+        {
+            Add(new ProjectData() { Id = inId, Name = inName });
+        }
+    }
 
     public class IssueData
     {

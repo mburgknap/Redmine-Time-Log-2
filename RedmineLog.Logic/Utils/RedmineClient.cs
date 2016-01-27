@@ -484,5 +484,29 @@ namespace RedmineLog.Logic
             return string.Format("{0}time_entries/report?utf8=%E2%9C%93&criteria[]=project&criteria[]=issue&f[]=spent_on&op[spent_on]={2}&f[]=user_id&op[user_id]=%3D&v[user_id][]={1}&f[]=&c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&columns=day&criteria[]=",
                                 dbRedmine.GetUrl(), idUser, inReportType == WorkReportType.Week ? "w" : "lw");
         }
+
+
+        public IEnumerable<ProjectData> GetProjects()
+        {
+            try
+            {
+                var parameters = new NameValueCollection { };
+
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var responseList = manager.GetObjectList<Project>(parameters);
+
+                return responseList.OrderBy(x => x.Name)
+                                   .Select(x => new ProjectData()
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                });
+            }
+            catch (Exception ex)
+            { logger.Error("GetProjects", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
+
+            return new List<ProjectData>();
+        }
     }
 }

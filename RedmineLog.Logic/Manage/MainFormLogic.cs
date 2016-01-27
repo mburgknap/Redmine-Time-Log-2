@@ -196,6 +196,13 @@ namespace RedmineLog.Logic
 
             model.WorkActivities.Update();
 
+            if (!dbCache.HasProjects)
+                dbCache.InitProjects(redmine.GetProjects());
+            else
+                model.Projects.Value.AddRange(dbCache.GetProjects());
+
+            model.Projects.Update();
+
             dbConfig.Init();
             dbIssue.Init();
             dbLastIssue.Init();

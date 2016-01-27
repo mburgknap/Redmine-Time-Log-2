@@ -46,6 +46,7 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIdle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.cbProjects = new System.Windows.Forms.ComboBox();
             this.btnStopWork = new System.Windows.Forms.Button();
             this.lbClockTodayTime = new System.Windows.Forms.Label();
             this.cbResolveIssue = new System.Windows.Forms.CheckBox();
@@ -125,7 +126,7 @@
             // btnSubmit
             // 
             this.btnSubmit.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSubmit.Location = new System.Drawing.Point(151, 231);
+            this.btnSubmit.Location = new System.Drawing.Point(151, 263);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(61, 32);
             this.btnSubmit.TabIndex = 22;
@@ -162,7 +163,7 @@
             this.cbActivity.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbActivity.FormattingEnabled = true;
-            this.cbActivity.Location = new System.Drawing.Point(111, 72);
+            this.cbActivity.Location = new System.Drawing.Point(111, 104);
             this.cbActivity.Name = "cbActivity";
             this.cbActivity.Size = new System.Drawing.Size(139, 25);
             this.cbActivity.TabIndex = 17;
@@ -197,9 +198,9 @@
             this.issueInfoPanel.Controls.Add(this.lblTracker);
             this.issueInfoPanel.Controls.Add(this.lblIssue);
             this.issueInfoPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.issueInfoPanel.Location = new System.Drawing.Point(6, 267);
+            this.issueInfoPanel.Location = new System.Drawing.Point(5, 301);
             this.issueInfoPanel.Name = "issueInfoPanel";
-            this.issueInfoPanel.Size = new System.Drawing.Size(244, 153);
+            this.issueInfoPanel.Size = new System.Drawing.Size(244, 143);
             this.issueInfoPanel.TabIndex = 35;
             // 
             // lblProject
@@ -232,7 +233,7 @@
             this.btnRemoveItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnRemoveItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveItem.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveItem.Location = new System.Drawing.Point(91, 231);
+            this.btnRemoveItem.Location = new System.Drawing.Point(91, 263);
             this.btnRemoveItem.Margin = new System.Windows.Forms.Padding(125, 0, 0, 0);
             this.btnRemoveItem.Name = "btnRemoveItem";
             this.btnRemoveItem.Size = new System.Drawing.Size(27, 32);
@@ -264,6 +265,7 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.cbProjects);
             this.pManage.Controls.Add(this.btnStopWork);
             this.pManage.Controls.Add(this.lbClockTodayTime);
             this.pManage.Controls.Add(this.cbResolveIssue);
@@ -284,6 +286,17 @@
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
+            // 
+            // cbProjects
+            // 
+            this.cbProjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbProjects.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cbProjects.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbProjects.FormattingEnabled = true;
+            this.cbProjects.Location = new System.Drawing.Point(6, 73);
+            this.cbProjects.Name = "cbProjects";
+            this.cbProjects.Size = new System.Drawing.Size(244, 25);
+            this.cbProjects.TabIndex = 51;
             // 
             // btnStopWork
             // 
@@ -308,7 +321,7 @@
             // cbResolveIssue
             // 
             this.cbResolveIssue.AutoSize = true;
-            this.cbResolveIssue.Location = new System.Drawing.Point(160, 205);
+            this.cbResolveIssue.Location = new System.Drawing.Point(160, 237);
             this.cbResolveIssue.Name = "cbResolveIssue";
             this.cbResolveIssue.Size = new System.Drawing.Size(92, 17);
             this.cbResolveIssue.TabIndex = 48;
@@ -317,7 +330,7 @@
             // 
             // btnIssueMode
             // 
-            this.btnIssueMode.Location = new System.Drawing.Point(6, 201);
+            this.btnIssueMode.Location = new System.Drawing.Point(6, 233);
             this.btnIssueMode.Name = "btnIssueMode";
             this.btnIssueMode.Size = new System.Drawing.Size(79, 23);
             this.btnIssueMode.TabIndex = 47;
@@ -329,7 +342,7 @@
             // btnSubmitAll
             // 
             this.btnSubmitAll.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSubmitAll.Location = new System.Drawing.Point(218, 231);
+            this.btnSubmitAll.Location = new System.Drawing.Point(218, 263);
             this.btnSubmitAll.Name = "btnSubmitAll";
             this.btnSubmitAll.Size = new System.Drawing.Size(32, 32);
             this.btnSubmitAll.TabIndex = 45;
@@ -338,9 +351,9 @@
             // 
             // btnComments
             // 
-            this.btnComments.Location = new System.Drawing.Point(6, 72);
+            this.btnComments.Location = new System.Drawing.Point(5, 103);
             this.btnComments.Name = "btnComments";
-            this.btnComments.Size = new System.Drawing.Size(75, 25);
+            this.btnComments.Size = new System.Drawing.Size(99, 27);
             this.btnComments.TabIndex = 44;
             this.btnComments.Text = "Comments";
             this.btnComments.UseVisualStyleBackColor = true;
@@ -348,7 +361,7 @@
             // tbIssue
             // 
             this.tbIssue.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbIssue.Location = new System.Drawing.Point(6, 231);
+            this.tbIssue.Location = new System.Drawing.Point(6, 263);
             this.tbIssue.Name = "tbIssue";
             this.tbIssue.Size = new System.Drawing.Size(79, 32);
             this.tbIssue.TabIndex = 43;
@@ -358,7 +371,7 @@
             // 
             this.pComments.Controls.Add(this.tbComment);
             this.pComments.Controls.Add(this.panel1);
-            this.pComments.Location = new System.Drawing.Point(6, 103);
+            this.pComments.Location = new System.Drawing.Point(6, 135);
             this.pComments.Name = "pComments";
             this.pComments.Size = new System.Drawing.Size(244, 92);
             this.pComments.TabIndex = 40;
@@ -728,5 +741,6 @@
         internal System.Windows.Forms.Button btnWorkReportMode;
         internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         internal System.Windows.Forms.LinkLabel llSummaryTime;
+        internal System.Windows.Forms.ComboBox cbProjects;
     }
 }
