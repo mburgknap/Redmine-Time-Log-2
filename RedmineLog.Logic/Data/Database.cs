@@ -162,6 +162,9 @@ namespace RedmineLog.Logic
 
         public CommentData Get(IssueData inIssue)
         {
+            if (inIssue.IdComment == null)
+                return null;
+
             var result = database.Get<CommentsTable, string, DbCustomSerializer<CommentData>>(inIssue.IdComment, null);
 
             if (result != null)
