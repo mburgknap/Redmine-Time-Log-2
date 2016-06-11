@@ -30,12 +30,19 @@ namespace RedmineLog.Logic
             dbCache = inDbCache;
 
             model.Display.OnNotify.Subscribe(OnNotifyDisplay);
+            model.Timer.OnNotify.Subscribe(OnNotifyTimer);
         }
 
         private void OnNotifyDisplay(DisplayData obj)
         {
             dbConfig.SetDisplay(obj);
         }
+
+        private void OnNotifyTimer(TimerType obj)
+        {
+            dbConfig.SetTimer(obj);
+        }
+
 
         [EventSubscription(Settings.Events.Save, typeof(OnPublisher))]
         public void OnSaveEvent(object sender, EventArgs arg)
@@ -44,6 +51,7 @@ namespace RedmineLog.Logic
             dbRedmine.SetUrl(model.Url.Value.ToString());
             dbConfig.SetIdUser(redmine.GetCurrentUser().Id);
             dbConfig.SetWorkDayMinimalHours(model.WorkDayHours.Value);
+            dbConfig.SetTimer(model.Timer.Value);
         }
 
         [EventSubscription(Settings.Events.Load, typeof(OnPublisher))]
@@ -53,6 +61,7 @@ namespace RedmineLog.Logic
             model.Url.Update(dbRedmine.GetUrl());
             model.Display.Update(dbConfig.GetDisplay());
             model.WorkDayHours.Update(dbConfig.GetWorkDayMinimalHours());
+            model.Timer.Update(dbConfig.GetTimer());
         }
 
         [EventSubscription(Settings.Events.ReloadCache, typeof(OnPublisher))]

@@ -115,6 +115,10 @@ namespace RedmineLog.Common
         void SetWorkDayMinimalHours(int value);
 
         void Init();
+
+        void SetTimer(TimerType inTimeType);
+
+        TimerType GetTimer();
     }
 
     public interface IDatabase

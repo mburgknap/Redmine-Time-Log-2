@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace RedmineLog.Common
 {
+    public enum TimerType
+    {
+        System,
+        Thread
+    }
+
     public class DisplayData
     {
         public string Name;

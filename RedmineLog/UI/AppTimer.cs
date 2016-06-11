@@ -3,14 +3,94 @@ using Ninject;
 using NLog;
 using RedmineLog.Common;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Timers;
 
 namespace RedmineLog.UI
 {
 
+    interface IScheduleTimer
+    {
+        Action Elapsed { get; set; }
+
+        void Start();
+    }
+
+    class ThreadScheduler : IScheduleTimer
+    {
+        private Thread thread;
+        private int interval;
+
+        public ThreadScheduler(int inInterval)
+        {
+            this.interval = inInterval;
+            thread = new Thread(new ThreadStart(Execute));
+        }
+
+        public void Execute()
+        {
+            try
+            {
+                while (true)
+                {
+                    Thread.Sleep(interval);
+
+                    if (Elapsed != null) Elapsed();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+        public Action Elapsed { get; set; }
+
+
+        public void Start()
+        {
+            thread.Start();
+        }
+    }
+
+    class TimerScheduler : IScheduleTimer
+    {
+        private System.Timers.Timer timer;
+        private int interval;
+
+        public TimerScheduler(int inInterval)
+        {
+            this.interval = inInterval;
+            timer = new System.Timers.Timer(interval);
+            timer.Elapsed += (s, e) =>
+            {
+                if (Elapsed != null) Elapsed();
+            };
+        }
+
+        public Action Elapsed { get; set; }
+
+        public void Start()
+        {
+            timer.Enabled = true;
+            timer.Start();
+        }
+    }
+
+
     public class AppTimer : AppTime.IClock
     {
+        private static Dictionary<TimerType, IScheduleTimer> timers = new Dictionary<TimerType, IScheduleTimer>();
+
+        static AppTimer()
+        {
+            timers.Add(TimerType.System, new TimerScheduler(1000));
+            timers.Add(TimerType.Thread, new ThreadScheduler(1000));
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -26,7 +106,7 @@ namespace RedmineLog.UI
         [DllImport("user32.dll")]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
-        private System.Timers.Timer workTimer;
+        private IScheduleTimer workTimer;
 
         [EventPublication(AppTime.Events.WorkUpdate)]
         public event EventHandler<Args<int>> WorkUpdateEvent;
@@ -38,18 +118,19 @@ namespace RedmineLog.UI
         public event EventHandler TimeUpdateEvent;
 
         private AppTime.ClockMode clockMode;
+        private IDbConfig dbConfig;
 
-        private System.Timers.Timer WorkTimer
+        private IScheduleTimer WorkTimer
         {
             get { return workTimer; }
             set
             {
                 if (workTimer != null)
-                    workTimer.Elapsed -= OnWorkElapsed;
+                    workTimer.Elapsed = null;
 
                 workTimer = value;
                 if (workTimer != null)
-                    workTimer.Elapsed += OnWorkElapsed;
+                    workTimer.Elapsed = OnWorkElapsed;
             }
         }
 
@@ -69,11 +150,13 @@ namespace RedmineLog.UI
             return ((nIdleTime > 0) ? (nIdleTime / 1000) : nIdleTime);
         }
 
-        private void OnWorkElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void OnWorkElapsed()
         {
             if (clockMode == AppTime.ClockMode.Standard)
             {
                 uint totalIdleTimeInSeconds = GetLastInputTime();
+
+                System.Diagnostics.Debug.Write("time " + totalIdleTimeInSeconds);
 
                 if (totalIdleTimeInSeconds > 120)
                     IdleUpdateEvent.Fire(this, 1);
@@ -95,15 +178,16 @@ namespace RedmineLog.UI
         }
 
         [Inject]
-        public AppTimer()
+        public AppTimer(IDbConfig inDbConfig)
         {
+            dbConfig = inDbConfig;
         }
 
         public void Start()
         {
             if (workTimer == null)
             {
-                WorkTimer = new System.Timers.Timer(1000);
+                WorkTimer = timers[dbConfig.GetTimer()];
                 WorkTimer.Start();
             }
         }

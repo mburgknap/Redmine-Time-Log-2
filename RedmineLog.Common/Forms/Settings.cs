@@ -22,6 +22,8 @@ namespace RedmineLog.Common
 
             DataProperty<DisplayData> Display { get; }
 
+            DataProperty<TimerType> Timer { get; }
+
             DataProperty<int> WorkDayHours { get; }
         }
     }

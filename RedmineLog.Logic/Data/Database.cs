@@ -362,6 +362,23 @@ namespace RedmineLog.Logic
         {
             if (database.Get<AppConfig, string, int>("WorkDayMinimalHours", -1) == -1)
                 database.Set<AppConfig, string, int>("WorkDayMinimalHours", 8);
+
+            if (String.IsNullOrWhiteSpace(database.Get<AppConfig, string, string>("TimeType", null)))
+                database.Set<AppConfig, string, string>("TimeType", TimerType.Thread.ToString());
+        }
+
+        public TimerType GetTimer()
+        {
+            TimerType result;
+
+            Enum.TryParse<TimerType>(database.Get<AppConfig, string, string>("TimeType", TimerType.Thread.ToString()), out result);
+
+            return result;
+        }
+
+        public void SetTimer(TimerType inTimeType)
+        {
+            database.Set<AppConfig, string, string>("TimeType", inTimeType.ToString());
         }
 
         public int GetIdUser()
