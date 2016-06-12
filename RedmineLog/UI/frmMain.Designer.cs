@@ -46,6 +46,7 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIdle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.btnSearch = new System.Windows.Forms.Button();
             this.cbProjects = new System.Windows.Forms.ComboBox();
             this.btnStopWork = new System.Windows.Forms.Button();
             this.lbClockTodayTime = new System.Windows.Forms.Label();
@@ -265,6 +266,7 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.btnSearch);
             this.pManage.Controls.Add(this.cbProjects);
             this.pManage.Controls.Add(this.btnStopWork);
             this.pManage.Controls.Add(this.lbClockTodayTime);
@@ -286,6 +288,16 @@
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(91, 233);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(63, 23);
+            this.btnSearch.TabIndex = 52;
+            this.btnSearch.TabStop = false;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.UseVisualStyleBackColor = true;
             // 
             // cbProjects
             // 
@@ -742,5 +754,6 @@
         internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         internal System.Windows.Forms.LinkLabel llSummaryTime;
         internal System.Windows.Forms.ComboBox cbProjects;
+        internal System.Windows.Forms.Button btnSearch;
     }
 }

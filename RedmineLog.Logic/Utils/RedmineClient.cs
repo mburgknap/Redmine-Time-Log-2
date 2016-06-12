@@ -508,5 +508,50 @@ namespace RedmineLog.Logic
 
             return new List<ProjectData>();
         }
+
+
+        public IEnumerable<WorkingIssue> Search(int idUser, string inPattern)
+        {
+            var result = new List<WorkingIssue>();
+            try
+            {
+                var data = new List<Issue>();
+                var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
+
+                var parameters = new NameValueCollection { };
+
+                parameters.Add("assigned_to_id", idUser.ToString());
+                parameters.Add("status_id", "open");
+                parameters.Add("limit", "1000");
+
+
+                data.AddRange(manager.GetObjectList<Issue>(parameters));
+
+                result = data.OrderByDescending(x => x.Priority.Id)
+                             .Where(x => x.Subject.ToLower().Contains(inPattern.ToLower()))
+                             .Select(x =>
+                 new WorkingIssue()
+                {
+                    Issue = new RedmineIssueData()
+                    {
+                        Id = x.Id,
+                        Project = x.Project.Name,
+                        Tracker = x.Tracker.Name,
+                        Subject = x.Subject
+                    },
+                    Parent = new RedmineIssueData()
+                    {
+                        Id = x.ParentIssue != null ? x.ParentIssue.Id : 0
+                    }
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            { logger.Error("Search", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
+
+            return result;
+
+
+        }
     }
 }

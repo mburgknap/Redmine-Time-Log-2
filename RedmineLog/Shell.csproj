@@ -96,6 +96,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\frmSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSearch.Designer.cs">
+      <DependentUpon>frmSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Items\SearchGroupItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Items\SearchGroupItemView.Designer.cs">
+      <DependentUpon>SearchGroupItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Items\SearchItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Items\SearchItemView.Designer.cs">
+      <DependentUpon>SearchItemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\AppLog.cs" />
     <Compile Include="Utils\WwwRedmine.cs" />
     <Compile Include="UI\Common\ExFlowLayoutPanel.cs">
@@ -213,6 +231,9 @@
     <EmbeddedResource Include="UI\Common\ExFlowLayoutPanel.resx">
       <DependentUpon>ExFlowLayoutPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSearch.resx">
+      <DependentUpon>frmSearch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSubIssue.resx">
       <DependentUpon>frmSubIssue.cs</DependentUpon>
     </EmbeddedResource>
@@ -250,11 +271,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\Items\SearchGroupItemView.resx">
+      <DependentUpon>SearchGroupItemView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Items\BugLogGroupItemView.resx">
       <DependentUpon>BugLogGroupItemView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Items\IssueItemView.resx">
       <DependentUpon>IssueItemView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Items\SearchItemView.resx">
+      <DependentUpon>SearchItemView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Items\WorkLogGroupItemView.resx">
       <DependentUpon>WorkLogGroupItemView.cs</DependentUpon>

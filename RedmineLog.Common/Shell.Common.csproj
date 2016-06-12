@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities.cs" />
+    <Compile Include="Forms\Search.cs" />
     <Compile Include="Forms\SubIssue.cs" />
     <Compile Include="Forms\BugLog.cs" />
     <Compile Include="Forms\EditLog.cs" />

@@ -18,6 +18,7 @@ namespace RedmineLog.Model
             Bind<Small.IModel>().To<SmallModel>().InSingletonScope();
             Bind<WorkLog.IModel>().To<WorkLogModel>().InSingletonScope();
             Bind<BugLog.IModel>().To<BugLogModel>().InSingletonScope();
+            Bind<Search.IModel>().To<SearchModel>().InSingletonScope();
         }
     }
 }

@@ -176,7 +176,6 @@ namespace RedmineLog.Common
         public RedmineIssueData Parent { get; set; }
 
         public String IssueUri { get; set; }
-
     }
 
 
@@ -210,7 +209,6 @@ namespace RedmineLog.Common
             Add(new WorkActivityType() { Id = inId, Name = inName });
         }
     }
-
 
     public class BugLogItem
     {

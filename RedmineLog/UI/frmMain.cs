@@ -563,6 +563,7 @@ namespace RedmineLog
             Form.lblIssue.MouseClick += OnRedmineIssueLink;
             Form.tbComment.Click += OnCommentClick;
             Form.tsmMyWork.Click += OnWorkLogClick;
+            Form.btnSearch.Click += OnIssueSearch;
             Form.btnRemoveItem.Visible = false;
             Form.btnSubmit.Visible = false;
             Form.btnSubmitAll.Visible = false;
@@ -570,6 +571,12 @@ namespace RedmineLog
             Form.lblParentIssue.MouseClick += OnParentIssueMouseClick;
             Form.lblIssue.MouseClick += OnIssueMouseClick;
             Load();
+        }
+
+        private void OnIssueSearch(object sender, EventArgs e)
+        {
+            var form = new frmSearch();
+            form.ShowDialog();
         }
 
         private void OnActionDayWorkSummary()
@@ -887,6 +894,7 @@ namespace RedmineLog
                     ExitEvent.Fire(this);
                 }, () =>
                 {
+                    Environment.Exit(0);
                     Form.Close();
                 });
         }

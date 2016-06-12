@@ -342,8 +342,16 @@ namespace RedmineLog.Logic
         [EventSubscription(IssueLog.Events.Select, typeof(OnPublisher))]
         public void OnSelectEvent(object sender, Args<WorkingIssue> arg)
         {
-            SetupLastIssue(arg.Data.Data);
-            LoadIssue(arg.Data.Data);
+            if (arg.Data.Data == null)
+            {
+                if (!ReloadIssueData(arg.Data.Issue.Id))
+                    LoadIssue(dbIssue.Get(0));
+            }
+            else
+            {
+                SetupLastIssue(arg.Data.Data);
+                LoadIssue(arg.Data.Data);
+            }
         }
 
         [EventSubscription(IssueLog.Events.Delete, typeof(OnPublisher))]

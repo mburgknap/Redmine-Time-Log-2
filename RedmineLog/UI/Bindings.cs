@@ -35,10 +35,14 @@ namespace RedmineLog.UI
             Bind<WorkLog.IView>().To<WorkLogView>().InSingletonScope().RegisterOnGlobalEventBroker();
             Bind<WorkLogView>().ToSelf();
 
+            Bind<Search.IView>().To<SearchView>().InSingletonScope().RegisterOnGlobalEventBroker();
+            Bind<SearchView>().ToSelf();
+
             Bind<IssueLogItemView>().To<IssueLogItemView>().RegisterOnGlobalEventBroker();
             Bind<BugLogItemView>().To<BugLogItemView>().RegisterOnGlobalEventBroker();
             Bind<IssueItemView>().To<IssueItemView>().RegisterOnGlobalEventBroker();
             Bind<WorkLogItemView>().To<WorkLogItemView>().RegisterOnGlobalEventBroker();
+            Bind<SearchItemView>().To<SearchItemView>().RegisterOnGlobalEventBroker();
 
         }
     }

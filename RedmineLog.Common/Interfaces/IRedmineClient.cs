@@ -46,5 +46,7 @@ namespace RedmineLog.Common
         string WorkReportUrl(int idUser, WorkReportType inReportType);
 
         IEnumerable<ProjectData> GetProjects();
+
+        IEnumerable<WorkingIssue> Search(int idUser, string inPattern);
     }
 }

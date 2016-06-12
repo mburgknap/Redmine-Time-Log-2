@@ -36,6 +36,9 @@ namespace RedmineLog.Logic
 
             Bind<ILogic<EditLog.IView>>().To<EditLogFormLogic>().InSingletonScope().RegisterOnGlobalEventBroker();
             Bind<EditLogFormLogic>().ToSelf();
+
+            Bind<ILogic<Search.IView>>().To<SearchFormLogic>().InSingletonScope().RegisterOnGlobalEventBroker();
+            Bind<SearchFormLogic>().ToSelf();
         }
     }
 }
