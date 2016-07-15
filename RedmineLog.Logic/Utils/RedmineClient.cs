@@ -491,6 +491,7 @@ namespace RedmineLog.Logic
             try
             {
                 var parameters = new NameValueCollection { };
+                parameters.Add("is_public", "true");
 
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
@@ -510,7 +511,7 @@ namespace RedmineLog.Logic
         }
 
 
-        public IEnumerable<WorkingIssue> Search(int idUser, string inPattern)
+        public IEnumerable<WorkingIssue> Search(int idUser, string inPattern, ProjectData inProject)
         {
             var result = new List<WorkingIssue>();
             try
@@ -518,14 +519,32 @@ namespace RedmineLog.Logic
                 var data = new List<Issue>();
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
 
-                var parameters = new NameValueCollection { };
+                int offset = 0;
+                int limit = 99;
 
-                parameters.Add("assigned_to_id", idUser.ToString());
-                parameters.Add("status_id", "open");
-                parameters.Add("limit", "1000");
+                bool searchIssue = true;
 
+                while (searchIssue)
+                {
+                    var parameters = new NameValueCollection { };
 
-                data.AddRange(manager.GetObjectList<Issue>(parameters));
+                    parameters.Add("project_id", inProject.Id.ToString());
+                    parameters.Add("status_id", "open");
+                    parameters.Add("offset", offset.ToString());
+                    parameters.Add("limit", limit.ToString());
+
+                    var res = manager.GetObjectList<Issue>(parameters);
+
+                    if (res == null || res.Count == 0)
+                        searchIssue = false;
+                    else
+                    {
+                        data.AddRange(res);
+                        offset += limit;
+                    }
+
+                }
+
 
                 result = data.OrderByDescending(x => x.Priority.Id)
                              .Where(x => x.Subject.ToLower().Contains(inPattern.ToLower()))
@@ -537,7 +556,8 @@ namespace RedmineLog.Logic
                         Id = x.Id,
                         Project = x.Project.Name,
                         Tracker = x.Tracker.Name,
-                        Subject = x.Subject
+                        Subject = x.Subject,
+                        User = x.AssignedTo.Name
                     },
                     Parent = new RedmineIssueData()
                     {

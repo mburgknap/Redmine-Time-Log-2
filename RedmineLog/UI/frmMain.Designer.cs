@@ -47,7 +47,6 @@
             this.lblClockIdle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.cbProjects = new System.Windows.Forms.ComboBox();
             this.btnStopWork = new System.Windows.Forms.Button();
             this.lbClockTodayTime = new System.Windows.Forms.Label();
             this.cbResolveIssue = new System.Windows.Forms.CheckBox();
@@ -142,7 +141,7 @@
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
             this.tbComment.ReadOnly = true;
-            this.tbComment.Size = new System.Drawing.Size(219, 92);
+            this.tbComment.Size = new System.Drawing.Size(219, 116);
             this.tbComment.TabIndex = 21;
             // 
             // lblClockActive
@@ -164,7 +163,7 @@
             this.cbActivity.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbActivity.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbActivity.FormattingEnabled = true;
-            this.cbActivity.Location = new System.Drawing.Point(111, 104);
+            this.cbActivity.Location = new System.Drawing.Point(111, 79);
             this.cbActivity.Name = "cbActivity";
             this.cbActivity.Size = new System.Drawing.Size(139, 25);
             this.cbActivity.TabIndex = 17;
@@ -267,7 +266,6 @@
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
             this.pManage.Controls.Add(this.btnSearch);
-            this.pManage.Controls.Add(this.cbProjects);
             this.pManage.Controls.Add(this.btnStopWork);
             this.pManage.Controls.Add(this.lbClockTodayTime);
             this.pManage.Controls.Add(this.cbResolveIssue);
@@ -298,17 +296,6 @@
             this.btnSearch.TabStop = false;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            // 
-            // cbProjects
-            // 
-            this.cbProjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbProjects.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.cbProjects.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbProjects.FormattingEnabled = true;
-            this.cbProjects.Location = new System.Drawing.Point(6, 73);
-            this.cbProjects.Name = "cbProjects";
-            this.cbProjects.Size = new System.Drawing.Size(244, 25);
-            this.cbProjects.TabIndex = 51;
             // 
             // btnStopWork
             // 
@@ -363,7 +350,7 @@
             // 
             // btnComments
             // 
-            this.btnComments.Location = new System.Drawing.Point(5, 103);
+            this.btnComments.Location = new System.Drawing.Point(5, 78);
             this.btnComments.Name = "btnComments";
             this.btnComments.Size = new System.Drawing.Size(99, 27);
             this.btnComments.TabIndex = 44;
@@ -383,9 +370,9 @@
             // 
             this.pComments.Controls.Add(this.tbComment);
             this.pComments.Controls.Add(this.panel1);
-            this.pComments.Location = new System.Drawing.Point(6, 135);
+            this.pComments.Location = new System.Drawing.Point(6, 111);
             this.pComments.Name = "pComments";
-            this.pComments.Size = new System.Drawing.Size(244, 92);
+            this.pComments.Size = new System.Drawing.Size(244, 116);
             this.pComments.TabIndex = 40;
             // 
             // panel1
@@ -395,7 +382,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel1.Location = new System.Drawing.Point(219, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(25, 92);
+            this.panel1.Size = new System.Drawing.Size(25, 116);
             this.panel1.TabIndex = 22;
             // 
             // btnRemoveComment
@@ -403,7 +390,7 @@
             this.btnRemoveComment.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnRemoveComment.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnRemoveComment.ForeColor = System.Drawing.Color.Red;
-            this.btnRemoveComment.Location = new System.Drawing.Point(0, 57);
+            this.btnRemoveComment.Location = new System.Drawing.Point(0, 81);
             this.btnRemoveComment.Name = "btnRemoveComment";
             this.btnRemoveComment.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
             this.btnRemoveComment.Size = new System.Drawing.Size(25, 35);
@@ -753,7 +740,6 @@
         internal System.Windows.Forms.Button btnWorkReportMode;
         internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         internal System.Windows.Forms.LinkLabel llSummaryTime;
-        internal System.Windows.Forms.ComboBox cbProjects;
         internal System.Windows.Forms.Button btnSearch;
     }
 }

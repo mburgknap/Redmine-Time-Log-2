@@ -47,6 +47,6 @@ namespace RedmineLog.Common
 
         IEnumerable<ProjectData> GetProjects();
 
-        IEnumerable<WorkingIssue> Search(int idUser, string inPattern);
+        IEnumerable<WorkingIssue> Search(int idUser, string inPattern, ProjectData inProject);
     }
 }

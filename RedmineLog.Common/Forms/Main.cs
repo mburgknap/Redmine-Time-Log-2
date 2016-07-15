@@ -73,8 +73,6 @@ namespace RedmineLog.Common
 
         public interface IModel
         {
-            DataProperty<ProjectData> Project { get; }
-            DataProperty<ProjectList> Projects { get; }
             DataProperty<bool> Resolve { get; }
             DataProperty<TimeSpan> WorkTime { get; }
             DataProperty<TimeSpan> IdleTime { get; }

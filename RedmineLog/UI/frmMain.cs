@@ -160,44 +160,9 @@ namespace RedmineLog
             model.LastIssues.OnUpdate.Subscribe(OnUpdateLastIssues);
             model.WorkActivities.OnUpdate.Subscribe(OnUpdateWorkActivities);
             model.WorkReport.OnUpdate.Subscribe(OnUpdateWorkReport);
-            model.Project.OnUpdate.Subscribe(OnUpdateProject);
-            model.Projects.OnUpdate.Subscribe(OnUpdateProjects);
         }
 
-        private void OnUpdateProject(ProjectData obj)
-        {
-            Form.cbProjects.Set(obj,
-               (ui, data) =>
-               {
-                   projectChanged.Dispose();
-                   ui.SelectedItem = ui.Items[model.Projects.Value.IndexOf(obj)];
-                   projectChanged.Subscribe(Observer.Create<EventPattern<EventArgs>>(OnNotifyProject));
-               });
-        }
-
-        private void OnUpdateProjects(ProjectList value)
-        {
-            Form.cbProjects.Set(model,
-               (ui, data) =>
-               {
-                   ui.BeginUpdate();
-
-                   ui.Items.Clear();
-                   ui.DataSource = data.Projects.Value;
-                   ui.DisplayMember = "Name";
-                   ui.ValueMember = "Id";
-
-                   if (ui.Items.Count > 0)
-                   {
-                       projectChanged.Dispose();
-                       ui.SelectedItem = ui.Items[0];
-                       projectChanged.Subscribe(Observer.Create<EventPattern<EventArgs>>(OnNotifyProject));
-                       data.Project.Notify(data.Projects.Value[0]);
-                   }
-                   ui.EndUpdate();
-               });
-        }
-
+      
         private void OnUpdateWorkReport(WorkReportData obj)
         {
             Form.Set(obj,
@@ -278,13 +243,6 @@ namespace RedmineLog
             };
         }
 
-        private void OnNotifyProject(EventPattern<EventArgs> obj)
-        {
-            if (model.Projects.Value.Count > Form.cbProjects.SelectedIndex)
-            {
-                model.Project.Notify(model.Projects.Value[Form.cbProjects.SelectedIndex]);
-            };
-        }
 
         private void OnUpdateComment(CommentData obj)
         {
@@ -510,7 +468,6 @@ namespace RedmineLog
             MessageBox.Show(inMessage);
         }
 
-        EventProperty<EventArgs> projectChanged = new EventProperty<EventArgs>();
         EventProperty<EventArgs> activityTypeChanged = new EventProperty<EventArgs>();
         EventProperty<EventArgs> resolveChanged = new EventProperty<EventArgs>();
         EventProperty<EventArgs> commentChanged = new EventProperty<EventArgs>();
@@ -521,7 +478,6 @@ namespace RedmineLog
             StartClock();
 
             activityTypeChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbActivity, "SelectedIndexChanged"));
-            projectChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbProjects, "SelectedIndexChanged"));
 
             resolveChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbResolveIssue, "CheckedChanged"));
             resolveChanged.Subscribe(OnNotifyResolve);

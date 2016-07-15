@@ -32,8 +32,10 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.tbSearchText = new System.Windows.Forms.TextBox();
             this.fpIssueItemList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
+            this.lblInfo = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnClear = new System.Windows.Forms.Button();
+            this.cbProjects = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,10 +64,22 @@
             // 
             this.fpIssueItemList.AutoScroll = true;
             this.fpIssueItemList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fpIssueItemList.Location = new System.Drawing.Point(0, 20);
+            this.fpIssueItemList.Location = new System.Drawing.Point(0, 68);
             this.fpIssueItemList.Name = "fpIssueItemList";
-            this.fpIssueItemList.Size = new System.Drawing.Size(343, 474);
+            this.fpIssueItemList.Size = new System.Drawing.Size(343, 470);
             this.fpIssueItemList.TabIndex = 2;
+            // 
+            // lblInfo
+            // 
+            this.lblInfo.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.lblInfo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblInfo.Location = new System.Drawing.Point(0, 45);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblInfo.Size = new System.Drawing.Size(343, 23);
+            this.lblInfo.TabIndex = 0;
+            this.lblInfo.Text = "Brak zadań spełniających zadane wyszukiwanie";
+            this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel1
             // 
@@ -73,7 +87,7 @@
             this.panel1.Controls.Add(this.btnClear);
             this.panel1.Controls.Add(this.btnSearch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(343, 20);
             this.panel1.TabIndex = 3;
@@ -89,13 +103,27 @@
             this.btnClear.Text = "X";
             this.btnClear.UseVisualStyleBackColor = true;
             // 
+            // cbProjects
+            // 
+            this.cbProjects.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbProjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbProjects.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cbProjects.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbProjects.FormattingEnabled = true;
+            this.cbProjects.Location = new System.Drawing.Point(0, 0);
+            this.cbProjects.Name = "cbProjects";
+            this.cbProjects.Size = new System.Drawing.Size(343, 25);
+            this.cbProjects.TabIndex = 52;
+            // 
             // frmSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 494);
+            this.ClientSize = new System.Drawing.Size(343, 538);
             this.Controls.Add(this.fpIssueItemList);
+            this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.cbProjects);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmSearch";
@@ -116,5 +144,7 @@
         internal System.Windows.Forms.TextBox tbSearchText;
         internal Common.ExFlowLayoutPanel fpIssueItemList;
         internal System.Windows.Forms.Button btnClear;
+        internal System.Windows.Forms.Label lblInfo;
+        internal System.Windows.Forms.ComboBox cbProjects;
     }
 }

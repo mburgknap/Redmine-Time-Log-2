@@ -31,8 +31,9 @@ namespace RedmineLog.UI
 
         private void OnSearchLoad(object sender, EventArgs e)
         {
-            this.SetupLocation(settings.Display, 80, -60);
+            this.SetupLocation(settings.Display, 0, -50);
         }
+
         public void Setup(IAppSettings inSettings)
         {
             settings = inSettings;
@@ -51,6 +52,8 @@ namespace RedmineLog.UI
         {
             model = inModel;
             model.Issues.OnUpdate.Subscribe(OnUpdateIssues);
+            model.Project.OnUpdate.Subscribe(OnUpdateProject);
+            model.Projects.OnUpdate.Subscribe(OnUpdateProjects);
         }
 
 
@@ -66,6 +69,8 @@ namespace RedmineLog.UI
         [EventPublication(Search.Events.Search)]
         public event EventHandler<Args<String>> SearchEvent;
 
+        EventProperty<EventArgs> projectChanged = new EventProperty<EventArgs>();
+
         public void Init(frmSearch inView)
         {
             Form = inView;
@@ -73,8 +78,52 @@ namespace RedmineLog.UI
             KeyHelpers.BindKey(Form.fpIssueItemList, OnKeyDown);
             Observable.FromEventPattern<EventArgs>(Form.btnSearch, "Click").Subscribe(OnSearchClick);
             Observable.FromEventPattern<EventArgs>(Form.btnClear, "Click").Subscribe(OnClearClick);
+            projectChanged.Build(Observable.FromEventPattern<EventArgs>(Form.cbProjects, "SelectedIndexChanged"));
             Load();
         }
+
+        private void OnNotifyProject(EventPattern<EventArgs> obj)
+        {
+            if (model.Projects.Value.Count > Form.cbProjects.SelectedIndex)
+            {
+                model.Project.Notify(model.Projects.Value[Form.cbProjects.SelectedIndex]);
+            };
+        }
+
+        private void OnUpdateProject(ProjectData obj)
+        {
+            Form.cbProjects.Set(obj,
+               (ui, data) =>
+               {
+                   projectChanged.Dispose();
+                   ui.SelectedItem = ui.Items[model.Projects.Value.IndexOf(obj)];
+                   projectChanged.Subscribe(Observer.Create<EventPattern<EventArgs>>(OnNotifyProject));
+               });
+        }
+
+        private void OnUpdateProjects(ProjectList value)
+        {
+            Form.cbProjects.Set(model,
+               (ui, data) =>
+               {
+                   ui.BeginUpdate();
+
+                   ui.Items.Clear();
+                   ui.DataSource = data.Projects.Value;
+                   ui.DisplayMember = "Name";
+                   ui.ValueMember = "Id";
+
+                   if (ui.Items.Count > 0)
+                   {
+                       projectChanged.Dispose();
+                       ui.SelectedItem = ui.Items[0];
+                       projectChanged.Subscribe(Observer.Create<EventPattern<EventArgs>>(OnNotifyProject));
+                       data.Project.Notify(data.Projects.Value[0]);
+                   }
+                   ui.EndUpdate();
+               });
+        }
+
 
         private void OnClearClick(EventPattern<EventArgs> obj)
         {
@@ -83,7 +132,27 @@ namespace RedmineLog.UI
 
         private void OnSearchClick(EventPattern<EventArgs> obj)
         {
-            SearchEvent.Fire(this, Form.tbSearchText.Text);
+            PerformSearch(Form.tbSearchText.Text);
+        }
+
+        private void PerformSearch(string inSearchText)
+        {
+            Form.lblInfo.Visible = false;
+            Form.lblInfo.Height = 0;
+
+            new frmProcessing().Show(Form,
+             () =>
+             {
+                 SearchEvent.Fire(this, inSearchText);
+             }, () =>
+             {
+                 if (Form.fpIssueItemList.Controls.Count == 0)
+                 {
+                     Form.lblInfo.Visible = true;
+                     Form.lblInfo.Height = 23;
+                 }
+                 Form.tbSearchText.Focus();
+             });
         }
 
         public void Load()
@@ -118,8 +187,7 @@ namespace RedmineLog.UI
 
             if (e.KeyCode == Keys.Enter)
             {
-                SearchEvent.Fire(this, Form.tbSearchText.Text);
-                Form.tbSearchText.Focus();
+                PerformSearch(Form.tbSearchText.Text);
                 return;
             }
         }

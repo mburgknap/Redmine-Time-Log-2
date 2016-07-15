@@ -16,8 +16,6 @@ namespace RedmineLog.Logic.Model
         [Inject]
         public MainModel()
         {
-            Project = new DataProperty<ProjectData>();
-            Projects = new DataProperty<ProjectList>();
             Resolve = new DataProperty<bool>();
             WorkTime = new DataProperty<TimeSpan>();
             IdleTime = new DataProperty<TimeSpan>();
@@ -59,9 +57,6 @@ namespace RedmineLog.Logic.Model
         public DataProperty<WorkingIssueList> LastIssues { get; private set; }
         public DataProperty<WorkReportData> WorkReport { get; private set; }
 
-        public DataProperty<ProjectData> Project { get; private set; }
-
-        public DataProperty<ProjectList> Projects { get; private set; }
     }
 
 

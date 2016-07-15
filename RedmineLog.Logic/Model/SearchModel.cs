@@ -14,9 +14,14 @@ namespace RedmineLog.Logic.Model
         [Inject]
         public SearchModel()
         {
+            Project = new DataProperty<ProjectData>();
+            Projects = new DataProperty<ProjectList>();
             Issues = new DataProperty<WorkingIssueList>();
         }
 
         public DataProperty<WorkingIssueList> Issues { get; set; }
+        public DataProperty<ProjectData> Project { get; private set; }
+
+        public DataProperty<ProjectList> Projects { get; private set; }
     }
 }

@@ -58,7 +58,7 @@ namespace RedmineLog.UI.Items
             llIssue.Text = "Issue subject";
             lbIssueType.Text = "Activity type";
             lbIssueId.Text = "#id";
-            lblPerson.Text = "user@user";
+            lblUser.Text = "User";
         }
 
         public object Data { get; set; }
@@ -84,7 +84,7 @@ namespace RedmineLog.UI.Items
             llIssue.Text = !string.IsNullOrWhiteSpace(issue.Issue.Subject) ? issue.Issue.Subject : "";
             lbIssueType.Text = issue.Issue.Tracker;
             lblProject.Text = issue.Issue.Project;
-            lblPerson.Text = "user@user";
+            lblUser.Text = issue.Issue.User;
 
             return this;
         }

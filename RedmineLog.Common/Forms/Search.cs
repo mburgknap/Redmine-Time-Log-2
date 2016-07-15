@@ -22,6 +22,8 @@ namespace RedmineLog.Common.Forms
         public interface IModel
         {
             DataProperty<WorkingIssueList> Issues { get; }
+            DataProperty<ProjectData> Project { get; }
+            DataProperty<ProjectList> Projects { get; }
         }
     }
 }

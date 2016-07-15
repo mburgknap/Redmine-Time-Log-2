@@ -19,9 +19,10 @@ namespace RedmineLog.Logic.Manage
         private Search.IView view;
         private IRedmineClient redmine;
         private IDbConfig dbConfig;
+        private IDbCache dbCache;
 
         [Inject]
-        public SearchFormLogic(Search.IView inView, Search.IModel inModel, IDbIssue inDbIssue, IDbConfig inDbConfig, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue)
+        public SearchFormLogic(Search.IView inView, Search.IModel inModel, IDbIssue inDbIssue, IDbConfig inDbConfig, IRedmineClient inClient, IDbRedmineIssue inDbRedmineIssue, IDbCache inDbCache)
         {
             view = inView;
             model = inModel;
@@ -29,6 +30,7 @@ namespace RedmineLog.Logic.Manage
             dbConfig = inDbConfig;
             redmine = inClient;
             dbRedmineIssue = inDbRedmineIssue;
+            dbCache = inDbCache;
         }
 
         [EventSubscription(Search.Events.Clear, typeof(OnPublisher))]
@@ -42,13 +44,23 @@ namespace RedmineLog.Logic.Manage
         public void OnLoadEvent(object sender, EventArgs arg)
         {
             model.Issues.Value.Clear();
+
+            model.Projects.Value.AddRange(dbCache.GetProjects());
+
+            model.Projects.Update();
         }
 
 
         [EventSubscription(Search.Events.Search, typeof(OnPublisher))]
         public void OnSearchEvent(object sender, Args<string> arg)
         {
-            foreach (var issue in redmine.Search(dbConfig.GetIdUser(), arg.Data))
+            if (String.IsNullOrWhiteSpace(arg.Data))
+                return;
+
+            if (arg.Data.Length < 3)
+                return;
+
+            foreach (var issue in redmine.Search(dbConfig.GetIdUser(), arg.Data, model.Project.Value))
             {
                 if (!model.Issues.Value.Where(x => x.Issue.Id == issue.Issue.Id).Any())
                 {
@@ -58,6 +70,7 @@ namespace RedmineLog.Logic.Manage
             }
 
             model.Issues.Update();
+
         }
     }
 }

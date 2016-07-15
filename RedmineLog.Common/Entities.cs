@@ -32,6 +32,7 @@ namespace RedmineLog.Common
         public String Subject { get; set; }
         public String Project { get; set; }
         public String Tracker { get; set; }
+        public String User { get; set; }
     }
 
     public class CommentData

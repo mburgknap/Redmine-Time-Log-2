@@ -104,6 +104,7 @@ namespace RedmineLog.Logic
 
             dbCache.InitTrackers(tmpTrackers);
             dbCache.InitPriorities(redmine.GetPriorites());
+            dbCache.InitProjects(redmine.GetProjects());
         }
     }
 }
