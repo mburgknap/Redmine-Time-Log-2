@@ -22,7 +22,6 @@ using System.Windows.Forms;
 
 namespace RedmineLog
 {
-    //https://www.dropbox.com/s/y0zezwk6x51hcza/Version.cfg?dl=1
     public partial class frmMain : Form, ISetup
     {
         private IAppSettings settings;
@@ -38,48 +37,69 @@ namespace RedmineLog
 
         }
 
-        private void CheckVersion()
+        internal void CheckVersion()
         {
-            new Thread(new ThreadStart(() =>
+            Task.Run(() =>
             {
+
                 try
                 {
-                    var filename = "Version.cfg";
+                    var filename = "version.txt";
 
                     using (var client = new WebClient())
                     {
                         File.Delete(filename);
-                        client.DownloadFile("https://raw.githubusercontent.com/mburgknap/Redmine-Time-Log/master/RedmineLog/Version.config", filename);
+                        client.DownloadFile("http://docs.google.com/uc?id=0BwoXOcOLMhp3VHVXQXlXdWU2TkE", filename);
 
-                        var version = File.ReadAllText(filename);
+                        var data = File.ReadAllText(filename).Split(';');
 
-                        if (Assembly.GetExecutingAssembly().GetName().Version.CompareTo(new Version(version.Split(';')[0])) < 0)
+                        var onlineVersion = new Version(data[0]);
+                        var url = data[1];
+
+                        var appVersion = this.GetType().Assembly.GetName().Version;
+
+                        if (appVersion.CompareTo(onlineVersion) < 0)
                         {
-                            bool result = false;
+                            this.BeginInvoke(new Action(() =>
+                            {
+                                try
+                                {
+                                    if (MessageBox.Show("New version availible " + onlineVersion
+                                               + Environment.NewLine
+                                               + "Do you want download it ?", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                    {
+                                        Task.Run(() =>
+                                        {
+                                            try
+                                            {
+                                                var file = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RedmineLog.exe"));
+                                                if (file.Exists)
+                                                    file.Delete();
 
-                            if (Boolean.TryParse(version.Split(';')[1], out result))
-                            {
-                                if (result)
-                                {
-                                    NotifyBox.Show("New version available (" + version.Split(';')[0] + ")", "RedmineLog");
+                                                client.DownloadFile(url, file.FullName);
+
+                                                Process.Start(file.FullName);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                System.Diagnostics.Debug.WriteLine(ex.Message);
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                if (MessageBox.Show("New version availible " + version.Split(';')[0]
-                                                   + Environment.NewLine
-                                                   + "Do you want download it ?", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                catch (Exception ex)
                                 {
-                                    System.Diagnostics.Process.Start(version.Split(';')[1]);
+                                    System.Diagnostics.Debug.WriteLine(ex.Message);
                                 }
-                            }
+                            }));
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
-            })).Start();
+            });
         }
 
         private void OnMainLoad(object sender, EventArgs e)
@@ -97,6 +117,7 @@ namespace RedmineLog
         {
             settings = inSettings;
         }
+
     }
 
     internal class MainView : Main.IView, IView<frmMain>
@@ -162,7 +183,7 @@ namespace RedmineLog
             model.WorkReport.OnUpdate.Subscribe(OnUpdateWorkReport);
         }
 
-      
+
         private void OnUpdateWorkReport(WorkReportData obj)
         {
             Form.Set(obj,
@@ -526,7 +547,16 @@ namespace RedmineLog
             Form.Resize += OnResize;
             Form.lblParentIssue.MouseClick += OnParentIssueMouseClick;
             Form.lblIssue.MouseClick += OnIssueMouseClick;
+            Form.lblVersion.Click += OnVersionClick;
             Load();
+        }
+
+        void OnVersionClick(object sender, EventArgs e)
+        {
+            Form.CheckVersion();
+
+            var form = new frmAbout();
+            form.ShowDialog();
         }
 
         private void OnIssueSearch(object sender, EventArgs e)

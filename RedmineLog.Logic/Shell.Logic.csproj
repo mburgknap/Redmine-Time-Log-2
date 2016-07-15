@@ -83,6 +83,7 @@
     <Compile Include="Data\Database.cs" />
     <Compile Include="Bindings.cs" />
     <Compile Include="Common\ILogic.cs" />
+    <Compile Include="Manage\AboutFormLogic.cs" />
     <Compile Include="Manage\SearchFormLogic.cs" />
     <Compile Include="Manage\SubIssueFormLogic.cs" />
     <Compile Include="Manage\BugLogFormLogic.cs" />

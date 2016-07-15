@@ -700,7 +700,6 @@
         internal System.Windows.Forms.Label lblClockActive;
         internal System.Windows.Forms.ComboBox cbActivity;
         private System.Windows.Forms.FlowLayoutPanel issueInfoPanel;
-        private System.Windows.Forms.Label lblVersion;
         internal System.Windows.Forms.Button btnResetIdle;
         private System.Windows.Forms.Panel pComments;
         private System.Windows.Forms.Panel panel1;
@@ -741,5 +740,6 @@
         internal System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         internal System.Windows.Forms.LinkLabel llSummaryTime;
         internal System.Windows.Forms.Button btnSearch;
+        internal System.Windows.Forms.Label lblVersion;
     }
 }

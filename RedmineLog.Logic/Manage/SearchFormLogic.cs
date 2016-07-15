@@ -45,8 +45,9 @@ namespace RedmineLog.Logic.Manage
         {
             model.Issues.Value.Clear();
 
-            model.Projects.Value.AddRange(dbCache.GetProjects());
 
+            model.Projects.Value.Clear();
+            model.Projects.Value.AddRange(dbCache.GetProjects());
             model.Projects.Update();
         }
 
