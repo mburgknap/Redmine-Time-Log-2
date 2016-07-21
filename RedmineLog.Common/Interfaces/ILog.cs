@@ -10,5 +10,6 @@ namespace RedmineLog.Common
     {
         void Error(String inMessage, Exception ex);
         void Error(String inTag, Exception ex, String inMessage, string inTitle);
+        void Info(String inMessage, string inTitle);
     }
 }

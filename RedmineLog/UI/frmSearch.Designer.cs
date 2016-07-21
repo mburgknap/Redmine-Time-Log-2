@@ -78,7 +78,7 @@
             this.lblInfo.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.lblInfo.Size = new System.Drawing.Size(343, 23);
             this.lblInfo.TabIndex = 0;
-            this.lblInfo.Text = "Brak zadań spełniających zadane wyszukiwanie";
+            this.lblInfo.Text = "No tasks matching the given search";
             this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel1

@@ -83,6 +83,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Interfaces\IDatabase.cs" />
     <Compile Include="Interfaces\ILog.cs" />
+    <Compile Include="Interfaces\IUpdater.cs" />
     <Compile Include="Interfaces\WwwRedmine.cs" />
     <Compile Include="Interfaces\IRedmineClient.cs" />
     <Compile Include="Forms\Main.cs" />

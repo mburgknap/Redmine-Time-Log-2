@@ -28,8 +28,29 @@ namespace RedmineLog.Logic
             logger = inLogger;
         }
 
+        private bool ServerAccesible()
+        {
+            try
+            {
+                HttpWebRequest request = WebRequest.Create(dbRedmine.GetUrl()) as HttpWebRequest;
+                request.Method = "HEAD";
+                request.Timeout = (int)new TimeSpan(0, 0, 5).TotalMilliseconds;
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                response.Close();
+                return (response.StatusCode == HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("ServerConnection error", ex, "Redmine server unavailable ", "Info");
+                return false;
+            }
+        }
+
         public UserData GetCurrentUser()
         {
+            if (!ServerAccesible())
+                return new UserData() { Id = 0, Name = "Unknown" };
+
             try
             {
                 var parameters = new NameValueCollection { };
@@ -50,12 +71,11 @@ namespace RedmineLog.Logic
         }
 
 
-
-
-
-
         public RedmineIssueData GetIssue(int idIssue)
         {
+            if (!ServerAccesible())
+                return null;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -82,6 +102,9 @@ namespace RedmineLog.Logic
 
         public bool AddWorkTime(WorkTimeData workData)
         {
+            if (!ServerAccesible())
+                return false;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -115,6 +138,9 @@ namespace RedmineLog.Logic
         public IEnumerable<WorkLogItem> GetWorkLogs(int idUser, DateTime workDate)
         {
             var list = new List<WorkLogItem>();
+
+            if (!ServerAccesible())
+                return list;
 
             try
             {
@@ -158,6 +184,9 @@ namespace RedmineLog.Logic
 
         public void UpdateLog(WorkLogItem workLogItem)
         {
+            if (!ServerAccesible())
+                return;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -177,6 +206,9 @@ namespace RedmineLog.Logic
 
         public void Resolve(WorkingIssue workingIssue)
         {
+            if (!ServerAccesible())
+                return;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -194,6 +226,9 @@ namespace RedmineLog.Logic
 
         public void Resolve(BugLogItem bugLogItem)
         {
+            if (!ServerAccesible())
+                return;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -210,6 +245,9 @@ namespace RedmineLog.Logic
         }
         public void Resolve(IssueData issueData)
         {
+            if (!ServerAccesible())
+                return;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -229,6 +267,10 @@ namespace RedmineLog.Logic
         public IEnumerable<BugLogItem> GetUserBugs(int idUser)
         {
             var result = new List<BugLogItem>();
+
+            if (!ServerAccesible())
+                return result;
+
             try
             {
                 var bugs = new List<Issue>();
@@ -271,6 +313,10 @@ namespace RedmineLog.Logic
 
         public int AddSubIssue(SubIssueData inIssueData)
         {
+
+            if (!ServerAccesible())
+                return 0;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -311,6 +357,10 @@ namespace RedmineLog.Logic
         }
         public IEnumerable<WorkActivityType> GetWorkActivityTypes()
         {
+
+            if (!ServerAccesible())
+                return new List<WorkActivityType>();
+
             try
             {
                 var parameters = new NameValueCollection { };
@@ -328,11 +378,14 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             { logger.Error("GetWorkActivityTypes", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
-            return new List<WorkActivityType>(); ;
+            return new List<WorkActivityType>();
         }
 
         public IEnumerable<UserData> GetUsers()
         {
+            if (!ServerAccesible())
+                return new List<UserData>();
+
             try
             {
                 var parameters = new NameValueCollection { };
@@ -350,11 +403,14 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             { logger.Error("GetUsers", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
-            return new List<UserData>(); ;
+            return new List<UserData>();
         }
 
         public IEnumerable<TrackerData> GetTrackers()
         {
+            if (!ServerAccesible())
+                return new List<TrackerData>();
+
             try
             {
                 var parameters = new NameValueCollection { };
@@ -372,11 +428,14 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             { logger.Error("GetTrackers", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
-            return new List<TrackerData>(); ;
+            return new List<TrackerData>();
         }
 
         public IEnumerable<PriorityData> GetPriorites()
         {
+            if (!ServerAccesible())
+                return new List<PriorityData>();
+
             try
             {
                 var parameters = new NameValueCollection { };
@@ -395,7 +454,7 @@ namespace RedmineLog.Logic
             catch (Exception ex)
             { logger.Error("GetPriorites", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
 
-            return new List<PriorityData>(); ;
+            return new List<PriorityData>();
         }
 
 
@@ -410,6 +469,9 @@ namespace RedmineLog.Logic
 
         public WorkReportData GetWorkReport(int idUser, WorkReportType inMode)
         {
+            if (!ServerAccesible())
+                return null;
+
             try
             {
                 var manager = new RedmineManager(dbRedmine.GetUrl(), dbRedmine.GetApiKey());
@@ -488,6 +550,9 @@ namespace RedmineLog.Logic
 
         public IEnumerable<ProjectData> GetProjects()
         {
+            if (!ServerAccesible())
+                return new List<ProjectData>();
+
             try
             {
                 var parameters = new NameValueCollection { };
@@ -514,6 +579,10 @@ namespace RedmineLog.Logic
         public IEnumerable<WorkingIssue> Search(int idUser, string inPattern, ProjectData inProject)
         {
             var result = new List<WorkingIssue>();
+
+            if (!ServerAccesible())
+                return result;
+
             try
             {
                 var data = new List<Issue>();

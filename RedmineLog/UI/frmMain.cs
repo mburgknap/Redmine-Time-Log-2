@@ -2,6 +2,7 @@
 using Ninject;
 using RedmineLog.Common;
 using RedmineLog.Common.Forms;
+using RedmineLog.Common.Interfaces;
 using RedmineLog.Properties;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
@@ -31,13 +32,13 @@ namespace RedmineLog
             this.Initialize<Main.IView, frmMain>();
             CheckForIllegalCrossThreadCalls = false;
             lblVersion.Text = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            CheckVersion();
+            // CheckVersion();
             cHeader.SetDescription();
 
 
         }
 
-        internal void CheckVersion()
+        private void CheckVersion()
         {
             Task.Run(() =>
             {
@@ -66,7 +67,7 @@ namespace RedmineLog
                                 {
                                     if (MessageBox.Show("New version availible " + onlineVersion
                                                + Environment.NewLine
-                                               + "Do you want download it ?", "Information", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                               + "Do you want download it ?", "RedmineLog", MessageBoxButtons.YesNo) == DialogResult.Yes)
                                     {
                                         Task.Run(() =>
                                         {
@@ -162,11 +163,13 @@ namespace RedmineLog
         private Main.Actions currentMode;
         private frmMain Form;
         private Main.IModel model;
+        private IUpdater updater;
 
         [Inject]
-        public MainView(Main.IModel inModel)
+        public MainView(Main.IModel inModel, IUpdater inUpdater)
         {
             model = inModel;
+            updater = inUpdater;
 
             model.Activity.OnUpdate.Subscribe(OnUpdateActivity);
             model.Comment.OnUpdate.Subscribe(OnUpdateComment);
@@ -553,7 +556,7 @@ namespace RedmineLog
 
         void OnVersionClick(object sender, EventArgs e)
         {
-            Form.CheckVersion();
+            updater.CheckVersion();
 
             var form = new frmAbout();
             form.ShowDialog();
@@ -751,6 +754,7 @@ namespace RedmineLog
 
         public void Load()
         {
+            updater.CheckVersion();
             new frmProcessing().Show(Form,
                 () =>
                 {

@@ -3,6 +3,8 @@ using NLog;
 using RedmineLog.Common;
 using RedmineLog.Logic.Data;
 using RedmineLog.UI;
+using RedmineLog.UI.Common;
+using RedmineLog.Utils;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -26,8 +28,7 @@ namespace RedmineLog
 
             if (!result)
             {
-                MessageBox.Show("Another instance is already running.", "Warning",
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                InitializeApp();
                 return;
             }
 
@@ -48,6 +49,37 @@ namespace RedmineLog
 
             GC.KeepAlive(mutex);
 
+        }
+
+        private static void InitializeApp()
+        {
+            try
+            {
+                var appStart = new AppStart();
+
+                if (appStart.IsFirstStart())
+                {
+                    NotifyBox.Show("Initialize application", "RedmineLog");
+
+                    if (appStart.FindDataToImport())
+                    {
+
+                        var res = MessageBox.Show("Import data from old Redmine Log ?", "Question",
+                                         MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+
+                        if (res == DialogResult.OK) appStart.ImportData();
+                    }
+
+                }
+
+
+                MessageBox.Show("Another instance is already running.", "RedmineLog",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "RedmineLog", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            }
         }
 
         private static void Init()

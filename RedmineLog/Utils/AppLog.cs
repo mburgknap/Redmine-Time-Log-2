@@ -89,10 +89,11 @@ namespace RedmineLog
         public void Error(string inTag, Exception ex, string inMessage, string inTitle)
         {
             Log.Error(inTag, ex);
-            NotifyBox.Show(inMessage, inTitle);
 
             try
             {
+                NotifyBox.Show(inMessage, inTitle);
+
                 string urlWithAccessToken = System.Configuration.ConfigurationManager.AppSettings["SlackChannel"];
 
                 SlackClient client = new SlackClient(urlWithAccessToken);
@@ -106,6 +107,19 @@ namespace RedmineLog
             catch (Exception ex2)
             {
                 Log.Error(inTag, ex2);
+            }
+        }
+
+
+        public void Info(string inMessage, string inTitle)
+        {
+            try
+            {
+                NotifyBox.Show(inMessage, inTitle);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Info", ex);
             }
         }
     }
