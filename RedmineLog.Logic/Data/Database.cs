@@ -476,9 +476,10 @@ namespace RedmineLog.Logic
                         tran.Commit();
                     }
                 }
+
             }
             catch (Exception ex)
-            { logger.Error("AppDatabase", ex, "Error occured, error detail saved in application logs ", "Warrnig"); }
+            { logger.Error("AppDatabase", ex, "Error occured, error detail saved in application logs ", "RedmineLog"); }
         }
 
         public TValue Get<Table, TKey, TValue>(TKey inKey, TValue inDefault)

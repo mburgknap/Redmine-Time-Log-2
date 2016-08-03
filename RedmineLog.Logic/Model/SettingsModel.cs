@@ -15,6 +15,7 @@ namespace RedmineLog.Model
             Timer = new DataProperty<TimerType>();
             Url = new DataProperty<StringBuilder>();
             WorkDayHours = new DataProperty<int>();
+            DbPath = new DataProperty<StringBuilder>();
         }
 
         public DataProperty<StringBuilder> ApiKey { get; private set; }
@@ -24,6 +25,9 @@ namespace RedmineLog.Model
         public DataProperty<TimerType> Timer { get; private set; }
 
         public DataProperty<StringBuilder> Url { get; private set; }
+
         public DataProperty<int> WorkDayHours { get; private set; }
+
+        public DataProperty<StringBuilder> DbPath { get; private set; }
     }
 }

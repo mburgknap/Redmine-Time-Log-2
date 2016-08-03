@@ -25,6 +25,8 @@ namespace RedmineLog.Common
             DataProperty<TimerType> Timer { get; }
 
             DataProperty<int> WorkDayHours { get; }
+
+            DataProperty<StringBuilder> DbPath { get; }
         }
     }
 }

@@ -42,6 +42,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.cbTimer = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label2
@@ -62,7 +64,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(183, 135);
+            this.btnSave.Location = new System.Drawing.Point(183, 179);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(157, 23);
             this.btnSave.TabIndex = 8;
@@ -87,7 +89,7 @@
             // 
             // btnReloadCache
             // 
-            this.btnReloadCache.Location = new System.Drawing.Point(12, 135);
+            this.btnReloadCache.Location = new System.Drawing.Point(12, 179);
             this.btnReloadCache.Name = "btnReloadCache";
             this.btnReloadCache.Size = new System.Drawing.Size(89, 23);
             this.btnReloadCache.TabIndex = 12;
@@ -98,14 +100,14 @@
             // 
             this.cbDisplay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDisplay.FormattingEnabled = true;
-            this.cbDisplay.Location = new System.Drawing.Point(234, 84);
+            this.cbDisplay.Location = new System.Drawing.Point(234, 128);
             this.cbDisplay.Name = "cbDisplay";
             this.cbDisplay.Size = new System.Drawing.Size(106, 21);
             this.cbDisplay.TabIndex = 13;
             // 
             // tbWorkHours
             // 
-            this.tbWorkHours.Location = new System.Drawing.Point(71, 84);
+            this.tbWorkHours.Location = new System.Drawing.Point(71, 128);
             this.tbWorkHours.Name = "tbWorkHours";
             this.tbWorkHours.Size = new System.Drawing.Size(26, 20);
             this.tbWorkHours.TabIndex = 14;
@@ -115,7 +117,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 87);
+            this.label4.Location = new System.Drawing.Point(12, 131);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 16;
@@ -124,7 +126,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(180, 87);
+            this.label5.Location = new System.Drawing.Point(180, 131);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 17;
@@ -133,7 +135,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(103, 87);
+            this.label3.Location = new System.Drawing.Point(103, 131);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(33, 13);
             this.label3.TabIndex = 18;
@@ -142,7 +144,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(180, 111);
+            this.label6.Location = new System.Drawing.Point(180, 155);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(33, 13);
             this.label6.TabIndex = 20;
@@ -152,16 +154,34 @@
             // 
             this.cbTimer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTimer.FormattingEnabled = true;
-            this.cbTimer.Location = new System.Drawing.Point(234, 108);
+            this.cbTimer.Location = new System.Drawing.Point(234, 152);
             this.cbTimer.Name = "cbTimer";
             this.cbTimer.Size = new System.Drawing.Size(106, 21);
             this.cbTimer.TabIndex = 19;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(16, 87);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "Database : ";
+            // 
+            // label8
+            // 
+            this.label8.Location = new System.Drawing.Point(84, 88);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(256, 27);
+            this.label8.TabIndex = 22;
             // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 170);
+            this.ClientSize = new System.Drawing.Size(352, 209);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.cbTimer);
             this.Controls.Add(this.label3);
@@ -203,5 +223,7 @@
         internal System.Windows.Forms.TextBox tbWorkHours;
         private System.Windows.Forms.Label label6;
         internal System.Windows.Forms.ComboBox cbTimer;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
     }
 }

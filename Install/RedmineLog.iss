@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "RedmineLog"
-#define MyAppVersion "11.0.0.0"
+#define MyAppVersion "11.2.0.0"
 #define MyAppPublisher "Marcin Burgknap"
 #define MyAppURL "www.googledrive.com/host/0BwoXOcOLMhp3bUZ1SllpZk1Pd3c"
 #define MyAppExeName "RedmineLog.exe"
@@ -22,7 +22,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=E:\Dev\Praca\RedmineTimeLog\Install
-OutputBaseFilename=Setup
+OutputBaseFilename=RedmineLog
 SetupIconFile=E:\Dev\Praca\RedmineTimeLog\RedmineLog\RedmineTimeLog.ico
 Compression=lzma
 SolidCompression=yes
