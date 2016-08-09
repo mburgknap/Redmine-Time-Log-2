@@ -25,6 +25,8 @@ namespace RedmineLog.Common
         public interface IClock
         {
             void Start();
+
+            void Init();
         }
     }
 

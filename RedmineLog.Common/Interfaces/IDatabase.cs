@@ -132,5 +132,11 @@ namespace RedmineLog.Common
         void Set<Table, TKey, TValue>(TKey inKey, TValue inValue);
 
         void Delete<Table, TKey>(TKey inKey);
+
+        StringBuilder GetDbPath();
+
+        void Dispose();
+
+        void Import(string inSource);
     }
 }

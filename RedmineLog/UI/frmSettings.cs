@@ -7,10 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace RedmineLog
 {
@@ -43,6 +45,10 @@ namespace RedmineLog
 
         private frmSettings Form;
 
+
+        [EventPublication(Global.Events.Restart)]
+        public event EventHandler RestartEvent;
+
         [Inject]
         public SettingsView(Settings.IModel inModel)
         {
@@ -52,6 +58,12 @@ namespace RedmineLog
             inModel.Timer.OnUpdate.Subscribe(OnUpdateTimer);
             inModel.Url.OnUpdate.Subscribe(OnUpdateUrl);
             inModel.WorkDayHours.OnUpdate.Subscribe(OnUpdateWorkDayHours);
+            inModel.DbPath.OnUpdate.Subscribe(OnUpdateDbPath);
+        }
+
+        private void OnUpdateDbPath(StringBuilder obj)
+        {
+            Form.lbDbPath.Text = obj.ToString();
         }
 
         private void OnUpdateWorkDayHours(int obj)
@@ -94,8 +106,8 @@ namespace RedmineLog
         private void OnNotifyTimer(EventPattern<EventArgs> obj)
         {
             model.Timer.Notify(((TimerType)Form.cbTimer.SelectedItem));
-            NotifyBox.Show("Please restart application", "Info");
             Form.Close();
+            RestartEvent.Fire(this);
         }
 
         private void OnUpdateDisplay(DisplayData obj)
@@ -132,8 +144,8 @@ namespace RedmineLog
         private void OnNotifyDisplay(EventPattern<EventArgs> obj)
         {
             model.Display.Notify(((DisplayData)Form.cbDisplay.SelectedItem));
-            NotifyBox.Show("Please restart application", "Info");
             Form.Close();
+            RestartEvent.Fire(this);
         }
 
         private void OnUpdateApiKey(StringBuilder obj)
@@ -154,6 +166,9 @@ namespace RedmineLog
         [EventPublication(Settings.Events.ReloadCache, typeof(OnPublisher))]
         public event EventHandler ReloadCacheEvent;
 
+        [EventPublication(Settings.Events.ImportDb, typeof(OnPublisher))]
+        public event EventHandler<Args<String>> ImportDbEvent;
+
         EventProperty<EventArgs> displayChanged = new EventProperty<EventArgs>();
         EventProperty<EventArgs> timerChanged = new EventProperty<EventArgs>();
 
@@ -166,9 +181,47 @@ namespace RedmineLog
 
             Observable.FromEventPattern<EventArgs>(Form.btnSave, "Click").Subscribe(OnActionSave);
             Observable.FromEventPattern<EventArgs>(Form.btnReloadCache, "Click").Subscribe(OnActionReloadCache);
+            Observable.FromEventPattern<EventArgs>(Form.btnImport, "Click").Subscribe(OnActionImport);
 
             Load();
         }
+
+        private void OnActionImport(EventPattern<EventArgs> obj)
+        {
+            var fbd = new FolderBrowserDialog();
+            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+            fbd.ShowDialog();
+
+            if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            {
+                var importPath = fbd.SelectedPath;
+
+                try
+                {
+                    if (!new DirectoryInfo(importPath).GetFiles().Any(x => x.Name.Contains("_DBreezeSchema")))
+                    {
+                        NotifyBox.Show("RedmineLog database not found", "Info");
+                        return;
+                    }
+                }
+                catch
+                {
+                    NotifyBox.Show("Cant import database from " + importPath, "Info");
+                    return;
+                }
+
+                new frmProcessing().Show(Form,
+                  () =>
+                  {
+                      ImportDbEvent.Fire(this, importPath);
+                  }, () =>
+                  {
+                      Form.Close();
+                      RestartEvent.Fire(this);
+                  });
+            }
+        }
+
 
 
         private void OnActionReloadCache(EventPattern<EventArgs> obj)

@@ -26,7 +26,14 @@ namespace RedmineLog.UI.Common
         {
             if (inUI.InvokeRequired)
             {
-                inUI.Invoke(new MethodInvoker(() => Set(inUI, inData, inAction)));
+                try
+                {
+                    inUI.Invoke(new MethodInvoker(() => Set(inUI, inData, inAction)));
+                }
+                catch (Exception ex)
+                {
+                    Program.Kernel.Get<ILog>().Error("Set", ex);
+                }
                 return;
             }
             inAction(inUI, inData);

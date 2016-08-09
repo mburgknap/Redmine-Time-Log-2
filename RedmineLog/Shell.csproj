@@ -152,7 +152,6 @@
       <DependentUpon>SearchItemView.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\AppLog.cs" />
-    <Compile Include="Utils\AppStart.cs" />
     <Compile Include="Utils\AppUpdater.cs" />
     <Compile Include="Utils\WwwRedmine.cs" />
     <Compile Include="UI\Common\ExFlowLayoutPanel.cs">

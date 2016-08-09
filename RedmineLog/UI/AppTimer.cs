@@ -85,12 +85,6 @@ namespace RedmineLog.UI
     {
         private static Dictionary<TimerType, IScheduleTimer> timers = new Dictionary<TimerType, IScheduleTimer>();
 
-        static AppTimer()
-        {
-            timers.Add(TimerType.System, new TimerScheduler(1000));
-            timers.Add(TimerType.Thread, new ThreadScheduler(1000));
-        }
-
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -190,6 +184,14 @@ namespace RedmineLog.UI
                 WorkTimer = timers[dbConfig.GetTimer()];
                 WorkTimer.Start();
             }
+        }
+
+
+        public void Init()
+        {
+            timers.Clear();
+            timers.Add(TimerType.System, new TimerScheduler(1000));
+            timers.Add(TimerType.Thread, new ThreadScheduler(1000));
         }
     }
 }

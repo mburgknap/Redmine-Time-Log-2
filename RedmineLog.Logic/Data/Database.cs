@@ -437,12 +437,15 @@ namespace RedmineLog.Logic
         {
             database.Set<AppConfig, string, int>("WorkDayMinimalHours", value);
         }
+
+
     }
 
     internal class Database : IDatabase
     {
         private ILog logger;
         private DBreezeEngine engine;
+        private DBreezeConfiguration configuration;
 
         [Inject]
         public Database(ILog inLogger)
@@ -454,15 +457,15 @@ namespace RedmineLog.Logic
                 DBreeze.Utils.CustomSerializator.Serializator = JsonConvert.SerializeObject;
                 DBreeze.Utils.CustomSerializator.Deserializator = JsonConvert.DeserializeObject;
 
-                var di = new DirectoryInfo(new Uri("App", UriKind.Relative).ToString());
+                var di = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".RedmineLog"));//new Uri("App", UriKind.Relative).ToString());
 
-                engine = new DBreezeEngine(new DBreezeConfiguration()
+                engine = new DBreezeEngine(configuration = new DBreezeConfiguration()
                 {
-                    DBreezeDataFolderName = Path.Combine(di.Parent.FullName, "Database"),
+                    DBreezeDataFolderName = Path.Combine(di.FullName, "Database"),
                     Storage = DBreezeConfiguration.eStorage.DISK,
                     Backup = new DBreeze.Storage.Backup()
                     {
-                        BackupFolderName = Path.Combine(di.Parent.FullName, "Backup")
+                        BackupFolderName = Path.Combine(di.FullName, "Backup")
                     }
                 });
 
@@ -585,6 +588,37 @@ namespace RedmineLog.Logic
             {
                 logger.Error("ForEach " + typeof(Table).Name, ex, "Error occured, error detail saved in application logs ", "Warrnig");
             }
+        }
+
+
+        public StringBuilder GetDbPath()
+        {
+            return new StringBuilder(configuration.DBreezeDataFolderName);
+        }
+
+
+
+        public void Dispose()
+        {
+            if (engine != null)
+                engine.Dispose();
+        }
+
+
+        public void Import(string inSource)
+        {
+            Dispose();
+
+            foreach (var file in new DirectoryInfo(configuration.DBreezeDataFolderName).GetFiles())
+            {
+                file.Delete();
+            }
+
+            var appDir = new DirectoryInfo(configuration.DBreezeDataFolderName);
+            var importDir = new DirectoryInfo(inSource);
+
+            foreach (var fileInfo in importDir.GetFiles())
+                fileInfo.CopyTo(Path.Combine(appDir.FullName, fileInfo.Name));
         }
     }
 }

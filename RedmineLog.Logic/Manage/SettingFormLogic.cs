@@ -6,21 +6,25 @@ using RedmineLog.Common;
 using RedmineLog.Logic.Common;
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace RedmineLog.Logic
 {
     internal class SettingFormLogic : ILogic<Settings.IView>
     {
+        private IDatabase db;
         private IDbConfig dbConfig;
         private IDbRedmine dbRedmine;
         private IDbCache dbCache;
+        private ILog log;
         private Settings.IModel model;
         private IRedmineClient redmine;
         private Settings.IView view;
 
         [Inject]
-        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig, IDbCache inDbCache)
+        public SettingFormLogic(Settings.IView inView, Settings.IModel inModel, IRedmineClient inClient, IDbRedmine inDbRedmine, IDbConfig inDbConfig, IDbCache inDbCache, IDatabase inDatabase, ILog inLog)
         {
             view = inView;
             model = inModel;
@@ -28,6 +32,8 @@ namespace RedmineLog.Logic
             dbRedmine = inDbRedmine;
             dbConfig = inDbConfig;
             dbCache = inDbCache;
+            db = inDatabase;
+            log = inLog;
 
             model.Display.OnNotify.Subscribe(OnNotifyDisplay);
             model.Timer.OnNotify.Subscribe(OnNotifyTimer);
@@ -43,6 +49,18 @@ namespace RedmineLog.Logic
             dbConfig.SetTimer(obj);
         }
 
+        [EventSubscription(Settings.Events.ImportDb, typeof(OnPublisher))]
+        public void OnImportDbEvent(object sender, Args<String> arg)
+        {
+            try
+            {
+                db.Import(arg.Data);
+            }
+            catch (Exception ex)
+            {
+                log.Error("OnImportDbEvent", ex);
+            }
+        }
 
         [EventSubscription(Settings.Events.Save, typeof(OnPublisher))]
         public void OnSaveEvent(object sender, EventArgs arg)
@@ -62,6 +80,7 @@ namespace RedmineLog.Logic
             model.Display.Update(dbConfig.GetDisplay());
             model.WorkDayHours.Update(dbConfig.GetWorkDayMinimalHours());
             model.Timer.Update(dbConfig.GetTimer());
+            model.DbPath.Update(db.GetDbPath());
         }
 
         [EventSubscription(Settings.Events.ReloadCache, typeof(OnPublisher))]

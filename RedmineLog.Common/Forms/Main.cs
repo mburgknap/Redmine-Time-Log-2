@@ -69,6 +69,8 @@ namespace RedmineLog.Common
             void Info(string inMessage);
 
             void GoLink(Uri inUri);
+
+            void Restart();
         }
 
         public interface IModel

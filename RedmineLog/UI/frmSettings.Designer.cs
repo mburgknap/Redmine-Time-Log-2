@@ -43,13 +43,14 @@
             this.label6 = new System.Windows.Forms.Label();
             this.cbTimer = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.lbDbPath = new System.Windows.Forms.Label();
+            this.btnImport = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Label2
             // 
             this.Label2.AutoSize = true;
-            this.Label2.Location = new System.Drawing.Point(13, 45);
+            this.Label2.Location = new System.Drawing.Point(9, 45);
             this.Label2.Name = "Label2";
             this.Label2.Size = new System.Drawing.Size(90, 13);
             this.Label2.TabIndex = 11;
@@ -57,16 +58,17 @@
             // 
             // tbApiKey
             // 
-            this.tbApiKey.Location = new System.Drawing.Point(16, 61);
+            this.tbApiKey.Location = new System.Drawing.Point(12, 61);
             this.tbApiKey.Name = "tbApiKey";
-            this.tbApiKey.Size = new System.Drawing.Size(324, 20);
+            this.tbApiKey.Size = new System.Drawing.Size(328, 20);
             this.tbApiKey.TabIndex = 10;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(183, 179);
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnSave.Location = new System.Drawing.Point(183, 201);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(157, 23);
+            this.btnSave.Size = new System.Drawing.Size(157, 32);
             this.btnSave.TabIndex = 8;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -74,7 +76,7 @@
             // Label1
             // 
             this.Label1.AutoSize = true;
-            this.Label1.Location = new System.Drawing.Point(12, 9);
+            this.Label1.Location = new System.Drawing.Point(9, 9);
             this.Label1.Name = "Label1";
             this.Label1.Size = new System.Drawing.Size(74, 13);
             this.Label1.TabIndex = 7;
@@ -82,32 +84,32 @@
             // 
             // tbRedmineURL
             // 
-            this.tbRedmineURL.Location = new System.Drawing.Point(15, 25);
+            this.tbRedmineURL.Location = new System.Drawing.Point(12, 25);
             this.tbRedmineURL.Name = "tbRedmineURL";
-            this.tbRedmineURL.Size = new System.Drawing.Size(325, 20);
+            this.tbRedmineURL.Size = new System.Drawing.Size(328, 20);
             this.tbRedmineURL.TabIndex = 6;
             // 
             // btnReloadCache
             // 
-            this.btnReloadCache.Location = new System.Drawing.Point(12, 179);
+            this.btnReloadCache.Location = new System.Drawing.Point(12, 118);
             this.btnReloadCache.Name = "btnReloadCache";
-            this.btnReloadCache.Size = new System.Drawing.Size(89, 23);
+            this.btnReloadCache.Size = new System.Drawing.Size(158, 23);
             this.btnReloadCache.TabIndex = 12;
-            this.btnReloadCache.Text = "Reload cache";
+            this.btnReloadCache.Text = "Refresh cache";
             this.btnReloadCache.UseVisualStyleBackColor = true;
             // 
             // cbDisplay
             // 
             this.cbDisplay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDisplay.FormattingEnabled = true;
-            this.cbDisplay.Location = new System.Drawing.Point(234, 128);
+            this.cbDisplay.Location = new System.Drawing.Point(234, 147);
             this.cbDisplay.Name = "cbDisplay";
             this.cbDisplay.Size = new System.Drawing.Size(106, 21);
             this.cbDisplay.TabIndex = 13;
             // 
             // tbWorkHours
             // 
-            this.tbWorkHours.Location = new System.Drawing.Point(71, 128);
+            this.tbWorkHours.Location = new System.Drawing.Point(71, 147);
             this.tbWorkHours.Name = "tbWorkHours";
             this.tbWorkHours.Size = new System.Drawing.Size(26, 20);
             this.tbWorkHours.TabIndex = 14;
@@ -117,7 +119,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 131);
+            this.label4.Location = new System.Drawing.Point(9, 150);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 13);
             this.label4.TabIndex = 16;
@@ -126,7 +128,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(180, 131);
+            this.label5.Location = new System.Drawing.Point(180, 150);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 17;
@@ -135,7 +137,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(103, 131);
+            this.label3.Location = new System.Drawing.Point(103, 150);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(33, 13);
             this.label3.TabIndex = 18;
@@ -144,7 +146,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(180, 155);
+            this.label6.Location = new System.Drawing.Point(180, 177);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(33, 13);
             this.label6.TabIndex = 20;
@@ -154,7 +156,7 @@
             // 
             this.cbTimer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTimer.FormattingEnabled = true;
-            this.cbTimer.Location = new System.Drawing.Point(234, 152);
+            this.cbTimer.Location = new System.Drawing.Point(234, 174);
             this.cbTimer.Name = "cbTimer";
             this.cbTimer.Size = new System.Drawing.Size(106, 21);
             this.cbTimer.TabIndex = 19;
@@ -162,25 +164,35 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 87);
+            this.label7.Location = new System.Drawing.Point(9, 88);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(62, 13);
             this.label7.TabIndex = 21;
             this.label7.Text = "Database : ";
             // 
-            // label8
+            // lbDbPath
             // 
-            this.label8.Location = new System.Drawing.Point(84, 88);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(256, 27);
-            this.label8.TabIndex = 22;
+            this.lbDbPath.Location = new System.Drawing.Point(67, 88);
+            this.lbDbPath.Name = "lbDbPath";
+            this.lbDbPath.Size = new System.Drawing.Size(273, 27);
+            this.lbDbPath.TabIndex = 22;
+            // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(176, 118);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(164, 23);
+            this.btnImport.TabIndex = 23;
+            this.btnImport.Text = "Import database";
+            this.btnImport.UseVisualStyleBackColor = true;
             // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 209);
-            this.Controls.Add(this.label8);
+            this.ClientSize = new System.Drawing.Size(346, 241);
+            this.Controls.Add(this.btnImport);
+            this.Controls.Add(this.lbDbPath);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.cbTimer);
@@ -224,6 +236,7 @@
         private System.Windows.Forms.Label label6;
         internal System.Windows.Forms.ComboBox cbTimer;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+        internal System.Windows.Forms.Label lbDbPath;
+        internal System.Windows.Forms.Button btnImport;
     }
 }

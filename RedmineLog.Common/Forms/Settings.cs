@@ -8,6 +8,7 @@ namespace RedmineLog.Common
             public const string Load = "topic://Settings/Load";
             public const string Save = "topic://Settings/Connect";
             public const string ReloadCache = "topic://Settings/ReloadCache";
+            public const string ImportDb = "topic://Settings/ImportDb";
         }
 
         public interface IView

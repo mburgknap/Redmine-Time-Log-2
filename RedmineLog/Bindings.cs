@@ -14,7 +14,7 @@ namespace RedmineLog
     {
         public override void Load()
         {
-            Kernel.AddGlobalEventBroker(Global.Events.Brocker);
+            Kernel.AddGlobalEventBroker(Global.Brocker);
             Bind<IAppSettings>().To<AppSettings>().InSingletonScope();
             Bind<ILog>().To<AppLog>().InSingletonScope();
             Bind<IUpdater>().To<AppUpdater>().InSingletonScope();

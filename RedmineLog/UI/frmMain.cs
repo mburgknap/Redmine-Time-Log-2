@@ -884,7 +884,6 @@ namespace RedmineLog
                     ExitEvent.Fire(this);
                 }, () =>
                 {
-                    Environment.Exit(0);
                     Form.Close();
                 });
         }
@@ -1075,6 +1074,13 @@ namespace RedmineLog
                     });
 
                 });
+        }
+
+
+        public void Restart()
+        {
+            Program.Restart = true;
+            Form.Close();
         }
     }
 }

@@ -32,22 +32,47 @@ namespace RedmineLog
                 return;
             }
 
-            (Kernel = new StandardKernel())
-                       .Load(new Bindings(),
-                             new UI.Bindings(),
-                             new Model.Bindings(),
-                             new Logic.Bindings(),
-                             new Logic.Data.Bindings());
+            SetupVisual();
 
-            Init();
+            do
+            {
+                StartApp();
+                CleanApp();
+            }
+            while (Program.Restart);
 
+            mutex.ReleaseMutex();
+            GC.Collect();
+            Environment.Exit(0);
+
+        }
+
+        private static void CleanApp()
+        {
+            Kernel.Get<IDatabase>().Dispose();
+        }
+
+        private static void SetupVisual()
+        {
             Application.ThreadException += OnUnhandledException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+        }
+
+        static void StartApp()
+        {
+            Restart = false;
+
+            (Kernel = new StandardKernel())
+                            .Load(new Bindings(),
+                                  new UI.Bindings(),
+                                  new Model.Bindings(),
+                                  new Logic.Bindings(),
+                                  new Logic.Data.Bindings());
+
+            Init();
 
             Application.Run(new frmMain());
-
-            GC.KeepAlive(mutex);
 
         }
 
@@ -55,24 +80,6 @@ namespace RedmineLog
         {
             try
             {
-                var appStart = new AppStart();
-
-                if (appStart.IsFirstStart())
-                {
-                    NotifyBox.Show("Initialize application", "RedmineLog");
-
-                    if (appStart.FindDataToImport())
-                    {
-
-                        var res = MessageBox.Show("Import data from old Redmine Log ?", "Question",
-                                         MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-
-                        if (res == DialogResult.OK) appStart.ImportData();
-                    }
-
-                }
-
-
                 MessageBox.Show("Another instance is already running.", "RedmineLog",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
             }
@@ -85,6 +92,7 @@ namespace RedmineLog
         private static void Init()
         {
             Kernel.Get<WebRedmine>();
+            Kernel.Get<AppTime.IClock>().Init();
         }
 
         private static void OnUnhandledException(object sender, System.Threading.ThreadExceptionEventArgs e)
@@ -93,5 +101,7 @@ namespace RedmineLog
         }
 
 
+
+        public static bool Restart { get; set; }
     }
 }

@@ -278,6 +278,12 @@ namespace RedmineLog.Logic
             }
         }
 
+        [EventSubscription(Global.Events.Restart, typeof(OnPublisher))]
+        public void OnRestartEvent(object sender, EventArgs arg)
+        {
+            view.Restart();
+        }
+
         [EventSubscription(Main.Events.Update, typeof(OnPublisher))]
         public void OnUpdateEvent(object sender, EventArgs arg)
         {
