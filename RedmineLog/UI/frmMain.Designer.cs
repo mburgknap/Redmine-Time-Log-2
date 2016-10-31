@@ -46,6 +46,7 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblClockIdle = new System.Windows.Forms.Label();
             this.pManage = new System.Windows.Forms.Panel();
+            this.btnTemplateIssue = new System.Windows.Forms.Button();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnStopWork = new System.Windows.Forms.Button();
             this.lbClockTodayTime = new System.Windows.Forms.Label();
@@ -79,6 +80,7 @@
             this.llSummaryTime = new System.Windows.Forms.LinkLabel();
             this.cHeader = new RedmineLog.UI.Items.IssueItemView();
             this.fpIssueList = new RedmineLog.UI.Common.ExFlowLayoutPanel(this.components);
+            this.cmTemplateIssue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.issueInfoPanel.SuspendLayout();
             this.pManage.SuspendLayout();
             this.pComments.SuspendLayout();
@@ -265,6 +267,7 @@
             // pManage
             // 
             this.pManage.BackColor = System.Drawing.Color.Transparent;
+            this.pManage.Controls.Add(this.btnTemplateIssue);
             this.pManage.Controls.Add(this.btnSearch);
             this.pManage.Controls.Add(this.btnStopWork);
             this.pManage.Controls.Add(this.lbClockTodayTime);
@@ -286,6 +289,17 @@
             this.pManage.Name = "pManage";
             this.pManage.Size = new System.Drawing.Size(259, 473);
             this.pManage.TabIndex = 39;
+            // 
+            // btnTemplateIssue
+            // 
+            this.btnTemplateIssue.Enabled = false;
+            this.btnTemplateIssue.Location = new System.Drawing.Point(5, 447);
+            this.btnTemplateIssue.Name = "btnTemplateIssue";
+            this.btnTemplateIssue.Size = new System.Drawing.Size(99, 23);
+            this.btnTemplateIssue.TabIndex = 53;
+            this.btnTemplateIssue.Text = "Task templates";
+            this.btnTemplateIssue.UseVisualStyleBackColor = true;
+            this.btnTemplateIssue.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnSearch
             // 
@@ -654,6 +668,11 @@
             this.fpIssueList.Size = new System.Drawing.Size(320, 438);
             this.fpIssueList.TabIndex = 41;
             // 
+            // cmTemplateIssue
+            // 
+            this.cmTemplateIssue.Name = "cmTemplateIssue";
+            this.cmTemplateIssue.Size = new System.Drawing.Size(61, 4);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -741,5 +760,7 @@
         internal System.Windows.Forms.LinkLabel llSummaryTime;
         internal System.Windows.Forms.Button btnSearch;
         internal System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Button btnTemplateIssue;
+        internal System.Windows.Forms.ContextMenuStrip cmTemplateIssue;
     }
 }

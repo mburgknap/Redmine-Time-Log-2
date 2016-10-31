@@ -37,7 +37,7 @@ namespace RedmineLog.UI
     {
         public void Init(frmAbout inView)
         {
-            inView.webBrowser1.Navigate("www.googledrive.com/host/0BwoXOcOLMhp3bUZ1SllpZk1Pd3c");
+            inView.webBrowser1.Navigate(System.Configuration.ConfigurationManager.AppSettings["WebSiteUrl"]);
         }
 
         public void Load()

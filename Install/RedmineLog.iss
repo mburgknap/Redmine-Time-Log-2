@@ -2,9 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "RedmineLog"
-#define MyAppVersion "12.5.0.0"
+#define MyAppVersion "12.16.0.0"
 #define MyAppPublisher "Marcin Burgknap"
-#define MyAppURL "www.googledrive.com/host/0BwoXOcOLMhp3bUZ1SllpZk1Pd3c"
+#define MyAppURL "https://liteapps-redmine.updog.co/"
 #define MyAppExeName "RedmineLog.exe"
 
 [Setup]

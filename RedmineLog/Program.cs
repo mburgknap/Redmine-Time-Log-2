@@ -2,6 +2,7 @@
 using NLog;
 using RedmineLog.Common;
 using RedmineLog.Logic.Data;
+using RedmineLog.Logic.Utils;
 using RedmineLog.UI;
 using RedmineLog.UI.Common;
 using RedmineLog.Utils;
@@ -23,6 +24,9 @@ namespace RedmineLog
         [STAThread]
         private static void Main()
         {
+            if (CmdUtils.Execute(Environment.CommandLine)) return;
+
+
             bool result;
             var mutex = new System.Threading.Mutex(true, "RedmineLog", out result);
 

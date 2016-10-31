@@ -119,6 +119,11 @@ namespace RedmineLog
             settings = inSettings;
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            cmTemplateIssue.Show(btnTemplateIssue, new Point(0, 0));
+        }
+
     }
 
     internal class MainView : Main.IView, IView<frmMain>
